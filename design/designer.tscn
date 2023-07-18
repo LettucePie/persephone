@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://design/branch_icon.png" type="Texture" id=1]
 [ext_resource path="res://design/design_theme.tres" type="Theme" id=2]
+[ext_resource path="res://design/flower_icon.png" type="Texture" id=3]
+[ext_resource path="res://design/leaf_icon.png" type="Texture" id=4]
 
 [node name="designer" type="Control"]
 anchor_right = 1.0
@@ -42,7 +44,7 @@ margin_left = -14.0
 margin_right = 114.0
 margin_bottom = 128.0
 rect_min_size = Vector2( 100, 100 )
-icon = ExtResource( 1 )
+icon = ExtResource( 4 )
 icon_align = 1
 expand_icon = true
 
@@ -58,6 +60,6 @@ margin_left = -14.0
 margin_right = 114.0
 margin_bottom = 128.0
 rect_min_size = Vector2( 100, 100 )
-icon = ExtResource( 1 )
+icon = ExtResource( 3 )
 icon_align = 1
 expand_icon = true
