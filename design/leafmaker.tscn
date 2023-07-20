@@ -1,5 +1,13 @@
-[gd_scene format=2]
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://design/leafmaker.gd" type="Script" id=1]
+[ext_resource path="res://design/bezier_square.png" type="Texture" id=2]
+[ext_resource path="res://design/bezier_circle.png" type="Texture" id=3]
 
 [node name="leafmaker" type="Node2D"]
+script = ExtResource( 1 )
+square_node_tex = ExtResource( 2 )
+circle_node_tex = ExtResource( 3 )
+node_scale = Vector2( 0.2, 0.2 )
 
 [node name="Polygon2D" type="Polygon2D" parent="."]

@@ -1,0 +1,11 @@
+[gd_resource type="StyleBoxTexture" load_steps=2 format=2]
+
+[ext_resource path="res://design/button_style_square.png" type="Texture" id=1]
+
+[resource]
+texture = ExtResource( 1 )
+region_rect = Rect2( 50, 50, 410, 410 )
+margin_left = 40.0
+margin_right = 40.0
+margin_top = 40.0
+margin_bottom = 40.0

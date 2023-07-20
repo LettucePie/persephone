@@ -19,14 +19,14 @@ alignment = 1
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="BubbleContainer"]
 margin_left = 119.0
 margin_right = 219.0
-margin_bottom = 128.0
+margin_bottom = 127.0
 size_flags_horizontal = 6
 stretch_mode = 3
 
 [node name="Button" type="Button" parent="BubbleContainer/AspectRatioContainer"]
-margin_left = -14.0
-margin_right = 114.0
-margin_bottom = 128.0
+margin_left = -13.5
+margin_right = 113.5
+margin_bottom = 127.0
 rect_min_size = Vector2( 100, 100 )
 icon = ExtResource( 1 )
 icon_align = 1
@@ -35,14 +35,14 @@ expand_icon = true
 [node name="AspectRatioContainer2" type="AspectRatioContainer" parent="BubbleContainer"]
 margin_left = 461.0
 margin_right = 561.0
-margin_bottom = 128.0
+margin_bottom = 127.0
 size_flags_horizontal = 6
 stretch_mode = 3
 
 [node name="Button" type="Button" parent="BubbleContainer/AspectRatioContainer2"]
-margin_left = -14.0
-margin_right = 114.0
-margin_bottom = 128.0
+margin_left = -13.5
+margin_right = 113.5
+margin_bottom = 127.0
 rect_min_size = Vector2( 100, 100 )
 icon = ExtResource( 4 )
 icon_align = 1
@@ -51,14 +51,14 @@ expand_icon = true
 [node name="AspectRatioContainer3" type="AspectRatioContainer" parent="BubbleContainer"]
 margin_left = 804.0
 margin_right = 904.0
-margin_bottom = 128.0
+margin_bottom = 127.0
 size_flags_horizontal = 6
 stretch_mode = 3
 
 [node name="Button" type="Button" parent="BubbleContainer/AspectRatioContainer3"]
-margin_left = -14.0
-margin_right = 114.0
-margin_bottom = 128.0
+margin_left = -13.5
+margin_right = 113.5
+margin_bottom = 127.0
 rect_min_size = Vector2( 100, 100 )
 icon = ExtResource( 3 )
 icon_align = 1
