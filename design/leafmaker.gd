@@ -6,17 +6,27 @@ export(Vector2) var node_scale = Vector2(0.1, 0.1)
 
 
 onready var leaf_poly = $Polygon2D
+onready var leaf_origin = $LeafOrigin
 var leaf_points = []
+var leaf_curve : Curve2D
 
 
 class LeafPoint: 
 	var mode : bool
 	var node_vis : Sprite
 	var pos : Vector2
+	var curve_index : int
+	
+	func _init(set_mode : bool, set_vis : Sprite, set_pos : Vector2, set_idx : int):
+		mode = set_mode
+		node_vis = set_vis
+		pos = set_pos
+		curve_index = set_idx
 
 
 func _ready():
-	pass # Replace with function body.
+	leaf_curve = Curve2D.new()
+	leaf_curve.add_point(leaf_origin.position, leaf_origin.position, leaf_origin.position)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -38,17 +48,26 @@ func _input(event):
 
 
 func add_point(pos : Vector2):
-	var new_point = LeafPoint.new()
-	new_point.mode = false
-	var polygon = leaf_poly.get_polygon()
-	polygon.append(pos)
-	leaf_poly.set_polygon(polygon)
-	new_point.pos = pos
-	var new_node = Sprite.new()
-	new_node.texture = square_node_tex
-	new_node.position = pos
-	new_node.scale = node_scale
-	self.add_child(new_node)
-	new_point.node_vis = new_node
-	leaf_points.append(new_point)
-	
+	leaf_curve.add_point(pos, pos, pos)
+	var node_vis = Sprite.new()
+	node_vis.texture = square_node_tex
+	node_vis.position = pos
+	node_vis.scale = node_scale
+	self.add_child(node_vis)
+	var index = leaf_curve.get_baked_points().find(pos)
+	leaf_points.append(LeafPoint)
+	draw_shape()
+
+
+func draw_shape():
+	if leaf_curve.get_point_count() >= 3:
+		print("Leaf Valid")
+		leaf_poly.visible = true
+		var curve_points : PoolVector2Array = PoolVector2Array()
+		for i in leaf_curve.get_point_count():
+			curve_points.append(leaf_curve.get_point_position(i))
+		leaf_poly.set_polygon(curve_points)
+#		leaf_poly.set_polygon(leaf_curve.get_baked_points())
+	else:
+		leaf_poly.visible = false
+		print("Leaf has too few points")

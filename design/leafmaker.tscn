@@ -3,11 +3,7 @@
 [ext_resource path="res://design/leafmaker.gd" type="Script" id=1]
 [ext_resource path="res://design/bezier_square.png" type="Texture" id=2]
 [ext_resource path="res://design/bezier_circle.png" type="Texture" id=3]
-
-[sub_resource type="Curve2D" id=1]
-_data = {
-"points": PoolVector2Array( -89, -186, 89, 186, 572, 195, 0, 0, 0, 0, 867, 274, 84, 147, -84, -147, 551, 519, -32, 169, 32, -169, 286, 370, -63, 40, 63, -40, 421, 266, -44, -86, 44, 86, 541, 148 )
-}
+[ext_resource path="res://design/crosshair.png" type="Texture" id=4]
 
 [node name="leafmaker" type="Node2D"]
 script = ExtResource( 1 )
@@ -18,17 +14,17 @@ node_scale = Vector2( 0.2, 0.2 )
 [node name="Polygon2D" type="Polygon2D" parent="."]
 visible = false
 color = Color( 0.439216, 0.627451, 0.890196, 1 )
-polygon = PoolVector2Array( 281, 238, 391, 213, 461, 263, 482, 326, 370, 361, 334, 454, 253, 390, 231, 340, 236, 274 )
 
 [node name="Line2D" type="Line2D" parent="."]
 visible = false
 position = Vector2( -11, 9 )
-points = PoolVector2Array( 320, 224, 434, 150, 601, 155, 715, 256, 672, 400, 440, 436, 356, 431, 307, 369, 328, 318, 373, 305 )
 width = 20.0
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 round_precision = 20
 
-[node name="Path2D" type="Path2D" parent="."]
-curve = SubResource( 1 )
+[node name="LeafOrigin" type="Sprite" parent="."]
+position = Vector2( 515, 495 )
+scale = Vector2( 0.3, 0.3 )
+texture = ExtResource( 4 )
