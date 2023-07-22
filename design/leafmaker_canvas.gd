@@ -4,6 +4,8 @@ export(Texture) var square_node_tex
 export(Texture) var circle_node_tex
 export(Vector2) var node_scale = Vector2(0.1, 0.1)
 
+export(bool) var debug_draw = false
+
 
 onready var leaf_poly = $Polygon2D
 onready var leaf_origin = $LeafOrigin
@@ -26,6 +28,7 @@ class LeafPoint:
 
 func _ready():
 	leaf_curve = Curve2D.new()
+	leaf_curve.set_bake_interval(50)
 	leaf_curve.add_point(leaf_origin.position, Vector2.ZERO, Vector2.ZERO)
 
 
@@ -58,6 +61,7 @@ func add_point(pos : Vector2):
 	leaf_points.append(LeafPoint)
 #	draw_shape()
 #	draw_curve_shape()
+	update()
 	debug_draw_curve_shape()
 
 
@@ -77,13 +81,7 @@ func draw_shape():
 
 func draw_curve_shape():
 	if leaf_curve.get_point_count() >= 3:
-		var curve_points = leaf_curve.get_baked_points()
-#		print("Curve Points Size ", curve_points.size())
-		var partial_points : PoolVector2Array = PoolVector2Array()
-		if curve_points.size() >= 50:
-			for i in 50:
-				partial_points.append(curve_points[i])
-		leaf_poly.set_polygon(partial_points)
+		leaf_poly.set_polygon(leaf_curve.get_baked_points())
 
 
 func debug_draw_curve_shape():
@@ -96,3 +94,8 @@ func debug_draw_curve_shape():
 		dot.position = baked_point
 		dot.add_to_group("Clear")
 		add_child(dot)
+
+
+func _draw():
+	if leaf_curve.get_baked_points().size() > 3:
+		draw_polygon(leaf_curve.get_baked_points(), PoolColorArray())
