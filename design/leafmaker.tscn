@@ -52,29 +52,28 @@ margin_top = -94.0
 alignment = 1
 
 [node name="Symmetry" type="Button" parent="ui/HBoxContainer"]
-margin_left = 5.0
-margin_right = 195.0
+margin_right = 190.0
 margin_bottom = 94.0
 size_flags_horizontal = 6
 text = "Symmetry Toggle"
 
 [node name="Button2" type="Button" parent="ui/HBoxContainer"]
-margin_left = 222.0
-margin_right = 390.0
+margin_left = 194.0
+margin_right = 362.0
 margin_bottom = 94.0
 size_flags_horizontal = 6
 text = "Color Settings"
 
 [node name="Button3" type="Button" parent="ui/HBoxContainer"]
-margin_left = 430.0
-margin_right = 593.0
+margin_left = 366.0
+margin_right = 529.0
 margin_bottom = 94.0
 size_flags_horizontal = 6
 text = "Vein Settings"
 
 [node name="HSlider" type="HSlider" parent="ui/HBoxContainer"]
-margin_left = 667.0
-margin_right = 767.0
+margin_left = 563.0
+margin_right = 663.0
 margin_bottom = 16.0
 rect_min_size = Vector2( 100, 0 )
 size_flags_horizontal = 6
@@ -83,11 +82,20 @@ max_value = 12.0
 value = 3.0
 
 [node name="Button4" type="Button" parent="ui/HBoxContainer"]
-margin_left = 851.0
-margin_right = 995.0
+margin_left = 706.0
+margin_right = 850.0
 margin_bottom = 94.0
 size_flags_horizontal = 6
 text = "Hide HUD"
+
+[node name="Mode" type="OptionButton" parent="ui/HBoxContainer"]
+margin_left = 864.0
+margin_right = 1023.0
+margin_bottom = 94.0
+size_flags_horizontal = 6
+text = "Add Mode"
+items = [ "Add Mode", null, false, 0, null, "Edit Mode", null, false, 1, null, "Delete Mode", null, false, 2, null ]
+selected = 0
 
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
 anchor_left = 0.5
@@ -105,4 +113,5 @@ anchor_bottom = 0.822
 margin_bottom = -0.200012
 
 [connection signal="pressed" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_Symmetry_pressed"]
+[connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
