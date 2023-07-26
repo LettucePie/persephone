@@ -212,13 +212,27 @@ func _draw():
 		var uvs : PoolVector2Array = PoolVector2Array()
 		var screen_uv_0 = Vector2(5, 5)
 		var screen_uv_1 = Vector2(OS.get_screen_size().x - 5, leaf_origin.position.y - 5)
+		var space_uv_0 = baked_points[0]
+		var space_uv_1 = baked_points[0]
+		for b in baked_points:
+			if b.x < space_uv_0.x:
+				space_uv_0.x = b.x
+			if b.x > space_uv_1.x:
+				space_uv_1.x = b.x
+			if b.y < space_uv_0.y:
+				space_uv_0.y = b.y
+			if b.y > space_uv_1.y:
+				space_uv_1.y = b.y
 		for i in count:
 			var baked_point_pos = baked_points[i]
 			var percent = float(i) / float(count)
 			colors.append(leaf_gradient.interpolate(percent))
+#			var scale_position = Vector2(
+#					inverse_lerp(screen_uv_0.x, screen_uv_1.x, baked_point_pos.x),
+#					inverse_lerp(screen_uv_0.y, screen_uv_1.y, baked_point_pos.y))
 			var scale_position = Vector2(
-					inverse_lerp(screen_uv_0.x, screen_uv_1.x, baked_point_pos.x),
-					inverse_lerp(screen_uv_0.y, screen_uv_1.y, baked_point_pos.y))
+					inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
+					inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
 			uvs.append(scale_position)
 		draw_polygon(leaf_curve.get_baked_points(), colors, uvs, leaf_texture)
 
