@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://design/leafmaker_canvas.gd" type="Script" id=1]
 [ext_resource path="res://design/leafmaker.gd" type="Script" id=2]
@@ -9,6 +9,9 @@
 [ext_resource path="res://design/designer_tools_theme.tres" type="Theme" id=7]
 [ext_resource path="res://design/symmetry_dash_mini.png" type="Texture" id=8]
 
+[sub_resource type="Gradient" id=1]
+colors = PoolColorArray( 0.0604248, 0.34375, 0.0781326, 1, 0.0666375, 0.867188, 0.0203247, 1 )
+
 [node name="leafmaker" type="Node"]
 script = ExtResource( 2 )
 
@@ -17,6 +20,7 @@ script = ExtResource( 1 )
 square_node_tex = ExtResource( 6 )
 circle_node_tex = ExtResource( 3 )
 node_scale = Vector2( 0.2, 0.2 )
+leaf_gradient_default = SubResource( 1 )
 debug_draw = true
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]

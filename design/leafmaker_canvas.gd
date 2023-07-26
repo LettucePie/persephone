@@ -3,6 +3,7 @@ extends Node2D
 export(Texture) var square_node_tex
 export(Texture) var circle_node_tex
 export(Vector2) var node_scale = Vector2(0.1, 0.1)
+export(Gradient) var leaf_gradient_default
 
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 export(bool) var debug_draw = false
@@ -10,6 +11,8 @@ export(bool) var debug_draw = false
 onready var leaf_poly = $Polygon2D
 onready var leaf_origin = $LeafOrigin
 onready var leaf_curve : Curve2D = Curve2D.new()
+onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
+onready var leaf_gradient : Gradient = leaf_gradient_default
 
 var current_mode = Mode.ADD_MODE
 
@@ -195,7 +198,13 @@ func debug_draw_curve_shape():
 
 func _draw():
 	if leaf_curve.get_baked_points().size() > 3:
-		draw_polygon(leaf_curve.get_baked_points(), PoolColorArray())
+		var colors : PoolColorArray = PoolColorArray()
+		var uvs : PoolVector2Array = PoolVector2Array()
+		var count = leaf_curve.get_baked_points().size()
+		for i in count:
+			var percent = float(i) / float(count)
+			colors.append(leaf_gradient.interpolate(percent))
+		draw_polygon(leaf_curve.get_baked_points(), colors, uvs)
 
 
 func _on_Mode_item_selected(index):
