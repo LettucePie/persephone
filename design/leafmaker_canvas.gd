@@ -4,6 +4,7 @@ export(Texture) var square_node_tex
 export(Texture) var circle_node_tex
 export(Vector2) var node_scale = Vector2(0.1, 0.1)
 export(Gradient) var leaf_gradient_default
+export(Texture) var leaf_texture_default
 
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 export(bool) var debug_draw = false
@@ -13,6 +14,7 @@ onready var leaf_origin = $LeafOrigin
 onready var leaf_curve : Curve2D = Curve2D.new()
 onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
 onready var leaf_gradient : Gradient = leaf_gradient_default
+onready var leaf_texture : Texture = leaf_texture_default
 
 var current_mode = Mode.ADD_MODE
 
@@ -28,7 +30,13 @@ func _ready():
 
 
 func _input(event):
-	pass
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_R:
+				print("Randomizing UV End")
+				randomize()
+#				debug_uv_end = Vector2(rand_range(-10, 10), rand_range(-10, 10))
+				update()
 
 
 func recenter_origin():
@@ -198,13 +206,21 @@ func debug_draw_curve_shape():
 
 func _draw():
 	if leaf_curve.get_baked_points().size() > 3:
+		var baked_points = leaf_curve.get_baked_points()
+		var count = baked_points.size()
 		var colors : PoolColorArray = PoolColorArray()
 		var uvs : PoolVector2Array = PoolVector2Array()
-		var count = leaf_curve.get_baked_points().size()
+		var screen_uv_0 = Vector2(5, 5)
+		var screen_uv_1 = Vector2(OS.get_screen_size().x - 5, leaf_origin.position.y - 5)
 		for i in count:
+			var baked_point_pos = baked_points[i]
 			var percent = float(i) / float(count)
 			colors.append(leaf_gradient.interpolate(percent))
-		draw_polygon(leaf_curve.get_baked_points(), colors, uvs)
+			var scale_position = Vector2(
+					inverse_lerp(screen_uv_0.x, screen_uv_1.x, baked_point_pos.x),
+					inverse_lerp(screen_uv_0.y, screen_uv_1.y, baked_point_pos.y))
+			uvs.append(scale_position)
+		draw_polygon(leaf_curve.get_baked_points(), colors, uvs, leaf_texture)
 
 
 func _on_Mode_item_selected(index):
