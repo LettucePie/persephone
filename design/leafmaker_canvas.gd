@@ -37,6 +37,7 @@ func recenter_origin():
 	if leaf_curve.get_point_count() > 0:
 		slide_curve(old_position - new_position)
 		fit_curve(new_position, OS.get_window_size().x, new_position.y)
+		print("Consider Scaling up the curve based on old_position to new_position")
 
 
 func slide_curve(offset : Vector2):
@@ -50,18 +51,46 @@ func fit_curve(anchor : Vector2, w : float, h : float):
 		## Filter out the Origin Point
 		if i > 0:
 			var i_pos = leaf_curve.get_point_position(i)
-			if i_pos.x < 5 or i_pos.x > (w - 5):
-				bad_actors.append(i)
-				print(i_pos.x, " x")
-			elif i_pos.y < 5 or i_pos.y > (h - 5):
-				bad_actors.append(i)
-				print(i_pos.y, " y")
+			var safe = true
+			var bound = i_pos
+			if i_pos.x < 5:
+				safe = false
+				bound.x = 5
+			if i_pos.x > (w - 5):
+				safe = false
+				bound.x = w - 5
+			if i_pos.y < 5: 
+				safe = false
+				bound.y = 5
+			if i_pos.y > (h - 5):
+				safe = false
+				bound.y = h - 5
+			if !safe:
+				bad_actors.append([i, i_pos, bound])
 	if bad_actors.size() > 0:
-		print("Leaf Curve exceeds bounds, resize")
+		print("Leaf Curve exceeds bounds, resize curve.")
+		## Find furthest bad actor, by comparing their position to their,
+		## exceeded Boundary.
+		var worst_actor : Array = bad_actors[0]
+		var greatest_distance : float = 0
+		for b in bad_actors:
+			var distance = b[2].distance_to(b[1])
+			if distance > greatest_distance:
+				greatest_distance = distance
+				worst_actor = b
+		## Compare distance from bound to distance from anchor.
+		## Use value to produce an offset percentage.
+		var anchor_distance = anchor.distance_to(worst_actor[1])
+		scale_curve(anchor, greatest_distance / anchor_distance)
 
 
 func scale_curve(anchor : Vector2, percent : float):
-	pass
+	for i in leaf_curve.get_point_count():
+		## Don't scale the origin
+		if i > 0:
+			leaf_curve.set_point_position(
+					i, 
+					leaf_curve.get_point_position(i).linear_interpolate(anchor, percent))
 
 
 func starting_leaf():
