@@ -84,6 +84,10 @@ func fit_curve(anchor : Vector2, w : float, h : float):
 		scale_curve(anchor, greatest_distance / anchor_distance)
 
 
+func maximize_curve(anchor : Vector2):
+	pass
+
+
 func scale_curve(anchor : Vector2, percent : float):
 	for i in leaf_curve.get_point_count():
 		## Don't scale the origin
