@@ -36,8 +36,8 @@ func recenter_origin():
 	leaf_origin.position = new_position
 	if leaf_curve.get_point_count() > 0:
 		slide_curve(old_position - new_position)
-		fit_curve(new_position, OS.get_window_size().x, new_position.y)
-		print("Consider Scaling up the curve based on old_position to new_position")
+		maximize_curve_scale(new_position)
+		fit_curve_scale(new_position, OS.get_window_size().x, new_position.y)
 
 
 func slide_curve(offset : Vector2):
@@ -45,7 +45,7 @@ func slide_curve(offset : Vector2):
 		leaf_curve.set_point_position(i, leaf_curve.get_point_position(i) - offset)
 
 
-func fit_curve(anchor : Vector2, w : float, h : float):
+func fit_curve_scale(anchor : Vector2, w : float, h : float):
 	var bad_actors : Array = []
 	for i in leaf_curve.get_point_count():
 		## Filter out the Origin Point
@@ -84,8 +84,30 @@ func fit_curve(anchor : Vector2, w : float, h : float):
 		scale_curve(anchor, greatest_distance / anchor_distance)
 
 
-func maximize_curve(anchor : Vector2):
+func maximize_curve_scale(anchor : Vector2):
 	pass
+	var center = leaf_origin.position
+	center.y *= 0.5
+	var closest_distance : float = 100000
+	var closest_point = null
+	for i in leaf_curve.get_point_count():
+		var bound = Vector2.ZERO
+		var i_pos = leaf_curve.get_point_position(i)
+		if i_pos.x <= center.x:
+			bound.x = 5
+		else:
+			bound.x = OS.get_screen_size().x - 5
+		if i_pos.y <= center.x:
+			bound.y = 5
+		else:
+			bound.y = i_pos.y
+		var distance = i_pos.distance_to(bound)
+		if distance < closest_distance:
+			closest_distance = distance
+			closest_point = [i, i_pos, bound, distance]
+	if closest_point != null:
+		var anchor_distance = anchor.distance_to(closest_point[2])
+		scale_curve(anchor, (closest_point[3] / anchor_distance) * -1.0)
 
 
 func scale_curve(anchor : Vector2, percent : float):
@@ -182,5 +204,12 @@ func _on_Mode_item_selected(index):
 
 
 func _on_ui_resized():
-	print("UI Resized")
+#	print("UI Resized")
 	recenter_origin()
+
+
+func _on_Maximize_pressed():
+#	print("Maximize Curve Pressed")
+	maximize_curve_scale(leaf_origin.position)
+	update()
+
