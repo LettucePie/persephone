@@ -7,25 +7,64 @@ export(Vector2) var node_scale = Vector2(0.1, 0.1)
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 export(bool) var debug_draw = false
 
-
 onready var leaf_poly = $Polygon2D
 onready var leaf_origin = $LeafOrigin
-var leaf_curve : Curve2D
+onready var leaf_curve : Curve2D = Curve2D.new()
 
 var current_mode = Mode.ADD_MODE
 
 func _ready():
+	print("Centering Origin First Time")
+	recenter_origin()
+	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
 	leaf_curve.add_point(leaf_origin.position, Vector2.ZERO, Vector2.ZERO)
-	_starting_leaf()
+	print("Building Rest of the Leaf")
+	starting_leaf()
 
 
 func _input(event):
 	pass
 
 
-func _starting_leaf():
+func recenter_origin():
+	var old_position = leaf_origin.position
+	var new_position = OS.get_window_size()
+	new_position.x *= 0.5
+	new_position.y *= 0.75
+	leaf_origin.position = new_position
+	if leaf_curve.get_point_count() > 0:
+		slide_curve(old_position - new_position)
+		fit_curve(new_position, OS.get_window_size().x, new_position.y)
+
+
+func slide_curve(offset : Vector2):
+	for i in leaf_curve.get_point_count():
+		leaf_curve.set_point_position(i, leaf_curve.get_point_position(i) - offset)
+
+
+func fit_curve(anchor : Vector2, w : float, h : float):
+	var bad_actors : Array = []
+	for i in leaf_curve.get_point_count():
+		## Filter out the Origin Point
+		if i > 0:
+			var i_pos = leaf_curve.get_point_position(i)
+			if i_pos.x < 5 or i_pos.x > (w - 5):
+				bad_actors.append(i)
+				print(i_pos.x, " x")
+			elif i_pos.y < 5 or i_pos.y > (h - 5):
+				bad_actors.append(i)
+				print(i_pos.y, " y")
+	if bad_actors.size() > 0:
+		print("Leaf Curve exceeds bounds, resize")
+
+
+func scale_curve(anchor : Vector2, percent : float):
+	pass
+
+
+func starting_leaf():
 	var top_point = leaf_origin.position
 	top_point.y = 50
 	var center_point = leaf_origin.position.linear_interpolate(top_point, 0.3)
@@ -107,3 +146,8 @@ func _draw():
 func _on_Mode_item_selected(index):
 	current_mode = index
 	print("Current Mode: ", current_mode)
+
+
+func _on_ui_resized():
+	print("UI Resized")
+	recenter_origin()

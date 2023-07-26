@@ -112,6 +112,7 @@ anchor_right = 1.0
 anchor_bottom = 0.822
 margin_bottom = -0.200012
 
+[connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="pressed" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_Symmetry_pressed"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
