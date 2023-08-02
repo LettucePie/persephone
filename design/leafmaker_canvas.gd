@@ -12,19 +12,24 @@ export(bool) var debug_draw = false
 onready var leaf_poly = $Polygon2D
 onready var leaf_origin = $LeafOrigin
 onready var leaf_curve : Curve2D = Curve2D.new()
+var leaf_vis : Array = []
 onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
 onready var leaf_gradient : Gradient = leaf_gradient_default
 onready var leaf_texture : Texture = leaf_texture_default
 
 var current_mode = Mode.ADD_MODE
+var screen_size : Vector2
+
 
 func _ready():
+	screen_size = OS.get_window_size()
 	print("Centering Origin First Time")
 	recenter_origin()
 	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
-	leaf_curve.add_point(leaf_origin.position, Vector2.ZERO, Vector2.ZERO)
+	add_point(leaf_origin.position)
+#	leaf_curve.add_point(leaf_origin.position, Vector2.ZERO, Vector2.ZERO)
 	print("Building Rest of the Leaf")
 	starting_leaf()
 
@@ -54,6 +59,7 @@ func recenter_origin():
 func slide_curve(offset : Vector2):
 	for i in leaf_curve.get_point_count():
 		leaf_curve.set_point_position(i, leaf_curve.get_point_position(i) - offset)
+		leaf_vis[i].position -= offset
 
 
 func fit_curve_scale(anchor : Vector2, w : float, h : float):
@@ -128,6 +134,7 @@ func scale_curve(anchor : Vector2, percent : float):
 			leaf_curve.set_point_position(
 					i, 
 					leaf_curve.get_point_position(i).linear_interpolate(anchor, percent))
+			leaf_vis[i].position = leaf_vis[i].position.linear_interpolate(anchor, percent)
 
 
 func starting_leaf():
@@ -138,9 +145,12 @@ func starting_leaf():
 	left_point.x = left_point.x * 0.7
 	var right_point = center_point
 	right_point.x = OS.get_window_size().x - left_point.x
-	leaf_curve.add_point(left_point, Vector2.ZERO, Vector2.ZERO)
-	leaf_curve.add_point(top_point, Vector2.ZERO, Vector2.ZERO)
-	leaf_curve.add_point(right_point, Vector2.ZERO, Vector2.ZERO)
+	add_point(left_point)
+	add_point(top_point)
+	add_point(right_point)
+#	leaf_curve.add_point(left_point, Vector2.ZERO, Vector2.ZERO)
+#	leaf_curve.add_point(top_point, Vector2.ZERO, Vector2.ZERO)
+#	leaf_curve.add_point(right_point, Vector2.ZERO, Vector2.ZERO)
 	update()
 
 
@@ -166,11 +176,16 @@ func add_point(pos : Vector2):
 	node_vis.position = pos
 	node_vis.scale = node_scale
 	self.add_child(node_vis)
+	leaf_vis.append(node_vis)
 	var index = leaf_curve.get_baked_points().find(pos)
 #	draw_shape()
 #	draw_curve_shape()
 	update()
-	debug_draw_curve_shape()
+#	debug_draw_curve_shape()
+
+
+func insert_point():
+	pass
 
 
 func draw_shape():
