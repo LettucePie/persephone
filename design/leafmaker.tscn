@@ -1,129 +1,115 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=11 format=3 uid="uid://yh4sseyibqfb"]
 
-[ext_resource path="res://design/leafmaker_canvas.gd" type="Script" id=1]
-[ext_resource path="res://design/leafmaker.gd" type="Script" id=2]
-[ext_resource path="res://design/bezier_circle.png" type="Texture" id=3]
-[ext_resource path="res://design/crosshair.png" type="Texture" id=4]
-[ext_resource path="res://design/leafmaker_ui.gd" type="Script" id=5]
-[ext_resource path="res://design/bezier_square.png" type="Texture" id=6]
-[ext_resource path="res://design/designer_tools_theme.tres" type="Theme" id=7]
-[ext_resource path="res://design/symmetry_dash_mini.png" type="Texture" id=8]
-[ext_resource path="res://design/leaf_texture.png" type="Texture" id=9]
+[ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
+[ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://dnhbvug2rhhce" path="res://design/bezier_circle.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://dmoscembmvgtc" path="res://design/crosshair.png" id="4"]
+[ext_resource type="Script" path="res://design/leafmaker_ui.gd" id="5"]
+[ext_resource type="Texture2D" uid="uid://c85ho8mxnuio7" path="res://design/bezier_square.png" id="6"]
+[ext_resource type="Theme" path="res://design/designer_tools_theme.tres" id="7"]
+[ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
 
-[sub_resource type="Gradient" id=1]
-offsets = PoolRealArray( 0, 0.481283, 1 )
-colors = PoolColorArray( 0.0666667, 0.866667, 0.0196078, 1, 0.0604248, 0.34375, 0.0781326, 1, 0.0666667, 0.866667, 0.0196078, 1 )
+[sub_resource type="Gradient" id="1"]
+offsets = PackedFloat32Array(0, 0.481283, 1)
+colors = PackedColorArray(0.0666667, 0.866667, 0.0196078, 1, 0.0604248, 0.34375, 0.0781326, 1, 0.0666667, 0.866667, 0.0196078, 1)
 
 [node name="leafmaker" type="Node"]
-script = ExtResource( 2 )
+script = ExtResource("2")
 
 [node name="canvas" type="Node2D" parent="."]
-script = ExtResource( 1 )
-square_node_tex = ExtResource( 6 )
-circle_node_tex = ExtResource( 3 )
-node_scale = Vector2( 0.2, 0.2 )
-leaf_gradient_default = SubResource( 1 )
-leaf_texture_default = ExtResource( 9 )
-debug_draw = true
+script = ExtResource("1")
+square_node_tex = ExtResource("6")
+circle_node_tex = ExtResource("3")
+node_scale = Vector2(0.2, 0.2)
+leaf_gradient_default = SubResource("1")
+leaf_texture_default = ExtResource("9")
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false
-color = Color( 0.439216, 0.627451, 0.890196, 1 )
-invert_enable = true
 
 [node name="Line2D" type="Line2D" parent="canvas"]
 visible = false
-position = Vector2( -11, 9 )
+position = Vector2(-11, 9)
 width = 20.0
 joint_mode = 2
 begin_cap_mode = 2
 end_cap_mode = 2
 round_precision = 20
 
-[node name="LeafOrigin" type="Sprite" parent="canvas"]
-position = Vector2( 512, 450 )
-scale = Vector2( 0.3, 0.3 )
-texture = ExtResource( 4 )
+[node name="LeafOrigin" type="Sprite2D" parent="canvas"]
+position = Vector2(512, 450)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("4")
 
 [node name="ui" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = ExtResource( 7 )
-script = ExtResource( 5 )
+theme = ExtResource("7")
+script = ExtResource("5")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ui"]
+layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -94.0
+offset_top = -94.0
 alignment = 1
 
 [node name="Symmetry" type="Button" parent="ui/HBoxContainer"]
-margin_right = 190.0
-margin_bottom = 94.0
+layout_mode = 2
 size_flags_horizontal = 6
 text = "Symmetry Toggle"
 
 [node name="Button2" type="Button" parent="ui/HBoxContainer"]
-margin_left = 194.0
-margin_right = 362.0
-margin_bottom = 94.0
+layout_mode = 2
 size_flags_horizontal = 6
 text = "Color Settings"
 
 [node name="Button3" type="Button" parent="ui/HBoxContainer"]
-margin_left = 366.0
-margin_right = 529.0
-margin_bottom = 94.0
+layout_mode = 2
 size_flags_horizontal = 6
 text = "Vein Settings"
 
 [node name="HSlider" type="HSlider" parent="ui/HBoxContainer"]
-margin_left = 533.0
-margin_right = 633.0
-margin_bottom = 16.0
-rect_min_size = Vector2( 100, 0 )
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
 size_flags_horizontal = 6
 min_value = 3.0
 max_value = 12.0
 value = 3.0
 
 [node name="Button4" type="Button" parent="ui/HBoxContainer"]
-margin_left = 637.0
-margin_right = 781.0
-margin_bottom = 94.0
+layout_mode = 2
 size_flags_horizontal = 6
 text = "Hide HUD"
 
 [node name="Mode" type="OptionButton" parent="ui/HBoxContainer"]
-margin_left = 785.0
-margin_right = 944.0
-margin_bottom = 94.0
+layout_mode = 2
 size_flags_horizontal = 6
-text = "Add Mode"
-items = [ "Add Mode", null, false, 0, null, "Edit Mode", null, false, 1, null, "Delete Mode", null, false, 2, null ]
-selected = 0
 
 [node name="Maximize" type="Button" parent="ui/HBoxContainer"]
-margin_left = 948.0
-margin_right = 1054.0
-margin_bottom = 94.0
+layout_mode = 2
 text = "Max"
 
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.82
-margin_left = -4.0
-margin_right = 4.0
-margin_bottom = -3.05176e-05
-texture = ExtResource( 8 )
+offset_left = -4.0
+offset_right = 4.0
+offset_bottom = -3.05176e-05
+texture = ExtResource("8")
 stretch_mode = 2
 
 [node name="table" type="Control" parent="ui"]
+anchors_preset = 0
 anchor_right = 1.0
 anchor_bottom = 0.822
-margin_bottom = -0.200012
+offset_bottom = -0.200012
 
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="pressed" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_Symmetry_pressed"]

@@ -19,8 +19,8 @@ func _process(delta):
 func _input(event):
 	if event is InputEventKey:
 		if event.pressed:
-			if event.scancode == KEY_SPACE:
-				$Icon2.position = $Icon2.position.linear_interpolate($Icon3.position, 0.2)
-			if event.scancode == KEY_N:
-				$Icon2.position = $Icon2.position.linear_interpolate($Icon3.position, -0.2)
+			if event.keycode == KEY_SPACE:
+				$Icon2.position = $Icon2.position.lerp($Icon3.position, 0.2)
+			if event.keycode == KEY_N:
+				$Icon2.position = $Icon2.position.lerp($Icon3.position, -0.2)
 				print("YES! Negative Weight will effectively push away by linear percent.")

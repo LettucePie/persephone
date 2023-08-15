@@ -1,35 +1,34 @@
 extends Node2D
 
-export(Texture) var square_node_tex
-export(Texture) var circle_node_tex
-export(Vector2) var node_scale = Vector2(0.1, 0.1)
-export(Gradient) var leaf_gradient_default
-export(Texture) var leaf_texture_default
+@export var square_node_tex: Texture2D
+@export var circle_node_tex: Texture2D
+@export var node_scale: Vector2 = Vector2(0.1, 0.1)
+@export var leaf_gradient_default: Gradient
+@export var leaf_texture_default: Texture2D
 
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
-export(bool) var debug_draw = false
+@export var debug_draw: bool = false
 
-onready var leaf_poly = $Polygon2D
-onready var leaf_origin = $LeafOrigin
-onready var leaf_curve : Curve2D = Curve2D.new()
+@onready var leaf_poly = $Polygon2D
+@onready var leaf_origin = $LeafOrigin
+@onready var leaf_curve : Curve2D = Curve2D.new()
 var leaf_vis : Array = []
-onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
-onready var leaf_gradient : Gradient = leaf_gradient_default
-onready var leaf_texture : Texture = leaf_texture_default
+@onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
+@onready var leaf_gradient : Gradient = leaf_gradient_default
+@onready var leaf_texture : Texture2D = leaf_texture_default
 
 var current_mode = Mode.ADD_MODE
 var screen_size : Vector2
 
 
 func _ready():
-	screen_size = OS.get_window_size()
+	screen_size = get_window().get_size()
 	print("Centering Origin First Time")
 	recenter_origin()
 	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
 	add_point(leaf_origin.position)
-#	leaf_curve.add_point(leaf_origin.position, Vector2.ZERO, Vector2.ZERO)
 	print("Building Rest of the Leaf")
 	starting_leaf()
 
@@ -37,23 +36,22 @@ func _ready():
 func _input(event):
 	if event is InputEventKey:
 		if event.pressed:
-			if event.scancode == KEY_R:
+			if event.keycode == KEY_R:
 				print("Randomizing UV End")
 				randomize()
-#				debug_uv_end = Vector2(rand_range(-10, 10), rand_range(-10, 10))
-				update()
 
 
 func recenter_origin():
+	print(leaf_origin)
 	var old_position = leaf_origin.position
-	var new_position = OS.get_window_size()
+	var new_position = Vector2(get_window().get_size())
 	new_position.x *= 0.5
 	new_position.y *= 0.75
 	leaf_origin.position = new_position
 	if leaf_curve.get_point_count() > 0:
 		slide_curve(old_position - new_position)
 		maximize_curve_scale(new_position)
-		fit_curve_scale(new_position, OS.get_window_size().x, new_position.y)
+		fit_curve_scale(new_position, get_window().get_size().x, new_position.y)
 
 
 func slide_curve(offset : Vector2):
@@ -102,7 +100,6 @@ func fit_curve_scale(anchor : Vector2, w : float, h : float):
 
 
 func maximize_curve_scale(anchor : Vector2):
-	pass
 	var center = leaf_origin.position
 	center.y *= 0.5
 	var closest_distance : float = 100000
@@ -113,7 +110,7 @@ func maximize_curve_scale(anchor : Vector2):
 		if i_pos.x <= center.x:
 			bound.x = 5
 		else:
-			bound.x = OS.get_screen_size().x - 5
+			bound.x = DisplayServer.screen_get_size().x - 5
 		if i_pos.y <= center.x:
 			bound.y = 5
 		else:
@@ -133,25 +130,21 @@ func scale_curve(anchor : Vector2, percent : float):
 		if i > 0:
 			leaf_curve.set_point_position(
 					i, 
-					leaf_curve.get_point_position(i).linear_interpolate(anchor, percent))
-			leaf_vis[i].position = leaf_vis[i].position.linear_interpolate(anchor, percent)
+					leaf_curve.get_point_position(i).lerp(anchor, percent))
+			leaf_vis[i].position = leaf_vis[i].position.lerp(anchor, percent)
 
 
 func starting_leaf():
 	var top_point = leaf_origin.position
-	top_point.y = 50
-	var center_point = leaf_origin.position.linear_interpolate(top_point, 0.3)
+	top_point.y = 60
+	var center_point = leaf_origin.position.lerp(top_point, 0.3)
 	var left_point = center_point
 	left_point.x = left_point.x * 0.7
 	var right_point = center_point
-	right_point.x = OS.get_window_size().x - left_point.x
+	right_point.x = get_window().get_size().x - left_point.x
 	add_point(left_point)
 	add_point(top_point)
 	add_point(right_point)
-#	leaf_curve.add_point(left_point, Vector2.ZERO, Vector2.ZERO)
-#	leaf_curve.add_point(top_point, Vector2.ZERO, Vector2.ZERO)
-#	leaf_curve.add_point(right_point, Vector2.ZERO, Vector2.ZERO)
-	update()
 
 
 func _on_table_gui_input(event):
@@ -161,7 +154,7 @@ func _on_table_gui_input(event):
 			print(event.button_index)
 			if event.button_index == 1:
 				print("Left Click")
-				if current_mode is Mode.ADD_MODE:
+				if current_mode == Mode.ADD_MODE:
 					add_point(event.position)
 			if event.button_index == 2:
 				print("Right Click")
@@ -171,35 +164,68 @@ func _on_table_gui_input(event):
 
 func add_point(pos : Vector2):
 	leaf_curve.add_point(pos, Vector2.ZERO, Vector2.ZERO)
-	var node_vis = Sprite.new()
+	var node_vis = Sprite2D.new()
 	node_vis.texture = square_node_tex
 	node_vis.position = pos
 	node_vis.scale = node_scale
 	self.add_child(node_vis)
 	leaf_vis.append(node_vis)
 	var index = leaf_curve.get_baked_points().find(pos)
-#	draw_shape()
-#	draw_curve_shape()
-	update()
-#	debug_draw_curve_shape()
+	update_leaf_visual(true)
 
 
 func insert_point():
 	pass
 
 
-func draw_shape():
+func update_leaf_visual(hd : bool):
 	if leaf_curve.get_point_count() >= 3:
-		print("Leaf Valid")
 		leaf_poly.visible = true
-		var curve_points : PoolVector2Array = PoolVector2Array()
-		for i in leaf_curve.get_point_count():
-			curve_points.append(leaf_curve.get_point_position(i))
-		leaf_poly.set_polygon(curve_points)
-#		leaf_poly.set_polygon(leaf_curve.get_baked_points())
+		var point_data : PackedVector2Array
+		if hd:
+			point_data = leaf_curve.get_baked_points()
+		else:
+			for i in leaf_curve.get_point_count():
+				point_data.append(leaf_curve.get_point_position(i))
+		draw_leaf_shape(point_data)
+		draw_leaf_texture(point_data)
 	else:
 		leaf_poly.visible = false
 		print("Leaf has too few points")
+
+
+func draw_leaf_shape(points : PackedVector2Array):
+	leaf_poly.set_polygon(points)
+
+
+func draw_leaf_texture(points : PackedVector2Array):
+	leaf_poly.texture = leaf_texture
+	var count = points.size()
+	var colors : PackedColorArray = PackedColorArray()
+	var uvs : PackedVector2Array = PackedVector2Array()
+	var screen_uv_0 = Vector2(5, 5)
+	var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
+	var space_uv_0 = points[0]
+	var space_uv_1 = points[0]
+	for b in points:
+		if b.x < space_uv_0.x:
+			space_uv_0.x = b.x
+		if b.x > space_uv_1.x:
+			space_uv_1.x = b.x
+		if b.y < space_uv_0.y:
+			space_uv_0.y = b.y
+		if b.y > space_uv_1.y:
+			space_uv_1.y = b.y
+	for i in count:
+		var baked_point_pos = points[i]
+		var percent = float(i) / float(count)
+		colors.append(leaf_gradient.sample(percent))
+		var scale_position = Vector2(
+				inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
+				inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
+		uvs.append(scale_position)
+	leaf_poly.uv = uvs
+	leaf_poly.vertex_colors = colors
 
 
 func draw_curve_shape():
@@ -211,7 +237,7 @@ func debug_draw_curve_shape():
 	for trash in get_tree().get_nodes_in_group("Clear"):
 		trash.queue_free()
 	for baked_point in leaf_curve.get_baked_points():
-		var dot = Sprite.new()
+		var dot = Sprite2D.new()
 		dot.texture = circle_node_tex
 		dot.scale = Vector2.ONE * 0.05
 		dot.position = baked_point
@@ -220,13 +246,13 @@ func debug_draw_curve_shape():
 
 
 func _draw():
-	if leaf_curve.get_baked_points().size() > 3:
+	if debug_draw and leaf_curve.get_baked_points().size() > 3:
 		var baked_points = leaf_curve.get_baked_points()
 		var count = baked_points.size()
-		var colors : PoolColorArray = PoolColorArray()
-		var uvs : PoolVector2Array = PoolVector2Array()
+		var colors : PackedColorArray = PackedColorArray()
+		var uvs : PackedVector2Array = PackedVector2Array()
 		var screen_uv_0 = Vector2(5, 5)
-		var screen_uv_1 = Vector2(OS.get_screen_size().x - 5, leaf_origin.position.y - 5)
+		var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
 		var space_uv_0 = baked_points[0]
 		var space_uv_1 = baked_points[0]
 		for b in baked_points:
@@ -241,10 +267,7 @@ func _draw():
 		for i in count:
 			var baked_point_pos = baked_points[i]
 			var percent = float(i) / float(count)
-			colors.append(leaf_gradient.interpolate(percent))
-#			var scale_position = Vector2(
-#					inverse_lerp(screen_uv_0.x, screen_uv_1.x, baked_point_pos.x),
-#					inverse_lerp(screen_uv_0.y, screen_uv_1.y, baked_point_pos.y))
+			colors.append(leaf_gradient.sample(percent))
 			var scale_position = Vector2(
 					inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
 					inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
@@ -259,11 +282,11 @@ func _on_Mode_item_selected(index):
 
 func _on_ui_resized():
 #	print("UI Resized")
-	recenter_origin()
+	if leaf_origin != null:
+		recenter_origin()
 
 
 func _on_Maximize_pressed():
 #	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
-	update()
 
