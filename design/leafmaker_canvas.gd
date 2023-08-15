@@ -52,6 +52,7 @@ func recenter_origin():
 		slide_curve(old_position - new_position)
 		maximize_curve_scale(new_position)
 		fit_curve_scale(new_position, get_window().get_size().x, new_position.y)
+		update_leaf_visual(true)
 
 
 func slide_curve(offset : Vector2):
@@ -179,19 +180,20 @@ func insert_point():
 
 
 func update_leaf_visual(hd : bool):
-	if leaf_curve.get_point_count() >= 3:
-		leaf_poly.visible = true
-		var point_data : PackedVector2Array
-		if hd:
-			point_data = leaf_curve.get_baked_points()
+	if !debug_draw:
+		if leaf_curve.get_point_count() >= 3:
+			leaf_poly.visible = true
+			var point_data : PackedVector2Array
+			if hd:
+				point_data = leaf_curve.get_baked_points()
+			else:
+				for i in leaf_curve.get_point_count():
+					point_data.append(leaf_curve.get_point_position(i))
+			draw_leaf_shape(point_data)
+			draw_leaf_texture(point_data)
 		else:
-			for i in leaf_curve.get_point_count():
-				point_data.append(leaf_curve.get_point_position(i))
-		draw_leaf_shape(point_data)
-		draw_leaf_texture(point_data)
-	else:
-		leaf_poly.visible = false
-		print("Leaf has too few points")
+			leaf_poly.visible = false
+			print("Leaf has too few points")
 
 
 func draw_leaf_shape(points : PackedVector2Array):
@@ -199,7 +201,7 @@ func draw_leaf_shape(points : PackedVector2Array):
 
 
 func draw_leaf_texture(points : PackedVector2Array):
-	leaf_poly.texture = leaf_texture
+	print("Polygon UV Data works on a scale of the Texture!")
 	var count = points.size()
 	var colors : PackedColorArray = PackedColorArray()
 	var uvs : PackedVector2Array = PackedVector2Array()
@@ -207,6 +209,7 @@ func draw_leaf_texture(points : PackedVector2Array):
 	var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
 	var space_uv_0 = points[0]
 	var space_uv_1 = points[0]
+	var texture_size = leaf_texture.get_size()
 	for b in points:
 		if b.x < space_uv_0.x:
 			space_uv_0.x = b.x
@@ -219,13 +222,17 @@ func draw_leaf_texture(points : PackedVector2Array):
 	for i in count:
 		var baked_point_pos = points[i]
 		var percent = float(i) / float(count)
-		colors.append(leaf_gradient.sample(percent))
 		var scale_position = Vector2(
 				inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
 				inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
-		uvs.append(scale_position)
-	leaf_poly.uv = uvs
+		colors.append(leaf_gradient.sample(scale_position.x))
+		var scale_texture = Vector2(
+				lerp(0.0, texture_size.x, scale_position.x),
+				lerp(0.0, texture_size.y, scale_position.y))
+		uvs.append(scale_texture)
+	leaf_poly.texture = leaf_texture
 	leaf_poly.vertex_colors = colors
+	leaf_poly.uv = uvs
 
 
 func draw_curve_shape():
