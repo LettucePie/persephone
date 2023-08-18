@@ -9,10 +9,22 @@ extends Node2D
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 @export var debug_draw: bool = false
 
+class LeafPoint:
+	var visual_node : Node2D
+	var curve_index : int
+	var symmetry : bool
+	var symmetry_pair : LeafPoint
+	func _init(_visual_node, _curve_index, _symmetry, _symmetry_pair):
+		visual_node = _visual_node
+		curve_index = _curve_index
+		symmetry = _symmetry
+		symmetry_pair = _symmetry_pair
+
+
+var leaf_points : Array = []
 @onready var leaf_poly = $Polygon2D
 @onready var leaf_origin = $LeafOrigin
 @onready var leaf_curve : Curve2D = Curve2D.new()
-var leaf_vis : Array = []
 @onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
 @onready var leaf_gradient : Gradient = leaf_gradient_default
 @onready var leaf_texture : Texture2D = leaf_texture_default
@@ -58,7 +70,7 @@ func recenter_origin():
 func slide_curve(offset : Vector2):
 	for i in leaf_curve.get_point_count():
 		leaf_curve.set_point_position(i, leaf_curve.get_point_position(i) - offset)
-		leaf_vis[i].position -= offset
+		leaf_points[i].visual_node.position -= offset
 
 
 func fit_curve_scale(anchor : Vector2, w : float, h : float):
@@ -132,7 +144,7 @@ func scale_curve(anchor : Vector2, percent : float):
 			leaf_curve.set_point_position(
 					i, 
 					leaf_curve.get_point_position(i).lerp(anchor, percent))
-			leaf_vis[i].position = leaf_vis[i].position.lerp(anchor, percent)
+			leaf_points[i].visual_node.position = leaf_points[i].visual_node.position.lerp(anchor, percent)
 
 
 func starting_leaf():
@@ -170,9 +182,14 @@ func add_point(pos : Vector2):
 	node_vis.position = pos
 	node_vis.scale = node_scale
 	self.add_child(node_vis)
-	leaf_vis.append(node_vis)
-	var index = leaf_curve.get_baked_points().find(pos)
+	var index_point = leaf_curve.get_point_count() - 1
+	var new_point = LeafPoint.new(node_vis, index_point, false, null)
+	leaf_points.append(new_point)
 	update_leaf_visual(true)
+
+
+func pair_symmetry_points():
+	print("Pairing Symmetry Points")
 
 
 func insert_point():

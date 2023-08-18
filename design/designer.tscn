@@ -1,65 +1,56 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://csikyhhww727n"]
 
-[ext_resource path="res://design/branch_icon.png" type="Texture2D" id=1]
-[ext_resource path="res://design/design_theme.tres" type="Theme" id=2]
-[ext_resource path="res://design/flower_icon.png" type="Texture2D" id=3]
-[ext_resource path="res://design/leaf_icon.png" type="Texture2D" id=4]
+[ext_resource type="Texture2D" uid="uid://blhvenvqwbp7j" path="res://design/branch_icon.png" id="1"]
+[ext_resource type="Theme" path="res://design/design_theme.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://dxg58145b5pl1" path="res://design/flower_icon.png" id="3"]
+[ext_resource type="Texture2D" uid="uid://vul1juurijqf" path="res://design/leaf_icon.png" id="4"]
 
 [node name="designer" type="Control"]
+layout_mode = 3
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = ExtResource( 2 )
+theme = ExtResource("2")
 
 [node name="BubbleContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 0.213
 offset_bottom = 0.199989
 alignment = 1
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="BubbleContainer"]
-offset_left = 119.0
-offset_right = 219.0
-offset_bottom = 127.0
+layout_mode = 2
 size_flags_horizontal = 6
 stretch_mode = 3
 
 [node name="Button" type="Button" parent="BubbleContainer/AspectRatioContainer"]
-offset_left = -13.5
-offset_right = 113.5
-offset_bottom = 127.0
-custom_minimum_size = Vector2( 100, 100 )
-icon = ExtResource( 1 )
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+icon = ExtResource("1")
 icon_alignment = 1
 expand_icon = true
 
 [node name="AspectRatioContainer2" type="AspectRatioContainer" parent="BubbleContainer"]
-offset_left = 461.0
-offset_right = 561.0
-offset_bottom = 127.0
+layout_mode = 2
 size_flags_horizontal = 6
 stretch_mode = 3
 
 [node name="Button" type="Button" parent="BubbleContainer/AspectRatioContainer2"]
-offset_left = -13.5
-offset_right = 113.5
-offset_bottom = 127.0
-custom_minimum_size = Vector2( 100, 100 )
-icon = ExtResource( 4 )
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+icon = ExtResource("4")
 icon_alignment = 1
 expand_icon = true
 
 [node name="AspectRatioContainer3" type="AspectRatioContainer" parent="BubbleContainer"]
-offset_left = 804.0
-offset_right = 904.0
-offset_bottom = 127.0
+layout_mode = 2
 size_flags_horizontal = 6
 stretch_mode = 3
 
 [node name="Button" type="Button" parent="BubbleContainer/AspectRatioContainer3"]
-offset_left = -13.5
-offset_right = 113.5
-offset_bottom = 127.0
-custom_minimum_size = Vector2( 100, 100 )
-icon = ExtResource( 3 )
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+icon = ExtResource("3")
 icon_alignment = 1
 expand_icon = true
