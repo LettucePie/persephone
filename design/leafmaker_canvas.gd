@@ -199,25 +199,25 @@ func detect_intersection(pos : Vector2):
 	var target_point = leaf_curve.get_closest_point(pos)
 	if target_point.distance_squared_to(pos) < 1000:
 		## Find Closest two
-		var dist_a = 1000000
-		var dist_b = 1000000
-		var close_points = [leaf_curve.get_point_count() - 1, leaf_curve.get_point_count() - 1]
-		for p in leaf_points:
-			var dist = leaf_curve.get_point_position(p.curve_index).distance_squared_to(target_point)
-			print(p.curve_index, " ", dist)
-			if dist < dist_a:
-				dist_b = dist_a
-				dist_a = dist
-				close_points[1] = close_points[0]
-				close_points[0] = p.curve_index
-			elif dist < dist_b:
-				dist_b = dist
-				close_points[1] = p.curve_index
-		print(dist_a, " ", dist_b, " ", close_points)
-		close_points.sort()
-		close_points.reverse()
-		print("Intersection found at index, ", close_points[0])
-		add_point(pos, close_points[0])
+		## Start by getting each Baked Point
+		## Add in the index of our Target Point from the Baked Point Array to a new List
+		## Then Go through each Point of the Leaf Curve, and find the closest baked point.
+		## Add the Index of the that closest baked point into the List, and Sort.
+		## Index Position of the Target Point should mirror the desired index position \
+		## for the intersection.
+		var baked_points = leaf_curve.get_baked_points()
+		var intersect_index = baked_points.find(target_point)
+		print("Intersect Index: ", intersect_index)
+		var baked_indeces = [intersect_index]
+		print("Baked Indeces List contains: ", baked_indeces)
+		for i in leaf_curve.get_point_count():
+			var point_position = leaf_curve.get_point_position(i)
+			var closest_baked_point = leaf_curve.get_closest_point(point_position)
+			baked_indeces.append(baked_points.find(closest_baked_point))
+			print("Baked Indeces List contains: ", baked_indeces)
+		baked_indeces.sort()
+		print("Intersection found at index, ", baked_indeces.find(intersect_index))
+		add_point(pos, baked_indeces.find(intersect_index))
 
 
 func add_point(pos : Vector2, idx : int):
