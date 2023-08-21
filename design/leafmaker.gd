@@ -14,3 +14,11 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
 #	pass
+
+func _on_canvas_ready():
+	pass # Replace with function body.
+
+
+func _on_ui_ready():
+	$canvas.ui_control = $ui
+

@@ -122,6 +122,8 @@ anchor_right = 1.0
 anchor_bottom = 0.822
 offset_bottom = -0.200012
 
+[connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
+[connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="pressed" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_Symmetry_pressed"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]

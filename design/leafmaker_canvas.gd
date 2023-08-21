@@ -1,13 +1,19 @@
 extends Node2D
 
+
 @export var square_node_tex: Texture2D
 @export var circle_node_tex: Texture2D
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
 
+
+var ui_control : Control
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
+var current_mode = Mode.ADD_MODE
+var screen_size : Vector2
 @export var debug_draw: bool = false
+
 
 class LeafPoint:
 	var visual_node : Node2D
@@ -42,9 +48,6 @@ var leaf_points : Array = []
 @onready var leaf_gradient : Gradient = leaf_gradient_default
 @onready var leaf_texture : Texture2D = leaf_texture_default
 
-var current_mode = Mode.ADD_MODE
-var screen_size : Vector2
-
 
 func _ready():
 	screen_size = get_window().get_size()
@@ -53,7 +56,7 @@ func _ready():
 	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
-	add_point(leaf_origin.position)
+	add_point(leaf_origin.position, -1)
 	print("Building Rest of the Leaf")
 	starting_leaf()
 
@@ -168,9 +171,9 @@ func starting_leaf():
 	left_point.x = left_point.x * 0.7
 	var right_point = center_point
 	right_point.x = get_window().get_size().x - left_point.x
-	add_point(left_point)
-	add_point(top_point)
-	add_point(right_point)
+	add_point(left_point, -1)
+	add_point(top_point, -1)
+	add_point(right_point, -1)
 
 
 func _on_table_gui_input(event):
@@ -181,26 +184,65 @@ func _on_table_gui_input(event):
 			if event.button_index == 1:
 				print("Left Click")
 				if current_mode == Mode.ADD_MODE:
-					add_point(event.position)
+					if leaf_curve.get_point_count() > 3:
+						detect_intersection(event.position)
+					else:
+						add_point(event.position, -1)
 			if event.button_index == 2:
 				print("Right Click")
 			if event.button_index == 3:
 				print("Middle Click")
 
 
-func add_point(pos : Vector2):
-	leaf_curve.add_point(pos, Vector2.ZERO, Vector2.ZERO)
+func detect_intersection(pos : Vector2):
+	print("Looking for Intersection near point ", pos)
+	var target_point = leaf_curve.get_closest_point(pos)
+	if target_point.distance_squared_to(pos) < 1000:
+		## Find Closest two
+		var dist_a = 1000000
+		var dist_b = 1000000
+		var close_points = [leaf_curve.get_point_count() - 1, leaf_curve.get_point_count() - 1]
+		for p in leaf_points:
+			var dist = leaf_curve.get_point_position(p.curve_index).distance_squared_to(target_point)
+			print(p.curve_index, " ", dist)
+			if dist < dist_a:
+				dist_b = dist_a
+				dist_a = dist
+				close_points[1] = close_points[0]
+				close_points[0] = p.curve_index
+			elif dist < dist_b:
+				dist_b = dist
+				close_points[1] = p.curve_index
+		print(dist_a, " ", dist_b, " ", close_points)
+		close_points.sort()
+		close_points.reverse()
+		print("Intersection found at index, ", close_points[0])
+		add_point(pos, close_points[0])
+
+
+func add_point(pos : Vector2, idx : int):
+	print("Add Point Called with Pos ", pos, " and idx: ", idx)
 	var node_vis = Sprite2D.new()
 	node_vis.texture = square_node_tex
 	node_vis.position = pos
 	node_vis.scale = node_scale
 	self.add_child(node_vis)
-	var index_point = leaf_curve.get_point_count() - 1
-	var new_point = LeafPoint.new(node_vis, index_point, false, null)
-	leaf_points.append(new_point)
+	leaf_curve.add_point(pos, Vector2.ZERO, Vector2.ZERO, idx)
+	var curve_index = idx
+	if idx < 0:
+		curve_index = leaf_curve.get_point_count() - 1
+	var new_point = LeafPoint.new(node_vis, curve_index, false, null)
+	leaf_points.insert(curve_index, new_point)
 	update_leaf_visual(true)
 	if leaf_points.size() % 2 == 0:
 		pair_symmetry_points()
+	else:
+		break_symmetry_points()
+
+
+func update_leaf_point_indeces(range_start : int):
+	for i in range(range_start, leaf_curve.get_point_count()):
+		pass
 
 
 func pair_symmetry_points():
@@ -221,6 +263,13 @@ func pair_symmetry_points():
 			side_a[i].associate_pair(side_b[i])
 	else:
 		print("ERROR Symmetry Sides are uneven... somehow")
+
+
+func break_symmetry_points():
+	print("Breaking Symmetry Points")
+	for p in leaf_points:
+		if p.symmetry:
+			p.break_pair()
 
 
 func insert_point():
@@ -344,4 +393,6 @@ func _on_ui_resized():
 func _on_Maximize_pressed():
 #	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
+
+
 
