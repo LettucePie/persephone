@@ -19,6 +19,19 @@ class LeafPoint:
 		curve_index = _curve_index
 		symmetry = _symmetry
 		symmetry_pair = _symmetry_pair
+	
+	func associate_pair(pair : LeafPoint):
+		symmetry = true
+		symmetry_pair = pair
+		pair.symmetry = true
+		pair.symmetry_pair = self
+	
+	func break_pair():
+		symmetry = false
+		if symmetry_pair != null:
+			symmetry_pair.symmetry = false
+			symmetry_pair.symmetry_pair = null
+			symmetry_pair = null
 
 
 var leaf_points : Array = []
@@ -186,10 +199,28 @@ func add_point(pos : Vector2):
 	var new_point = LeafPoint.new(node_vis, index_point, false, null)
 	leaf_points.append(new_point)
 	update_leaf_visual(true)
+	if leaf_points.size() % 2 == 0:
+		pair_symmetry_points()
 
 
 func pair_symmetry_points():
 	print("Pairing Symmetry Points")
+	var side_a = []
+	var side_b = []
+	var half_index = (leaf_points.size() / 2)
+	for i in leaf_points.size():
+		if i != 0 and i != half_index:
+			print(i, " valid!")
+			if i < half_index:
+				side_a.append(leaf_points[i])
+			else:
+				side_b.append(leaf_points[i])
+	side_b.reverse()
+	if side_a.size() == side_b.size():
+		for i in side_a.size():
+			side_a[i].associate_pair(side_b[i])
+	else:
+		print("ERROR Symmetry Sides are uneven... somehow")
 
 
 func insert_point():
