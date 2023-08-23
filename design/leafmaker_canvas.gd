@@ -174,6 +174,7 @@ func starting_leaf():
 	add_point(left_point, -1)
 	add_point(top_point, -1)
 	add_point(right_point, -1)
+	add_point(leaf_origin.position, -1)
 
 
 func _on_table_gui_input(event):
@@ -196,7 +197,10 @@ func _on_table_gui_input(event):
 
 func detect_intersection(pos : Vector2):
 	print("Looking for Intersection near point ", pos)
+	var baked_points = leaf_curve.get_baked_points()
+	print("Baked Points Size: ", baked_points.size())
 	var target_point = leaf_curve.get_closest_point(pos)
+	print("Target Point: ", target_point, " Click_Pos: ", pos)
 	if target_point.distance_squared_to(pos) < 1000:
 		## Find Closest two
 		## Start by getting each Baked Point
@@ -205,19 +209,37 @@ func detect_intersection(pos : Vector2):
 		## Add the Index of the that closest baked point into the List, and Sort.
 		## Index Position of the Target Point should mirror the desired index position \
 		## for the intersection.
-		var baked_points = leaf_curve.get_baked_points()
-		var intersect_index = baked_points.find(target_point)
-		print("Intersect Index: ", intersect_index)
-		var baked_indeces = [intersect_index]
-		print("Baked Indeces List contains: ", baked_indeces)
-		for i in leaf_curve.get_point_count():
+		var closest_points = [target_point]
+		for i in leaf_curve.get_point_count() - 1:
 			var point_position = leaf_curve.get_point_position(i)
 			var closest_baked_point = leaf_curve.get_closest_point(point_position)
-			baked_indeces.append(baked_points.find(closest_baked_point))
-			print("Baked Indeces List contains: ", baked_indeces)
+			closest_points.append(closest_baked_point)
+		var baked_indeces = []
+		for c in closest_points:
+			if baked_points.has(c):
+				baked_indeces.append(baked_points.find(c))
+			else:
+				print("Baked Points cannot find ", c)
+				var distance = 10000
+				var baked_point = baked_points[0]
+				for b in baked_points:
+					var dist = b.distance_squared_to(c)
+					if dist < distance:
+						distance = dist
+						baked_point = b
+				print("Additional Filtering brought us point ", baked_point, " from baked_points")
+				if baked_points.has(baked_point):
+					baked_indeces.append(baked_points.find(baked_point))
+				else:
+					print("Literally what the fuck.")
+		print("Baked Indeces pre-sort: ", baked_indeces)
+		var baked_intersect_index = baked_indeces[0]
 		baked_indeces.sort()
-		print("Intersection found at index, ", baked_indeces.find(intersect_index))
-		add_point(pos, baked_indeces.find(intersect_index))
+		print("Baked Indeces post-sort: ", baked_indeces)
+		print("Intersection found at index, ", baked_intersect_index, " among baked points")
+		var intersect_index = baked_indeces.find(baked_intersect_index)
+		print("Intersect index rests between point, ", intersect_index - 1, " and ", intersect_index + 1)
+		add_point(pos, intersect_index)
 
 
 func add_point(pos : Vector2, idx : int):
@@ -393,6 +415,4 @@ func _on_ui_resized():
 func _on_Maximize_pressed():
 #	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
-
-
 
