@@ -201,7 +201,7 @@ func detect_intersection(pos : Vector2):
 	print("Baked Points Size: ", baked_points.size())
 	var target_point = leaf_curve.get_closest_point(pos)
 	print("Target Point: ", target_point, " Click_Pos: ", pos)
-	if target_point.distance_squared_to(pos) < 1000:
+	if target_point.distance_squared_to(pos) < 10000:
 		## Find Closest two
 		## Start by getting each Baked Point
 		## Add in the index of our Target Point from the Baked Point Array to a new List
