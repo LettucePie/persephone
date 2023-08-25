@@ -248,6 +248,9 @@ func add_point(pos : Vector2, idx : int):
 	node_vis.texture = square_node_tex
 	node_vis.position = pos
 	node_vis.scale = node_scale
+	if pos == leaf_origin.position:
+		node_vis.modulate = Color.RED
+		node_vis.scale *= 0.5
 	self.add_child(node_vis)
 	leaf_curve.add_point(pos, Vector2.ZERO, Vector2.ZERO, idx)
 	var curve_index = idx
