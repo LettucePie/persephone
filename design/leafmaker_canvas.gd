@@ -11,6 +11,8 @@ var ui_control : Control
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 var current_mode = Mode.ADD_MODE
 var screen_size : Vector2
+var screen_pressed : bool = false
+var selected_point : Area2D
 
 
 class LeafPoint:
@@ -36,6 +38,10 @@ class LeafPoint:
 			symmetry_pair.symmetry = false
 			symmetry_pair.symmetry_pair = null
 			symmetry_pair = null
+	
+	func set_curve_index(i):
+		curve_index = i
+		visual_node.set_curve_index(i)
 
 
 var leaf_points : Array = []
@@ -65,6 +71,15 @@ func _input(event):
 			if event.keycode == KEY_R:
 				print("Randomizing UV End")
 				randomize()
+	if event is InputEventMouseButton:
+		screen_pressed = event.pressed
+		if screen_pressed == false:
+			selected_point = null
+		if current_mode > 0:
+			pass
+	if event is InputEventMouseMotion:
+		if screen_pressed and selected_point != null:
+			move_point(selected_point, event.relative)
 
 
 func recenter_origin():
@@ -260,6 +275,7 @@ func add_point(pos : Vector2, idx : int):
 	var new_point = LeafPoint.new(leaf_point_node, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_visual(true)
+	update_leaf_point_indeces(curve_index)
 	if leaf_points.size() % 2 == 0:
 		pair_symmetry_points()
 	else:
@@ -268,7 +284,7 @@ func add_point(pos : Vector2, idx : int):
 
 func update_leaf_point_indeces(range_start : int):
 	for i in range(range_start, leaf_curve.get_point_count()):
-		pass
+		leaf_points[i].set_curve_index(i)
 
 
 func pair_symmetry_points():
@@ -299,8 +315,12 @@ func break_symmetry_points():
 
 
 func point_selected(point):
-	
 	print("Point Selected: ", point)
+	selected_point = point
+
+
+func move_point(point : Area2D, relative : Vector2):
+	point.translate(relative)
 
 
 func update_leaf_visual(hd : bool):
