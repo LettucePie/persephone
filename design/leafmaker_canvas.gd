@@ -1,8 +1,7 @@
 extends Node2D
 
 
-@export var square_node_tex: Texture2D
-@export var circle_node_tex: Texture2D
+@export var leaf_point_object : PackedScene
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
@@ -12,7 +11,6 @@ var ui_control : Control
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 var current_mode = Mode.ADD_MODE
 var screen_size : Vector2
-@export var debug_draw: bool = false
 
 
 class LeafPoint:
@@ -189,6 +187,10 @@ func _on_table_gui_input(event):
 						detect_intersection(event.position)
 					else:
 						add_point(event.position, -1)
+				elif current_mode == Mode.EDIT_MODE:
+					pass
+				elif current_mode == Mode.DELETE_MODE:
+					pass
 			if event.button_index == 2:
 				print("Right Click")
 			if event.button_index == 3:
@@ -244,19 +246,18 @@ func detect_intersection(pos : Vector2):
 
 func add_point(pos : Vector2, idx : int):
 	print("Add Point Called with Pos ", pos, " and idx: ", idx)
-	var node_vis = Sprite2D.new()
-	node_vis.texture = square_node_tex
-	node_vis.position = pos
-	node_vis.scale = node_scale
+	var leaf_point_node = leaf_point_object.instantiate()
+	leaf_point_node.spawn_node(node_scale)
+	leaf_point_node.clicked.connect(Callable(self, "point_selected"))
+	leaf_point_node.position = pos
 	if pos == leaf_origin.position:
-		node_vis.modulate = Color.RED
-		node_vis.scale *= 0.5
-	self.add_child(node_vis)
+		leaf_point_node.set_origin_visual()
+	self.add_child(leaf_point_node)
 	leaf_curve.add_point(pos, Vector2.ZERO, Vector2.ZERO, idx)
 	var curve_index = idx
 	if idx < 0:
 		curve_index = leaf_curve.get_point_count() - 1
-	var new_point = LeafPoint.new(node_vis, curve_index, false, null)
+	var new_point = LeafPoint.new(leaf_point_node, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_visual(true)
 	if leaf_points.size() % 2 == 0:
@@ -297,25 +298,25 @@ func break_symmetry_points():
 			p.break_pair()
 
 
-func insert_point():
-	pass
+func point_selected(point):
+	
+	print("Point Selected: ", point)
 
 
 func update_leaf_visual(hd : bool):
-	if !debug_draw:
-		if leaf_curve.get_point_count() >= 3:
-			leaf_poly.visible = true
-			var point_data : PackedVector2Array
-			if hd:
-				point_data = leaf_curve.get_baked_points()
-			else:
-				for i in leaf_curve.get_point_count():
-					point_data.append(leaf_curve.get_point_position(i))
-			draw_leaf_shape(point_data)
-			draw_leaf_texture(point_data)
+	if leaf_curve.get_point_count() >= 3:
+		leaf_poly.visible = true
+		var point_data : PackedVector2Array
+		if hd:
+			point_data = leaf_curve.get_baked_points()
 		else:
-			leaf_poly.visible = false
-			print("Leaf has too few points")
+			for i in leaf_curve.get_point_count():
+				point_data.append(leaf_curve.get_point_position(i))
+		draw_leaf_shape(point_data)
+		draw_leaf_texture(point_data)
+	else:
+		leaf_poly.visible = false
+		print("Leaf has too few points")
 
 
 func draw_leaf_shape(points : PackedVector2Array):
@@ -360,48 +361,6 @@ func draw_leaf_texture(points : PackedVector2Array):
 func draw_curve_shape():
 	if leaf_curve.get_point_count() >= 3:
 		leaf_poly.set_polygon(leaf_curve.get_baked_points())
-
-
-func debug_draw_curve_shape():
-	for trash in get_tree().get_nodes_in_group("Clear"):
-		trash.queue_free()
-	for baked_point in leaf_curve.get_baked_points():
-		var dot = Sprite2D.new()
-		dot.texture = circle_node_tex
-		dot.scale = Vector2.ONE * 0.05
-		dot.position = baked_point
-		dot.add_to_group("Clear")
-		add_child(dot)
-
-
-func _draw():
-	if debug_draw and leaf_curve.get_baked_points().size() > 3:
-		var baked_points = leaf_curve.get_baked_points()
-		var count = baked_points.size()
-		var colors : PackedColorArray = PackedColorArray()
-		var uvs : PackedVector2Array = PackedVector2Array()
-		var screen_uv_0 = Vector2(5, 5)
-		var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
-		var space_uv_0 = baked_points[0]
-		var space_uv_1 = baked_points[0]
-		for b in baked_points:
-			if b.x < space_uv_0.x:
-				space_uv_0.x = b.x
-			if b.x > space_uv_1.x:
-				space_uv_1.x = b.x
-			if b.y < space_uv_0.y:
-				space_uv_0.y = b.y
-			if b.y > space_uv_1.y:
-				space_uv_1.y = b.y
-		for i in count:
-			var baked_point_pos = baked_points[i]
-			var percent = float(i) / float(count)
-			colors.append(leaf_gradient.sample(percent))
-			var scale_position = Vector2(
-					inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
-					inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
-			uvs.append(scale_position)
-		draw_polygon(leaf_curve.get_baked_points(), colors, uvs, leaf_texture)
 
 
 func _on_Mode_item_selected(index):

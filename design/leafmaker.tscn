@@ -1,12 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=10 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
-[ext_resource type="Texture2D" uid="uid://dnhbvug2rhhce" path="res://design/bezier_circle.png" id="3"]
+[ext_resource type="PackedScene" uid="uid://c7yiqktg8rgig" path="res://design/leaf_point.tscn" id="3_w3m6b"]
 [ext_resource type="Texture2D" uid="uid://dmoscembmvgtc" path="res://design/crosshair.png" id="4"]
 [ext_resource type="Script" path="res://design/leafmaker_ui.gd" id="5"]
-[ext_resource type="Texture2D" uid="uid://c85ho8mxnuio7" path="res://design/bezier_square.png" id="6"]
-[ext_resource type="Theme" path="res://design/designer_tools_theme.tres" id="7"]
+[ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/designer_tools_theme.tres" id="7"]
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
 
@@ -19,8 +18,7 @@ script = ExtResource("2")
 
 [node name="canvas" type="Node2D" parent="."]
 script = ExtResource("1")
-square_node_tex = ExtResource("6")
-circle_node_tex = ExtResource("3")
+leaf_point_object = ExtResource("3_w3m6b")
 node_scale = Vector2(0.2, 0.2)
 leaf_gradient_default = SubResource("1")
 leaf_texture_default = ExtResource("9")
