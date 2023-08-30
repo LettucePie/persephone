@@ -272,9 +272,9 @@ func add_point(pos : Vector2, idx : int):
 	var curve_index = idx
 	if idx < 0:
 		curve_index = leaf_curve.get_point_count() - 1
+	update_leaf_visual(true)
 	var new_point = LeafPoint.new(leaf_point_node, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
-	update_leaf_visual(true)
 	update_leaf_point_indeces(curve_index)
 	if leaf_points.size() % 2 == 0:
 		pair_symmetry_points()
@@ -321,6 +321,11 @@ func point_selected(point):
 
 func move_point(point : Area2D, relative : Vector2):
 	point.translate(relative)
+	print("BEFORE: ", leaf_curve.get_point_position(point.curve_index))
+	print(point.position)
+	leaf_curve.set_point_position(point.curve_index, point.position)
+	print("AFTER: ", leaf_curve.get_point_position(point.curve_index))
+	update_leaf_visual(true)
 
 
 func update_leaf_visual(hd : bool):
