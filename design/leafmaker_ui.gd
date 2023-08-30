@@ -9,3 +9,10 @@ func _ready():
 
 func _on_Symmetry_pressed():
 	pass
+
+
+func _on_mode_item_selected(index):
+	if index > 0:
+		$table.mouse_filter = 2
+	else:
+		$table.mouse_filter = 0

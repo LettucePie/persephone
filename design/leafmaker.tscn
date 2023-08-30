@@ -47,6 +47,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 theme = ExtResource("7")
 script = ExtResource("5")
 
@@ -125,5 +126,6 @@ offset_bottom = -0.200012
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="pressed" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_Symmetry_pressed"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]
+[connection signal="item_selected" from="ui/HBoxContainer/Mode" to="ui" method="_on_mode_item_selected"]
 [connection signal="pressed" from="ui/HBoxContainer/Maximize" to="canvas" method="_on_Maximize_pressed"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
