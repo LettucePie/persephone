@@ -17,11 +17,13 @@ var selected_point : Area2D
 
 class LeafPoint:
 	var visual_node : Node2D
+	var round_point : bool
 	var curve_index : int
 	var symmetry : bool
 	var symmetry_pair : LeafPoint
-	func _init(_visual_node, _curve_index, _symmetry, _symmetry_pair):
+	func _init(_visual_node, _round_point, _curve_index, _symmetry, _symmetry_pair):
 		visual_node = _visual_node
+		round_point = _round_point
 		curve_index = _curve_index
 		symmetry = _symmetry
 		symmetry_pair = _symmetry_pair
@@ -264,6 +266,7 @@ func add_point(pos : Vector2, idx : int):
 	var leaf_point_node = leaf_point_object.instantiate()
 	leaf_point_node.spawn_node(node_scale)
 	leaf_point_node.clicked.connect(Callable(self, "point_selected"))
+	leaf_point_node.clicked.connect(Callable(self, "point_tapped"))
 	leaf_point_node.position = pos
 	if pos == leaf_origin.position:
 		leaf_point_node.set_origin_visual()
@@ -273,7 +276,7 @@ func add_point(pos : Vector2, idx : int):
 	if idx < 0:
 		curve_index = leaf_curve.get_point_count() - 1
 	update_leaf_visual(true)
-	var new_point = LeafPoint.new(leaf_point_node, curve_index, false, null)
+	var new_point = LeafPoint.new(leaf_point_node, false, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_point_indeces(curve_index)
 	if leaf_points.size() % 2 == 0:
@@ -316,16 +319,28 @@ func break_symmetry_points():
 
 func point_selected(point):
 	print("Point Selected: ", point)
-	selected_point = point
+	if point.position != leaf_origin.position:
+		selected_point = point
+	else:
+		selected_point = null
+
+
+func point_tapped(point):
+	print("Point Tapped: ", point)
+	if point.position != leaf_origin.position:
+		if current_mode == Mode.EDIT_MODE:
+			switch_point_type(leaf_points[point.curve_index])
+			point.set_node_type(leaf_points[point.curve_index].round_point)
 
 
 func move_point(point : Area2D, relative : Vector2):
 	point.translate(relative)
-	print("BEFORE: ", leaf_curve.get_point_position(point.curve_index))
-	print(point.position)
 	leaf_curve.set_point_position(point.curve_index, point.position)
-	print("AFTER: ", leaf_curve.get_point_position(point.curve_index))
 	update_leaf_visual(true)
+
+
+func switch_point_type(leaf_point):
+	print("TODO")
 
 
 func update_leaf_visual(hd : bool):
