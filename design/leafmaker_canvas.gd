@@ -331,16 +331,39 @@ func point_tapped(point):
 		if current_mode == Mode.EDIT_MODE:
 			switch_point_type(leaf_points[point.curve_index])
 			point.set_node_type(leaf_points[point.curve_index].round_point)
+		update_leaf_visual(true)
+
+
+func update_round_point(leaf_point):
+	var before_pos = leaf_curve.get_point_position(leaf_point.curve_index - 1)
+	var after_pos = leaf_curve.get_point_position(leaf_point.curve_index + 1)
+	var leaf_point_pos = leaf_curve.get_point_position(leaf_point.curve_index)
+	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
+	var height_vector = (leaf_point_pos - mid_lower_pos) * 0.1
+	var before_tang = before_pos + height_vector
+	var after_tang = after_pos + height_vector
+	var before_target = before_pos.lerp(before_tang, 0.5)
+	var after_target = after_pos.lerp(after_tang, 0.5)
+	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
+	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
 
 
 func move_point(point : Area2D, relative : Vector2):
 	point.translate(relative)
 	leaf_curve.set_point_position(point.curve_index, point.position)
+	if leaf_points[point.curve_index].round_point:
+		update_round_point(leaf_points[point.curve_index])
 	update_leaf_visual(true)
 
 
 func switch_point_type(leaf_point):
-	print("TODO")
+	if leaf_point.round_point:
+		leaf_curve.set_point_in(leaf_point.curve_index, Vector2.ZERO)
+		leaf_curve.set_point_out(leaf_point.curve_index, Vector2.ZERO)
+		leaf_point.round_point = false
+	else:
+		update_round_point(leaf_point)
+		leaf_point.round_point = true
 
 
 func update_leaf_visual(hd : bool):
