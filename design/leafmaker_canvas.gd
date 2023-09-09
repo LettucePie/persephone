@@ -339,11 +339,13 @@ func update_round_point(leaf_point):
 	var after_pos = leaf_curve.get_point_position(leaf_point.curve_index + 1)
 	var leaf_point_pos = leaf_curve.get_point_position(leaf_point.curve_index)
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
-	var height_vector = (leaf_point_pos - mid_lower_pos) * 0.1
+	var height_vector = (leaf_point_pos - mid_lower_pos)
 	var before_tang = before_pos + height_vector
 	var after_tang = after_pos + height_vector
-	var before_target = before_pos.lerp(before_tang, 0.5)
-	var after_target = after_pos.lerp(after_tang, 0.5)
+	var before_target = before_pos.lerp(before_tang, 0.5) - leaf_point_pos
+	var after_target = after_pos.lerp(after_tang, 0.5) - leaf_point_pos
+#	before_target = leaf_point_pos.direction_to(before_target)
+#	after_target = leaf_point_pos.direction_to(after_target)
 	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
 	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
 
