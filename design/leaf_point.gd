@@ -20,8 +20,11 @@ func _on_input_event(viewport, event, shape_idx):
 		if event.pressed:
 			mouse_time = Time.get_ticks_msec()
 			emit_signal("clicked", self)
+			print("Mouse Pressed: ", mouse_time)
 		else:
-			if Time.get_ticks_msec() - mouse_time < 100:
+			print("Mouse Released: ", Time.get_ticks_msec(), " " , mouse_time)
+			if Time.get_ticks_msec() - mouse_time < 500:
+				print("Emitting Tapped Status")
 				emit_signal("tapped", self)
 
 

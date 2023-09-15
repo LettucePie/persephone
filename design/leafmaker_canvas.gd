@@ -266,7 +266,7 @@ func add_point(pos : Vector2, idx : int):
 	var leaf_point_node = leaf_point_object.instantiate()
 	leaf_point_node.spawn_node(node_scale)
 	leaf_point_node.clicked.connect(Callable(self, "point_selected"))
-	leaf_point_node.clicked.connect(Callable(self, "point_tapped"))
+	leaf_point_node.tapped.connect(Callable(self, "point_tapped"))
 	leaf_point_node.position = pos
 	if pos == leaf_origin.position:
 		leaf_point_node.set_origin_visual()
@@ -331,21 +331,31 @@ func point_tapped(point):
 		if current_mode == Mode.EDIT_MODE:
 			switch_point_type(leaf_points[point.curve_index])
 			point.set_node_type(leaf_points[point.curve_index].round_point)
+			update_round_neighbors(point)
 		update_leaf_visual(true)
 
 
 func update_round_point(leaf_point):
+	## Establish working points
 	var before_pos = leaf_curve.get_point_position(leaf_point.curve_index - 1)
 	var after_pos = leaf_curve.get_point_position(leaf_point.curve_index + 1)
 	var leaf_point_pos = leaf_curve.get_point_position(leaf_point.curve_index)
+	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
+	## Find the upper corners of the super-imposed rectangle
 	var before_tang = before_pos + height_vector
 	var after_tang = after_pos + height_vector
-	var before_target = before_pos.lerp(before_tang, 0.5) - leaf_point_pos
-	var after_target = after_pos.lerp(after_tang, 0.5) - leaf_point_pos
-#	before_target = leaf_point_pos.direction_to(before_target)
-#	after_target = leaf_point_pos.direction_to(after_target)
+	## Differentiate influence to corners based on neighbors
+	var before_influence = 0.5
+	var after_influence = 0.5
+	if leaf_points[leaf_point.curve_index - 1].round_point:
+		before_influence = 1.0
+	if leaf_points[leaf_point.curve_index + 1].round_point:
+		after_influence = 1.0
+	## Calculate Vector Normal to the corners
+	var before_target = before_pos.lerp(before_tang, before_influence) - leaf_point_pos
+	var after_target = after_pos.lerp(after_tang, after_influence) - leaf_point_pos
 	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
 	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
 
@@ -353,9 +363,18 @@ func update_round_point(leaf_point):
 func move_point(point : Area2D, relative : Vector2):
 	point.translate(relative)
 	leaf_curve.set_point_position(point.curve_index, point.position)
+	update_round_neighbors(point)
+	update_leaf_visual(true)
+
+
+func update_round_neighbors(point):
+	## Update Neighbor points first!
+	if leaf_points[point.curve_index - 1].round_point:
+		update_round_point(leaf_points[point.curve_index - 1])
+	if leaf_points[point.curve_index + 1].round_point:
+		update_round_point(leaf_points[point.curve_index + 1])
 	if leaf_points[point.curve_index].round_point:
 		update_round_point(leaf_points[point.curve_index])
-	update_leaf_visual(true)
 
 
 func switch_point_type(leaf_point):
