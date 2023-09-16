@@ -285,9 +285,22 @@ func add_point(pos : Vector2, idx : int):
 		break_symmetry_points()
 
 
+func remove_point(leaf_point):
+	print("Remove LeafPoint: ", leaf_point)
+	if leaf_points.size() > 4:
+		var previous_index = leaf_point.curve_index - 1
+		leaf_curve.remove_point(leaf_point.curve_index)
+		leaf_point.queue_free()
+		leaf_points.erase(leaf_point)
+		update_leaf_visual(true)
+		update_leaf_point_indeces(previous_index)
+		update_round_neighbors(leaf_points[previous_index])
+
+
 func update_leaf_point_indeces(range_start : int):
 	for i in range(range_start, leaf_curve.get_point_count()):
-		leaf_points[i].set_curve_index(i)
+		if is_instance_valid(leaf_points[i]):
+			leaf_points[i].set_curve_index(i)
 
 
 func pair_symmetry_points():
@@ -323,6 +336,8 @@ func point_selected(point):
 		selected_point = point
 	else:
 		selected_point = null
+	if current_mode == Mode.DELETE_MODE:
+		remove_point(point)
 
 
 func point_tapped(point):
