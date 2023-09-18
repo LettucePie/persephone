@@ -358,16 +358,20 @@ func update_round_point(leaf_point):
 	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
-	## Find the upper corners of the super-imposed rectangle
-	var before_tang = before_pos + height_vector
-	var after_tang = after_pos + height_vector
 	## Differentiate influence to corners based on neighbors
 	var before_influence = 0.5
 	var after_influence = 0.5
+	var before_height = 1.0
+	var after_height = 1.0
 	if leaf_points[leaf_point.curve_index - 1].round_point:
 		before_influence = 1.0
+		before_height = 0.8
 	if leaf_points[leaf_point.curve_index + 1].round_point:
 		after_influence = 1.0
+		after_height = 0.8
+	## Find the upper corners of the super-imposed rectangle
+	var before_tang = before_pos + (height_vector * before_height)
+	var after_tang = after_pos + (height_vector * after_height)
 	## Calculate Vector Normal to the corners
 	var before_target = before_pos.lerp(before_tang, before_influence) - leaf_point_pos
 	var after_target = after_pos.lerp(after_tang, after_influence) - leaf_point_pos
