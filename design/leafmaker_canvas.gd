@@ -10,6 +10,7 @@ extends Node2D
 var ui_control : Control
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 var current_mode = Mode.ADD_MODE
+var symmetry_mode : bool = false
 var screen_size : Vector2
 var screen_pressed : bool = false
 var selected_point : Area2D
@@ -36,6 +37,8 @@ class LeafPoint:
 	
 	func break_pair():
 		symmetry = false
+		visual_node.set_color(Color.WHITE)
+		symmetry_pair.visual_node.set_color(Color.WHITE)
 		if symmetry_pair != null:
 			symmetry_pair.symmetry = false
 			symmetry_pair.symmetry_pair = null
@@ -62,7 +65,7 @@ func _ready():
 	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
-	add_point(leaf_origin.position, -1)
+	add_point(leaf_origin.position, -1, false)
 	print("Building Rest of the Leaf")
 	starting_leaf()
 
@@ -186,10 +189,10 @@ func starting_leaf():
 	left_point.x = left_point.x * 0.7
 	var right_point = center_point
 	right_point.x = get_window().get_size().x - left_point.x
-	add_point(left_point, -1)
-	add_point(top_point, -1)
-	add_point(right_point, -1)
-	add_point(leaf_origin.position, -1)
+	add_point(left_point, -1, false)
+	add_point(top_point, -1, false)
+	add_point(right_point, -1, false)
+	add_point(leaf_origin.position, -1, false)
 
 
 func _on_table_gui_input(event):
@@ -201,9 +204,9 @@ func _on_table_gui_input(event):
 				print("Left Click")
 				if current_mode == Mode.ADD_MODE:
 					if leaf_curve.get_point_count() > 3:
-						detect_intersection(event.position)
+						detect_intersection(event.position, false)
 					else:
-						add_point(event.position, -1)
+						add_point(event.position, -1, false)
 				elif current_mode == Mode.EDIT_MODE:
 					pass
 				elif current_mode == Mode.DELETE_MODE:
@@ -214,7 +217,7 @@ func _on_table_gui_input(event):
 				print("Middle Click")
 
 
-func detect_intersection(pos : Vector2):
+func detect_intersection(pos : Vector2, sym_pair : bool):
 	print("Looking for Intersection near point ", pos)
 	var baked_points = leaf_curve.get_baked_points()
 	print("Baked Points Size: ", baked_points.size())
@@ -258,10 +261,10 @@ func detect_intersection(pos : Vector2):
 		print("Intersection found at index, ", baked_intersect_index, " among baked points")
 		var intersect_index = baked_indeces.find(baked_intersect_index)
 		print("Intersect index rests between point, ", intersect_index - 1, " and ", intersect_index + 1)
-		add_point(pos, intersect_index)
+		add_point(pos, intersect_index, sym_pair)
 
 
-func add_point(pos : Vector2, idx : int):
+func add_point(pos : Vector2, idx : int, sym_pair : bool):
 	print("Add Point Called with Pos ", pos, " and idx: ", idx)
 	var leaf_point_node = leaf_point_object.instantiate()
 	leaf_point_node.spawn_node(node_scale)
@@ -279,10 +282,14 @@ func add_point(pos : Vector2, idx : int):
 	var new_point = LeafPoint.new(leaf_point_node, false, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_point_indeces(curve_index)
-	if leaf_points.size() % 2 == 0:
-		pair_symmetry_points()
-	else:
-		break_symmetry_points()
+	if symmetry_mode:
+		if !sym_pair:
+			print("Add in sym pair coords")
+			var center = leaf_origin.get_position().x
+			var flip = center - pos.x
+			detect_intersection(Vector2(center + flip, pos.y), true)
+		else:
+			pair_symmetry_points()
 
 
 func remove_point(leaf_point):
@@ -500,6 +507,7 @@ func _on_Mode_item_selected(index):
 
 
 func _on_ui_symmetry(mode):
+	symmetry_mode = mode
 	if mode:
 		pair_symmetry_points()
 	else:
