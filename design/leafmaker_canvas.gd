@@ -289,9 +289,14 @@ func remove_point(leaf_point):
 	print("Remove LeafPoint: ", leaf_point)
 	if leaf_points.size() > 4:
 		var previous_index = leaf_point.curve_index - 1
+		print("LeafCurve Before: ", leaf_curve.get_point_count())
+		print("LeafPoints Before: ", leaf_points.size())
 		leaf_curve.remove_point(leaf_point.curve_index)
+#		leaf_points.erase(leaf_point)
+		leaf_points.remove_at(leaf_point.curve_index)
 		leaf_point.queue_free()
-		leaf_points.erase(leaf_point)
+		print("LeafCurve After: ", leaf_curve.get_point_count())
+		print("LeafPoints After: ", leaf_points.size())
 		update_leaf_visual(true)
 		update_leaf_point_indeces(previous_index)
 		update_round_neighbors(leaf_points[previous_index])
