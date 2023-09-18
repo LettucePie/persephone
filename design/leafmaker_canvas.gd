@@ -343,7 +343,10 @@ func pair_symmetry_points():
 	side_b.reverse()
 	if side_a.size() == side_b.size():
 		for i in side_a.size():
+			var rand_color = Color.from_hsv(randf(), 0.8, 0.8, 1.0)
 			side_a[i].associate_pair(side_b[i])
+			side_a[i].visual_node.set_color(rand_color)
+			side_b[i].visual_node.set_color(rand_color)
 	else:
 		print("ERROR Symmetry Sides are uneven... somehow")
 

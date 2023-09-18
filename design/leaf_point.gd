@@ -42,3 +42,7 @@ func set_node_type(_round):
 		$Sprite2D.texture = circle_node_tex
 	else:
 		$Sprite2D.texture = square_node_tex
+
+
+func set_color(c):
+	modulate = c
