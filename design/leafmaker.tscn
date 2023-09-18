@@ -59,7 +59,7 @@ anchor_bottom = 1.0
 offset_top = -94.0
 alignment = 1
 
-[node name="Symmetry" type="Button" parent="ui/HBoxContainer"]
+[node name="Symmetry" type="CheckButton" parent="ui/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Symmetry Toggle"
@@ -124,7 +124,8 @@ offset_bottom = -0.200012
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
-[connection signal="pressed" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_Symmetry_pressed"]
+[connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]
+[connection signal="toggled" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_symmetry_toggled"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="ui" method="_on_mode_item_selected"]
 [connection signal="pressed" from="ui/HBoxContainer/Maximize" to="canvas" method="_on_Maximize_pressed"]

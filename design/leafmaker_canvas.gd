@@ -289,14 +289,9 @@ func remove_point(leaf_point):
 	print("Remove LeafPoint: ", leaf_point)
 	if leaf_points.size() > 4:
 		var previous_index = leaf_point.curve_index - 1
-		print("LeafCurve Before: ", leaf_curve.get_point_count())
-		print("LeafPoints Before: ", leaf_points.size())
 		leaf_curve.remove_point(leaf_point.curve_index)
-#		leaf_points.erase(leaf_point)
 		leaf_points.remove_at(leaf_point.curve_index)
 		leaf_point.queue_free()
-		print("LeafCurve After: ", leaf_curve.get_point_count())
-		print("LeafPoints After: ", leaf_points.size())
 		update_leaf_visual(true)
 		update_leaf_point_indeces(previous_index)
 		update_round_neighbors(leaf_points[previous_index])
@@ -312,14 +307,39 @@ func pair_symmetry_points():
 	print("Pairing Symmetry Points")
 	var side_a = []
 	var side_b = []
-	var half_index = (leaf_points.size() / 2)
-	for i in leaf_points.size():
-		if i != 0 and i != half_index:
-			print(i, " valid!")
-			if i < half_index:
-				side_a.append(leaf_points[i])
-			else:
-				side_b.append(leaf_points[i])
+	var origin_a = 0
+	var origin_b = leaf_points.size() - 1
+	print("Origin A: ", origin_a, " Origin B: ", origin_b)
+	var workable_point_count = origin_b - 1
+	print("Workable Point Count: ", workable_point_count)
+	var even = false
+	var midpoint = (leaf_points.size() / 2) - 1
+	print("midpoint Starting at: ", midpoint)
+	if workable_point_count >= 2:
+		print("Valid number of points")
+		if workable_point_count % 2 == 0:
+			print("Even number of workable points")
+			even = true
+		if !even:
+			midpoint = leaf_points.size() / 2
+			print(midpoint)
+			print("midpoint Assigned to: ", midpoint)
+		print("Even Number of Points: ", even)
+		for i in leaf_points.size():
+			if i != origin_a and i != origin_b:
+				print(i, " valid!")
+				if even:
+					if i <= midpoint:
+						side_a.append(leaf_points[i])
+					else:
+						side_b.append(leaf_points[i])
+				else:
+					if i < midpoint:
+						side_a.append(leaf_points[i])
+					elif i > midpoint:
+						side_b.append(leaf_points[i])
+	print("SIDE A : ", side_a)
+	print("SIDE B : ", side_b)
 	side_b.reverse()
 	if side_a.size() == side_b.size():
 		for i in side_a.size():
@@ -476,13 +496,22 @@ func _on_Mode_item_selected(index):
 	print("Current Mode: ", current_mode)
 
 
+func _on_ui_symmetry(mode):
+	if mode:
+		pair_symmetry_points()
+	else:
+		break_symmetry_points()
+
+
 func _on_ui_resized():
 #	print("UI Resized")
 	if leaf_origin != null:
 		recenter_origin()
 
 
+
 func _on_Maximize_pressed():
 #	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
+
 
