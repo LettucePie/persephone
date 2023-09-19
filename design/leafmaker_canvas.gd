@@ -21,7 +21,10 @@ class LeafPoint:
 	var round_point : bool
 	var curve_index : int
 	var symmetry : bool
+	var side_a : bool = false
+	var midpoint : bool = false
 	var symmetry_pair : LeafPoint
+	
 	func _init(_visual_node, _round_point, _curve_index, _symmetry, _symmetry_pair):
 		visual_node = _visual_node
 		round_point = _round_point
@@ -37,6 +40,8 @@ class LeafPoint:
 	
 	func break_pair():
 		symmetry = false
+		side_a = false
+		midpoint = false
 		visual_node.set_color(Color.WHITE)
 		symmetry_pair.visual_node.set_color(Color.WHITE)
 		if symmetry_pair != null:
@@ -47,6 +52,9 @@ class LeafPoint:
 	func set_curve_index(i):
 		curve_index = i
 		visual_node.set_curve_index(i)
+	
+	func set_position(pos):
+		visual_node.position = pos
 
 
 var leaf_points : Array = []
@@ -352,8 +360,23 @@ func pair_symmetry_points():
 		for i in side_a.size():
 			var rand_color = Color.from_hsv(randf(), 0.8, 0.8, 1.0)
 			side_a[i].associate_pair(side_b[i])
+			side_a[i].side_a = true
 			side_a[i].visual_node.set_color(rand_color)
 			side_b[i].visual_node.set_color(rand_color)
+			var pos_a = leaf_curve.get_point_position(side_a[i].curve_index)
+			if pos_a.x > leaf_origin.position.x:
+				pos_a.x += leaf_origin.position.x - pos_a.x
+				set_point_position(side_a[i], pos_a)
+			var pos_b = pos_a
+			pos_b.x = leaf_origin.position.x
+			pos_b.x += leaf_origin.position.x - pos_a.x
+			set_point_position(side_b[i], pos_b)
+		if !even:
+			var pos_center = leaf_curve.get_point_position(midpoint)
+			pos_center.x = leaf_origin.position.x
+			set_point_position(leaf_points[midpoint], pos_center)
+			leaf_points[midpoint].midpoint = true
+		update_leaf_visual(true)
 	else:
 		print("ERROR Symmetry Sides are uneven... somehow")
 
@@ -417,8 +440,15 @@ func update_round_point(leaf_point):
 func move_point(point : Area2D, relative : Vector2):
 	point.translate(relative)
 	leaf_curve.set_point_position(point.curve_index, point.position)
+	if symmetry_mode:
+		print("TODO : Line 444")
 	update_round_neighbors(point)
 	update_leaf_visual(true)
+
+
+func set_point_position(leafpoint, pos):
+	leafpoint.set_position(pos)
+	leaf_curve.set_point_position(leafpoint.curve_index, pos)
 
 
 func update_round_neighbors(point):
