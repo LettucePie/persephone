@@ -472,6 +472,7 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			mirror_pos.x = leaf_origin.position.x + difference
 			leaf_curve.set_point_position(leafpoint.symmetry_pair.curve_index, mirror_pos)
 			leafpoint.symmetry_pair.set_position(mirror_pos)
+			update_round_neighbors(leafpoint.symmetry_pair)
 		elif leafpoint.midpoint:
 			print("Moving Midpoint")
 			leafpoint.visual_node.position.x = leaf_origin.position.x
