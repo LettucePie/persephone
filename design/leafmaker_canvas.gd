@@ -434,6 +434,9 @@ func update_round_point(leaf_point):
 	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
+	print("LeafPoint: ", leaf_point, " at Position: ", leaf_point_pos)
+	print("Mid Lower Pos: ", mid_lower_pos)
+	print("Height Vec: ", height_vector)
 	## Differentiate influence to corners based on neighbors
 	var before_influence = 0.5
 	var after_influence = 0.5
