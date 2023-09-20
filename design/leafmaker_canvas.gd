@@ -382,8 +382,7 @@ func pair_symmetry_points():
 func break_symmetry_points():
 	print("Breaking Symmetry Points")
 	for p in leaf_points:
-		if p.symmetry:
-			p.break_pair()
+		p.break_pair()
 
 
 func find_leafpoint_from_visual(visual : Area2D):
@@ -407,14 +406,17 @@ func point_selected(visual : Area2D):
 			remove_point(leaf_point)
 
 
-func point_tapped(point):
-	print("Point Tapped: ", point)
-	if point.position != leaf_origin.position:
-		if current_mode == Mode.EDIT_MODE:
-			switch_point_type(leaf_points[point.curve_index])
-			point.set_node_type(leaf_points[point.curve_index].round_point)
-			update_round_neighbors(point)
-		update_leaf_visual(true)
+func point_tapped(visual : Area2D):
+	print("VisualNode Tapped: ", visual)
+	var leafpoint = null
+	leafpoint = find_leafpoint_from_visual(visual)
+	if leafpoint != null:
+		if visual.position != leaf_origin.position:
+			if current_mode == Mode.EDIT_MODE:
+				switch_point_type(leaf_points[leafpoint.curve_index])
+				visual.set_node_type(leafpoint.round_point)
+				update_round_neighbors(leafpoint)
+			update_leaf_visual(true)
 
 
 func update_round_point(leaf_point):
@@ -448,9 +450,25 @@ func update_round_point(leaf_point):
 
 func move_point(leafpoint : LeafPoint, relative : Vector2):
 	leafpoint.visual_node.translate(relative)
-	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	if symmetry_mode:
-		pass
+		if leafpoint.symmetry:
+			print("Moving Symm Pair")
+			var new_pos = leafpoint.visual_node.position
+			if leafpoint.side_a:
+				print("Side A")
+				new_pos.x = clamp(new_pos.x, 0, leaf_origin.position.x)
+			else:
+				print("Side B")
+				new_pos.x = clamp(new_pos.x, leaf_origin.position.x, screen_size.x)
+			var difference = leaf_origin.position.x - new_pos.x
+			var mirror_pos = new_pos
+			mirror_pos.x = leaf_origin.position.x + difference
+			leaf_curve.set_point_position(leafpoint.symmetry_pair.curve_index, mirror_pos)
+			leafpoint.symmetry_pair.set_position(mirror_pos)
+		elif leafpoint.midpoint:
+			print("Moving Midpoint")
+			leafpoint.visual_node.position.x = leaf_origin.position.x
+	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	update_round_neighbors(leafpoint)
 	update_leaf_visual(true)
 
@@ -554,9 +572,9 @@ func _on_ui_symmetry(mode):
 
 
 func _on_ui_resized():
-#	print("UI Resized")
 	if leaf_origin != null:
 		recenter_origin()
+	screen_size = get_window().get_size()
 
 
 
