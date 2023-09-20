@@ -34,9 +34,9 @@ class LeafPoint:
 		side_a = false
 		midpoint = false
 		visual_node.set_color(Color.WHITE)
-		symmetry_pair.visual_node.set_color(Color.WHITE)
 		if symmetry_pair != null:
 			symmetry_pair.symmetry = false
+			symmetry_pair.visual_node.set_color(Color.WHITE)
 			symmetry_pair.symmetry_pair = null
 			symmetry_pair = null
 	
@@ -369,6 +369,10 @@ func pair_symmetry_points():
 			pos_b.x = leaf_origin.position.x
 			pos_b.x += leaf_origin.position.x - pos_a.x
 			set_point_position(side_b[i], pos_b)
+			if side_a[i].round_point != side_b[i].round_point:
+				switch_point_type(side_b[i])
+				side_b[i].visual_node.set_node_type(side_b[i].round_point)
+				update_round_neighbors(side_b[i])
 		if !even:
 			var pos_center = leaf_curve.get_point_position(midpoint)
 			pos_center.x = leaf_origin.position.x
@@ -410,13 +414,16 @@ func point_tapped(visual : Area2D):
 	print("VisualNode Tapped: ", visual)
 	var leafpoint = null
 	leafpoint = find_leafpoint_from_visual(visual)
-	if leafpoint != null:
-		if visual.position != leaf_origin.position:
-			if current_mode == Mode.EDIT_MODE:
-				switch_point_type(leaf_points[leafpoint.curve_index])
-				visual.set_node_type(leafpoint.round_point)
-				update_round_neighbors(leafpoint)
-			update_leaf_visual(true)
+	if leafpoint != null and visual.position != leaf_origin.position:
+		if current_mode == Mode.EDIT_MODE:
+			switch_point_type(leafpoint)
+			visual.set_node_type(leafpoint.round_point)
+			update_round_neighbors(leafpoint)
+			if symmetry_mode and leafpoint.symmetry:
+				switch_point_type(leafpoint.symmetry_pair)
+				leafpoint.symmetry_pair.visual_node.set_node_type(leafpoint.round_point)
+				update_round_neighbors(leafpoint.symmetry_pair)
+		update_leaf_visual(true)
 
 
 func update_round_point(leaf_point):
