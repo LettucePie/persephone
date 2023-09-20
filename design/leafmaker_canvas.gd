@@ -7,15 +7,6 @@ extends Node2D
 @export var leaf_texture_default: Texture2D
 
 
-var ui_control : Control
-enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
-var current_mode = Mode.ADD_MODE
-var symmetry_mode : bool = false
-var screen_size : Vector2
-var screen_pressed : bool = false
-var selected_point : Area2D
-
-
 class LeafPoint:
 	var visual_node : Node2D
 	var round_point : bool
@@ -57,6 +48,13 @@ class LeafPoint:
 		visual_node.position = pos
 
 
+var ui_control : Control
+enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
+var current_mode = Mode.ADD_MODE
+var symmetry_mode : bool = false
+var screen_size : Vector2
+var screen_pressed : bool = false
+var selected_point : LeafPoint
 var leaf_points : Array = []
 @onready var leaf_poly = $Polygon2D
 @onready var leaf_origin = $LeafOrigin
@@ -300,7 +298,7 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 			pair_symmetry_points()
 
 
-func remove_point(leaf_point):
+func remove_point(leaf_point : LeafPoint):
 	print("Remove LeafPoint: ", leaf_point)
 	if leaf_points.size() > 4:
 		var previous_index = leaf_point.curve_index - 1
@@ -388,14 +386,25 @@ func break_symmetry_points():
 			p.break_pair()
 
 
-func point_selected(point):
-	print("Point Selected: ", point)
-	if point.position != leaf_origin.position:
-		selected_point = point
-	else:
-		selected_point = null
-	if current_mode == Mode.DELETE_MODE:
-		remove_point(point)
+func find_leafpoint_from_visual(visual : Area2D):
+	if leaf_points.size() > 0:
+		for lp in leaf_points:
+			if lp.visual_node == visual:
+				return lp
+				break
+
+
+func point_selected(visual : Area2D):
+	print("Point Selected: ", visual)
+	var leaf_point = null
+	leaf_point = find_leafpoint_from_visual(visual)
+	if leaf_point != null:
+		if visual.position != leaf_origin.position:
+			selected_point = leaf_point
+		else:
+			selected_point = null
+		if current_mode == Mode.DELETE_MODE:
+			remove_point(leaf_point)
 
 
 func point_tapped(point):
@@ -437,12 +446,12 @@ func update_round_point(leaf_point):
 	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
 
 
-func move_point(point : Area2D, relative : Vector2):
-	point.translate(relative)
-	leaf_curve.set_point_position(point.curve_index, point.position)
+func move_point(leafpoint : LeafPoint, relative : Vector2):
+	leafpoint.visual_node.translate(relative)
+	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	if symmetry_mode:
-		print("TODO : Line 444")
-	update_round_neighbors(point)
+		pass
+	update_round_neighbors(leafpoint)
 	update_leaf_visual(true)
 
 
@@ -451,14 +460,14 @@ func set_point_position(leafpoint, pos):
 	leaf_curve.set_point_position(leafpoint.curve_index, pos)
 
 
-func update_round_neighbors(point):
+func update_round_neighbors(leafpoint : LeafPoint):
 	## Update Neighbor points first!
-	if leaf_points[point.curve_index - 1].round_point:
-		update_round_point(leaf_points[point.curve_index - 1])
-	if leaf_points[point.curve_index + 1].round_point:
-		update_round_point(leaf_points[point.curve_index + 1])
-	if leaf_points[point.curve_index].round_point:
-		update_round_point(leaf_points[point.curve_index])
+	if leaf_points[leafpoint.curve_index - 1].round_point:
+		update_round_point(leaf_points[leafpoint.curve_index - 1])
+	if leaf_points[leafpoint.curve_index + 1].round_point:
+		update_round_point(leaf_points[leafpoint.curve_index + 1])
+	if leaf_points[leafpoint.curve_index].round_point:
+		update_round_point(leaf_points[leafpoint.curve_index])
 
 
 func switch_point_type(leaf_point):
