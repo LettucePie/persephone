@@ -434,7 +434,7 @@ func update_round_point(leaf_point):
 	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
-	print("LeafPoint: ", leaf_point, " at Position: ", leaf_point_pos)
+	print("LeafPoint: ", leaf_point.curve_index, " at Position: ", leaf_point_pos)
 	print("Mid Lower Pos: ", mid_lower_pos)
 	print("Height Vec: ", height_vector)
 	## Differentiate influence to corners based on neighbors
@@ -451,11 +451,16 @@ func update_round_point(leaf_point):
 	## Find the upper corners of the super-imposed rectangle
 	var before_tang = before_pos + (height_vector * before_height)
 	var after_tang = after_pos + (height_vector * after_height)
+	print("Before Tangent: ", before_tang)
+	print("After Tangent: ", after_tang)
 	## Calculate Vector Normal to the corners
 	var before_target = before_pos.lerp(before_tang, before_influence) - leaf_point_pos
 	var after_target = after_pos.lerp(after_tang, after_influence) - leaf_point_pos
+	print("Before Target: ", before_target)
+	print("After Target: ", after_target)
 	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
 	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
+	leaf_point.visual_node.set_in_out_points(before_target, after_target)
 
 
 func move_point(leafpoint : LeafPoint, relative : Vector2):
@@ -526,6 +531,7 @@ func update_leaf_visual(hd : bool):
 
 
 func draw_leaf_shape(points : PackedVector2Array):
+#	print("Setting Leaf Shape")
 	leaf_poly.set_polygon(points)
 
 

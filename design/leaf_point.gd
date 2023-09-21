@@ -42,6 +42,13 @@ func set_node_type(_round):
 		$Sprite2D.texture = circle_node_tex
 	else:
 		$Sprite2D.texture = square_node_tex
+	$in.visible = _round
+	$out.visible = _round
+
+
+func set_in_out_points(in_pos : Vector2, out_pos : Vector2):
+	$in.position = in_pos
+	$out.position = out_pos
 
 
 func set_color(c):

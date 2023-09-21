@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://c7yiqktg8rgig"]
+[gd_scene load_steps=6 format=3 uid="uid://c7yiqktg8rgig"]
 
 [ext_resource type="Script" path="res://design/leaf_point.gd" id="1_oyajy"]
 [ext_resource type="Texture2D" uid="uid://c85ho8mxnuio7" path="res://design/bezier_square.png" id="2_enf0h"]
 [ext_resource type="Texture2D" uid="uid://dnhbvug2rhhce" path="res://design/bezier_circle.png" id="3_drp3c"]
+[ext_resource type="Texture2D" uid="uid://dmoscembmvgtc" path="res://design/crosshair.png" id="4_bndfq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e4b72"]
 radius = 40.0
@@ -17,5 +18,15 @@ texture = ExtResource("2_enf0h")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_e4b72")
+
+[node name="in" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_bndfq")
+
+[node name="out" type="Sprite2D" parent="."]
+visible = false
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("4_bndfq")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
