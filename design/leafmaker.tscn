@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=11 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
@@ -8,6 +8,7 @@
 [ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/designer_tools_theme.tres" id="7"]
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
+[ext_resource type="Script" path="res://design/AdjustmentSlide.gd" id="9_jsd65"]
 
 [sub_resource type="Gradient" id="1"]
 offsets = PackedFloat32Array(0, 0.481283, 1)
@@ -121,6 +122,232 @@ anchor_right = 1.0
 anchor_bottom = 0.822
 offset_bottom = -0.200012
 
+[node name="VBoxContainer" type="VBoxContainer" parent="ui/table"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.277
+anchor_bottom = 0.406
+offset_right = -0.104004
+offset_bottom = 19.8229
+
+[node name="AdjustmentSlide" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "in_tan_height"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide2" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+adjustment = 1
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide2"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "out_tan_height"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide2"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide2"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide3" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+adjustment = 2
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide3"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "in_target_force"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide3"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide3"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide4" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+adjustment = 3
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide4"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "out_target_force"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide4"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide4"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide5" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+round = true
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide5"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "in_tan_height_r"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide5"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide5"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide6" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+adjustment = 1
+round = true
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide6"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "out_tan_height_r"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide6"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide6"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide7" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+adjustment = 2
+round = true
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide7"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "in_target_force_r"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide7"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide7"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="AdjustmentSlide8" type="HBoxContainer" parent="ui/table/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 6
+script = ExtResource("9_jsd65")
+adjustment = 3
+round = true
+
+[node name="Label" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide8"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "out_target_force_r"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HSlider" type="HSlider" parent="ui/table/VBoxContainer/AdjustmentSlide8"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 6
+max_value = 1.0
+step = 0.05
+
+[node name="value" type="Label" parent="ui/table/VBoxContainer/AdjustmentSlide8"]
+layout_mode = 2
+size_flags_horizontal = 6
+text = "0.0"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
@@ -130,3 +357,19 @@ offset_bottom = -0.200012
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="ui" method="_on_mode_item_selected"]
 [connection signal="pressed" from="ui/HBoxContainer/Maximize" to="canvas" method="_on_Maximize_pressed"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
+[connection signal="changed_value" from="ui/table/VBoxContainer/AdjustmentSlide" to="canvas" method="_on_adjustment_slide_changed_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide" method="_on_h_slider_value_changed"]
+[connection signal="changed_value" from="ui/table/VBoxContainer/AdjustmentSlide2" to="canvas" method="_on_adjustment_slide_changed_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide2/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide2" method="_on_h_slider_value_changed"]
+[connection signal="changed_value" from="ui/table/VBoxContainer/AdjustmentSlide3" to="canvas" method="_on_adjustment_slide_changed_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide3/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide3" method="_on_h_slider_value_changed"]
+[connection signal="changed_value" from="ui/table/VBoxContainer/AdjustmentSlide4" to="canvas" method="_on_adjustment_slide_changed_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide4/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide4" method="_on_h_slider_value_changed"]
+[connection signal="changed_round_value" from="ui/table/VBoxContainer/AdjustmentSlide5" to="canvas" method="_on_adjustment_slide_changed_round_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide5/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide5" method="_on_h_slider_value_changed"]
+[connection signal="changed_round_value" from="ui/table/VBoxContainer/AdjustmentSlide6" to="canvas" method="_on_adjustment_slide_changed_round_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide6/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide6" method="_on_h_slider_value_changed"]
+[connection signal="changed_round_value" from="ui/table/VBoxContainer/AdjustmentSlide7" to="canvas" method="_on_adjustment_slide_changed_round_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide7/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide7" method="_on_h_slider_value_changed"]
+[connection signal="changed_round_value" from="ui/table/VBoxContainer/AdjustmentSlide8" to="canvas" method="_on_adjustment_slide_changed_round_value"]
+[connection signal="value_changed" from="ui/table/VBoxContainer/AdjustmentSlide8/HSlider" to="ui/table/VBoxContainer/AdjustmentSlide8" method="_on_h_slider_value_changed"]

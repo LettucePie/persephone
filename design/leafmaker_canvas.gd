@@ -5,6 +5,14 @@ extends Node2D
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
+@export var in_tangent_height : float = 1.0
+@export var out_tangent_height : float = 1.0
+@export var in_dir_force : float = 0.5
+@export var out_dir_force : float = 0.5
+@export var in_tangent_height_round : float = 1.0
+@export var out_tangent_height_round : float = 1.0
+@export var in_dir_force_round : float = 1.0
+@export var out_dir_force_round : float = 1.0
 
 
 class LeafPoint:
@@ -435,29 +443,29 @@ func update_round_point(leaf_point):
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
 	print("LeafPoint: ", leaf_point.curve_index, " at Position: ", leaf_point_pos)
-	print("Mid Lower Pos: ", mid_lower_pos)
-	print("Height Vec: ", height_vector)
+#	print("Mid Lower Pos: ", mid_lower_pos)
+#	print("Height Vec: ", height_vector)
 	## Differentiate influence to corners based on neighbors
-	var before_influence = 0.5
-	var after_influence = 0.5
-	var before_height = 1.0
-	var after_height = 1.0
+	var before_influence = in_dir_force
+	var after_influence = out_dir_force
+	var before_height = in_tangent_height
+	var after_height = out_tangent_height
 	if leaf_points[leaf_point.curve_index - 1].round_point:
-		before_influence = 1.0
-		before_height = 0.8
+		before_influence = in_dir_force_round
+		before_height = in_tangent_height_round
 	if leaf_points[leaf_point.curve_index + 1].round_point:
-		after_influence = 1.0
-		after_height = 0.8
+		after_influence = out_dir_force_round
+		after_height = out_tangent_height_round
 	## Find the upper corners of the super-imposed rectangle
 	var before_tang = before_pos + (height_vector * before_height)
 	var after_tang = after_pos + (height_vector * after_height)
-	print("Before Tangent: ", before_tang)
-	print("After Tangent: ", after_tang)
+#	print("Before Tangent: ", before_tang)
+#	print("After Tangent: ", after_tang)
 	## Calculate Vector Normal to the corners
 	var before_target = before_pos.lerp(before_tang, before_influence) - leaf_point_pos
 	var after_target = after_pos.lerp(after_tang, after_influence) - leaf_point_pos
-	print("Before Target: ", before_target)
-	print("After Target: ", after_target)
+#	print("Before Target: ", before_target)
+#	print("After Target: ", after_target)
 	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
 	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
 	leaf_point.visual_node.set_in_out_points(before_target, after_target)
@@ -600,3 +608,31 @@ func _on_Maximize_pressed():
 	maximize_curve_scale(leaf_origin.position)
 
 
+func _on_adjustment_slide_changed_value(target, value):
+	if target == 0:
+		in_tangent_height = value
+	elif target == 1:
+		out_tangent_height = value
+	elif target == 2:
+		in_dir_force = value
+	elif target == 3:
+		out_dir_force = value
+	print("Updating Square_Point float params")
+	for lp in leaf_points:
+		if lp.round_point:
+			update_round_point(lp)
+
+
+func _on_adjustment_slide_changed_round_value(target, value):
+	if target == 0:
+		in_tangent_height_round = value
+	elif target == 1:
+		out_tangent_height_round = value
+	elif target == 2:
+		in_dir_force_round = value
+	elif target == 3:
+		out_dir_force_round = value
+	print("Updating Round_Point float params")
+	for lp in leaf_points:
+		if lp.round_point:
+			update_round_point(lp)
