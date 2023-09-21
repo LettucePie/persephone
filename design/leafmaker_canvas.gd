@@ -462,8 +462,8 @@ func update_round_point(leaf_point):
 #	print("Before Tangent: ", before_tang)
 #	print("After Tangent: ", after_tang)
 	## Calculate Vector Normal to the corners
-	var before_target = before_pos.lerp(before_tang, before_influence) - leaf_point_pos
-	var after_target = after_pos.lerp(after_tang, after_influence) - leaf_point_pos
+	var before_target = leaf_point_pos.lerp(before_tang, before_influence) - leaf_point_pos
+	var after_target = leaf_point_pos.lerp(after_tang, after_influence) - leaf_point_pos
 #	print("Before Target: ", before_target)
 #	print("After Target: ", after_target)
 	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
@@ -621,6 +621,7 @@ func _on_adjustment_slide_changed_value(target, value):
 	for lp in leaf_points:
 		if lp.round_point:
 			update_round_point(lp)
+	update_leaf_visual(true)
 
 
 func _on_adjustment_slide_changed_round_value(target, value):
@@ -636,3 +637,4 @@ func _on_adjustment_slide_changed_round_value(target, value):
 	for lp in leaf_points:
 		if lp.round_point:
 			update_round_point(lp)
+	update_leaf_visual(true)
