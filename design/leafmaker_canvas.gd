@@ -5,14 +5,14 @@ extends Node2D
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
-@export var in_tangent_height : float = 1.0
-@export var out_tangent_height : float = 1.0
-@export var in_dir_force : float = 0.5
-@export var out_dir_force : float = 0.5
+@export var in_tangent_height : float = 0.5
+@export var out_tangent_height : float = 0.5
+@export var in_dir_force : float = 1.0
+@export var out_dir_force : float = 1.0
 @export var in_tangent_height_round : float = 1.0
 @export var out_tangent_height_round : float = 1.0
-@export var in_dir_force_round : float = 1.0
-@export var out_dir_force_round : float = 1.0
+@export var in_dir_force_round : float = 0.35
+@export var out_dir_force_round : float = 0.35
 
 
 class LeafPoint:
@@ -442,6 +442,9 @@ func update_round_point(leaf_point):
 	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
+	var height_vector_norm = height_vector.normalized()
+	var before_reflect = (before_pos - leaf_point_pos).reflect(height_vector_norm)
+	var after_reflect = (after_pos - leaf_point_pos).reflect(height_vector_norm)
 	print("LeafPoint: ", leaf_point.curve_index, " at Position: ", leaf_point_pos)
 #	print("Mid Lower Pos: ", mid_lower_pos)
 #	print("Height Vec: ", height_vector)
@@ -457,8 +460,10 @@ func update_round_point(leaf_point):
 		after_influence = out_dir_force_round
 		after_height = out_tangent_height_round
 	## Find the upper corners of the super-imposed rectangle
-	var before_tang = before_pos + (height_vector * before_height)
-	var after_tang = after_pos + (height_vector * after_height)
+#	var before_tang = before_pos + (height_vector * before_height)
+#	var after_tang = after_pos + (height_vector * after_height)
+	var before_tang = before_pos + (before_reflect * before_height)
+	var after_tang = after_pos + (after_reflect * after_height)
 #	print("Before Tangent: ", before_tang)
 #	print("After Tangent: ", after_tang)
 	## Calculate Vector Normal to the corners
