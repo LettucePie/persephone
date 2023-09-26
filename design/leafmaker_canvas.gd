@@ -442,15 +442,12 @@ func update_round_point(leaf_point):
 	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
-	var vec_to_leafpoint = leaf_point_pos - before_pos
 	var vec_to_mid = mid_lower_pos - before_pos
 	var angle_to_height = vec_to_mid.angle_to(height_vector)
 	var outer_curve = angle_to_height <= 0.0
-	print("Angle to Height: ", angle_to_height, " Outer Curve? ", outer_curve)
 	var mag = height_vector.length()
 	var dir = vec_to_mid.normalized()
 	var clamped_tan_vec = dir.rotated(PI / 2 * -1 if outer_curve else PI / 2) * mag
-	print("LeafPoint: ", leaf_point.curve_index, " at Position: ", leaf_point_pos)
 	## Differentiate influence to corners based on neighbors
 	var before_influence = in_dir_force
 	var after_influence = out_dir_force
@@ -465,13 +462,9 @@ func update_round_point(leaf_point):
 	## Find the upper corners of the super-imposed rectangle
 	var before_tang = before_pos + (clamped_tan_vec * before_height)
 	var after_tang = after_pos + (clamped_tan_vec * after_height)
-#	print("Before Tangent: ", before_tang)
-#	print("After Tangent: ", after_tang)
 	## Calculate Vector Normal to the corners
 	var before_target = leaf_point_pos.lerp(before_tang, before_influence) - leaf_point_pos
 	var after_target = leaf_point_pos.lerp(after_tang, after_influence) - leaf_point_pos
-#	print("Before Target: ", before_target)
-#	print("After Target: ", after_target)
 	leaf_curve.set_point_in(leaf_point.curve_index, before_target)
 	leaf_curve.set_point_out(leaf_point.curve_index, after_target)
 	leaf_point.visual_node.set_in_out_points(before_target, after_target)
