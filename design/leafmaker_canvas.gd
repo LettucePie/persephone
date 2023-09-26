@@ -521,6 +521,16 @@ func switch_point_type(leaf_point):
 		leaf_point.round_point = true
 
 
+func map_leaf_veins():
+	print("TODO")
+	print("Start by finding furthest from origin")
+	print("Then declare that as Vein Target One")
+	print("If the player wants more they can adjust somehow")
+	print("Refer to future Vein Targets by finding furthest point from MidPoint of Origin and Vein Target One")
+	print("Effectively finding the furthest points from the center?")
+	print("Backup plan, let player enter a state where they tap points to declare as Vein Targets")
+
+
 func update_leaf_visual(hd : bool):
 	if leaf_curve.get_point_count() >= 3:
 		leaf_poly.visible = true

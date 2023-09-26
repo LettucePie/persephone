@@ -6,7 +6,7 @@ var symmetry_mode : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	$SymmetryLine.visible = symmetry_mode
 
 
 func _on_mode_item_selected(index):
@@ -19,3 +19,4 @@ func _on_mode_item_selected(index):
 func _on_symmetry_toggled(button_pressed):
 	symmetry_mode = button_pressed
 	emit_signal("symmetry", symmetry_mode)
+	$SymmetryLine.visible = symmetry_mode
