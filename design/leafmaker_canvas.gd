@@ -5,10 +5,10 @@ extends Node2D
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
-@export var in_tangent_height : float = 0.5
-@export var out_tangent_height : float = 0.5
-@export var in_dir_force : float = 1.0
-@export var out_dir_force : float = 1.0
+@export var in_tangent_height : float = 0.75
+@export var out_tangent_height : float = 0.75
+@export var in_dir_force : float = 0.5
+@export var out_dir_force : float = 0.5
 @export var in_tangent_height_round : float = 1.0
 @export var out_tangent_height_round : float = 1.0
 @export var in_dir_force_round : float = 0.35
@@ -445,11 +445,11 @@ func update_round_point(leaf_point):
 	var vec_to_leafpoint = leaf_point_pos - before_pos
 	var vec_to_mid = mid_lower_pos - before_pos
 	var angle_to_height = vec_to_mid.angle_to(height_vector)
-	var difference = (PI / 2) - abs(angle_to_height)
-	print("Angle to Height: ", angle_to_height, " | Difference: ", difference)
+	var outer_curve = angle_to_height <= 0.0
+	print("Angle to Height: ", angle_to_height, " Outer Curve? ", outer_curve)
 	var mag = height_vector.length()
 	var dir = vec_to_mid.normalized()
-	var clamped_tan_vec = dir.rotated(angle_to_height + difference) * mag
+	var clamped_tan_vec = dir.rotated(PI / 2 * -1 if outer_curve else PI / 2) * mag
 	print("LeafPoint: ", leaf_point.curve_index, " at Position: ", leaf_point_pos)
 	## Differentiate influence to corners based on neighbors
 	var before_influence = in_dir_force
