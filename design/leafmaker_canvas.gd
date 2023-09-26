@@ -442,12 +442,15 @@ func update_round_point(leaf_point):
 	## Find the Floor and Height of the super-imposed rectangle
 	var mid_lower_pos = before_pos.lerp(after_pos, 0.5)
 	var height_vector = (leaf_point_pos - mid_lower_pos)
-	var height_vector_norm = height_vector.normalized()
-	var before_reflect = (before_pos - leaf_point_pos).reflect(height_vector_norm)
-	var after_reflect = (after_pos - leaf_point_pos).reflect(height_vector_norm)
+	var vec_to_leafpoint = leaf_point_pos - before_pos
+	var vec_to_mid = mid_lower_pos - before_pos
+	var angle_to_height = vec_to_mid.angle_to(height_vector)
+	var difference = (PI / 2) - abs(angle_to_height)
+	print("Angle to Height: ", angle_to_height, " | Difference: ", difference)
+	var mag = height_vector.length()
+	var dir = vec_to_mid.normalized()
+	var clamped_tan_vec = dir.rotated(angle_to_height + difference) * mag
 	print("LeafPoint: ", leaf_point.curve_index, " at Position: ", leaf_point_pos)
-#	print("Mid Lower Pos: ", mid_lower_pos)
-#	print("Height Vec: ", height_vector)
 	## Differentiate influence to corners based on neighbors
 	var before_influence = in_dir_force
 	var after_influence = out_dir_force
@@ -460,10 +463,8 @@ func update_round_point(leaf_point):
 		after_influence = out_dir_force_round
 		after_height = out_tangent_height_round
 	## Find the upper corners of the super-imposed rectangle
-#	var before_tang = before_pos + (height_vector * before_height)
-#	var after_tang = after_pos + (height_vector * after_height)
-	var before_tang = before_pos + (before_reflect * before_height)
-	var after_tang = after_pos + (after_reflect * after_height)
+	var before_tang = before_pos + (clamped_tan_vec * before_height)
+	var after_tang = after_pos + (clamped_tan_vec * after_height)
 #	print("Before Tangent: ", before_tang)
 #	print("After Tangent: ", after_tang)
 	## Calculate Vector Normal to the corners
