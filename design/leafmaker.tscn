@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=11 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
 [ext_resource type="PackedScene" uid="uid://c7yiqktg8rgig" path="res://design/leaf_point.tscn" id="3_w3m6b"]
 [ext_resource type="Texture2D" uid="uid://dmoscembmvgtc" path="res://design/crosshair.png" id="4"]
 [ext_resource type="Script" path="res://design/leafmaker_ui.gd" id="5"]
+[ext_resource type="Texture2D" uid="uid://cg07jcec6ffve" path="res://icon.png" id="5_s8ybn"]
 [ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/designer_tools_theme.tres" id="7"]
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
@@ -22,6 +23,7 @@ leaf_point_object = ExtResource("3_w3m6b")
 node_scale = Vector2(0.2, 0.2)
 leaf_gradient_default = SubResource("1")
 leaf_texture_default = ExtResource("9")
+vein_texture = ExtResource("5_s8ybn")
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false
@@ -110,6 +112,16 @@ offset_bottom = -3.05176e-05
 texture = ExtResource("8")
 stretch_mode = 1
 
+[node name="table" type="Control" parent="ui"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.847
+offset_bottom = 0.143982
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
@@ -117,3 +129,4 @@ stretch_mode = 1
 [connection signal="toggled" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_symmetry_toggled"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="item_selected" from="ui/HBoxContainer/Mode" to="ui" method="_on_mode_item_selected"]
+[connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]

@@ -5,6 +5,7 @@ extends Node2D
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
+@export var vein_texture : Texture2D
 @export var in_tangent_height : float = 0.75
 @export var out_tangent_height : float = 0.75
 @export var in_dir_force : float = 0.5
@@ -64,6 +65,8 @@ var screen_size : Vector2
 var screen_pressed : bool = false
 var selected_point : LeafPoint
 var leaf_points : Array = []
+var vein_paths : Array = []
+var vein_visuals : Array = []
 @onready var leaf_poly = $Polygon2D
 @onready var leaf_origin = $LeafOrigin
 @onready var leaf_curve : Curve2D = Curve2D.new()
@@ -292,10 +295,12 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 	var curve_index = idx
 	if idx < 0:
 		curve_index = leaf_curve.get_point_count() - 1
-	update_leaf_visual(true)
 	var new_point = LeafPoint.new(leaf_point_node, false, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_point_indeces(curve_index)
+	map_leaf_veins()
+#	update_round_neighbors(new_point)
+	update_leaf_visual(true)
 	if symmetry_mode:
 		if !sym_pair:
 			print("Add in sym pair coords")
@@ -493,6 +498,7 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			leafpoint.visual_node.position.x = leaf_origin.position.x
 	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	update_round_neighbors(leafpoint)
+	map_leaf_veins()
 	update_leaf_visual(true)
 
 
@@ -522,13 +528,42 @@ func switch_point_type(leaf_point):
 
 
 func map_leaf_veins():
-	print("TODO")
-	print("Start by finding furthest from origin")
-	print("Then declare that as Vein Target One")
-	print("If the player wants more they can adjust somehow")
-	print("Refer to future Vein Targets by finding furthest point from MidPoint of Origin and Vein Target One")
-	print("Effectively finding the furthest points from the center?")
-	print("Backup plan, let player enter a state where they tap points to declare as Vein Targets")
+	vein_paths.clear()
+	print("Find Highest Point from Origin")
+	var baked_points = leaf_curve.get_baked_points()
+	var origin_pos : Vector2 = leaf_origin.position
+	var high_center = origin_pos
+	for bp in baked_points:
+		if bp.x > origin_pos.x - 3 and bp.x < origin_pos.x + 3:
+			if bp.y < high_center.y:
+				high_center = bp
+	print("Find Farthest Point from Origin")
+	var farthest_point = leaf_points[0]
+	var farthest_dist = 0.0
+	for lp in leaf_points:
+		var dist_to_point = lp.visual_node.position.distance_to(origin_pos)
+		if dist_to_point > farthest_dist:
+			farthest_point = lp
+			farthest_dist = dist_to_point
+	print("Find Midpoints for origin to Highest, and Highest to Farthest")
+	var midpoint_origin = origin_pos.lerp(high_center, 0.5)
+	var midpoint_farthest = farthest_point.visual_node.position.lerp(high_center, 0.5)
+	print("Interpolate Points")
+	var main_path : PackedVector2Array = []
+	for i in 10:
+		main_path.append(
+			origin_pos.bezier_interpolate(
+				midpoint_origin, 
+				midpoint_farthest, 
+				farthest_point.visual_node.position, 
+				float(i) / 10.0)
+		)
+	vein_paths.append(main_path)
+#	print("Then declare that as Vein Target One")
+#	print("If the player wants more they can adjust somehow")
+#	print("Refer to future Vein Targets by finding furthest point from MidPoint of Origin and Vein Target One")
+#	print("Effectively finding the furthest points from the center?")
+#	print("Backup plan, let player enter a state where they tap points to declare as Vein Targets")
 
 
 func update_leaf_visual(hd : bool):
@@ -542,6 +577,7 @@ func update_leaf_visual(hd : bool):
 				point_data.append(leaf_curve.get_point_position(i))
 		draw_leaf_shape(point_data)
 		draw_leaf_texture(point_data)
+		draw_leaf_veins()
 	else:
 		leaf_poly.visible = false
 		print("Leaf has too few points")
@@ -590,6 +626,21 @@ func draw_leaf_texture(points : PackedVector2Array):
 func draw_curve_shape():
 	if leaf_curve.get_point_count() >= 3:
 		leaf_poly.set_polygon(leaf_curve.get_baked_points())
+
+
+func draw_leaf_veins():
+	if vein_visuals.size() > 0:
+		for vis in vein_visuals:
+			vis.queue_free()
+		vein_visuals.clear()
+	if vein_paths.size() > 0:
+		for vp in vein_paths:
+			for vec in vp:
+				var new_vein_sprite = Sprite2D.new()
+				new_vein_sprite.texture = vein_texture
+				new_vein_sprite.position = vec
+				vein_visuals.append(new_vein_sprite)
+				add_child(new_vein_sprite)
 
 
 func _on_Mode_item_selected(index):
