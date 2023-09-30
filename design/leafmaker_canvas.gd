@@ -639,6 +639,7 @@ func draw_leaf_veins():
 				var new_vein_sprite = Sprite2D.new()
 				new_vein_sprite.texture = vein_texture
 				new_vein_sprite.position = vec
+				new_vein_sprite.scale = Vector2(0.3, 0.3)
 				vein_visuals.append(new_vein_sprite)
 				add_child(new_vein_sprite)
 

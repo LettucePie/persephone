@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://c7yiqktg8rgig" path="res://design/leaf_point.tscn" id="3_w3m6b"]
 [ext_resource type="Texture2D" uid="uid://dmoscembmvgtc" path="res://design/crosshair.png" id="4"]
 [ext_resource type="Script" path="res://design/leafmaker_ui.gd" id="5"]
-[ext_resource type="Texture2D" uid="uid://cg07jcec6ffve" path="res://icon.png" id="5_s8ybn"]
+[ext_resource type="Texture2D" uid="uid://dpku2yu6uoroy" path="res://design/temp_vein_icon.png" id="5_rh8kf"]
 [ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/designer_tools_theme.tres" id="7"]
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
@@ -23,7 +23,7 @@ leaf_point_object = ExtResource("3_w3m6b")
 node_scale = Vector2(0.2, 0.2)
 leaf_gradient_default = SubResource("1")
 leaf_texture_default = ExtResource("9")
-vein_texture = ExtResource("5_s8ybn")
+vein_texture = ExtResource("5_rh8kf")
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false
