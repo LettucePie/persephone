@@ -53,7 +53,8 @@ mouse_filter = 2
 theme = ExtResource("7")
 script = ExtResource("5")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ui"]
+[node name="main_controls" type="HBoxContainer" parent="ui"]
+visible = false
 layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -61,22 +62,22 @@ anchor_bottom = 1.0
 offset_top = -94.0
 alignment = 1
 
-[node name="Symmetry" type="CheckButton" parent="ui/HBoxContainer"]
+[node name="Symmetry" type="CheckButton" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Symmetry Toggle"
 
-[node name="Color" type="Button" parent="ui/HBoxContainer"]
+[node name="Color" type="Button" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Color Settings"
 
-[node name="Vein" type="Button" parent="ui/HBoxContainer"]
+[node name="Vein" type="Button" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Vein Settings"
 
-[node name="HSlider" type="HSlider" parent="ui/HBoxContainer"]
+[node name="HSlider" type="HSlider" parent="ui/main_controls"]
 custom_minimum_size = Vector2(100, 0)
 layout_mode = 2
 size_flags_horizontal = 3
@@ -84,12 +85,12 @@ min_value = 3.0
 max_value = 12.0
 value = 3.0
 
-[node name="Button4" type="Button" parent="ui/HBoxContainer"]
+[node name="Button4" type="Button" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Hide HUD"
 
-[node name="Mode" type="OptionButton" parent="ui/HBoxContainer"]
+[node name="Mode" type="OptionButton" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
 item_count = 3
@@ -100,6 +101,23 @@ popup/item_1/text = "Edit Mode"
 popup/item_1/id = 1
 popup/item_2/text = "Delete Mode"
 popup/item_2/id = 2
+
+[node name="vein_controls" type="HBoxContainer" parent="ui"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -94.0
+alignment = 1
+
+[node name="close_vein" type="Button" parent="ui/vein_controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Vein Settings"
+
+[node name="auto_vein" type="Button" parent="ui/vein_controls"]
+layout_mode = 2
+text = "Auto Vein"
 
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
 layout_mode = 0
@@ -126,7 +144,9 @@ size_flags_vertical = 3
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]
-[connection signal="toggled" from="ui/HBoxContainer/Symmetry" to="ui" method="_on_symmetry_toggled"]
-[connection signal="item_selected" from="ui/HBoxContainer/Mode" to="canvas" method="_on_Mode_item_selected"]
-[connection signal="item_selected" from="ui/HBoxContainer/Mode" to="ui" method="_on_mode_item_selected"]
+[connection signal="toggled" from="ui/main_controls/Symmetry" to="ui" method="_on_symmetry_toggled"]
+[connection signal="pressed" from="ui/main_controls/Vein" to="ui" method="_on_vein_pressed"]
+[connection signal="item_selected" from="ui/main_controls/Mode" to="canvas" method="_on_Mode_item_selected"]
+[connection signal="item_selected" from="ui/main_controls/Mode" to="ui" method="_on_mode_item_selected"]
+[connection signal="pressed" from="ui/vein_controls/close_vein" to="ui" method="_on_close_vein_pressed"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]

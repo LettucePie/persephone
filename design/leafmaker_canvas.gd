@@ -663,7 +663,6 @@ func _on_ui_resized():
 	screen_size = get_window().get_size()
 
 
-
 func _on_Maximize_pressed():
 #	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
