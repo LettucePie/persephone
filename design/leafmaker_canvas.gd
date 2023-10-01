@@ -224,20 +224,55 @@ func _on_table_gui_input(event):
 			print(event.button_index)
 			if event.button_index == 1:
 				print("Left Click")
-				if editor_mode == EditorMode.SHAPE_MODE:
-					if current_mode == Mode.ADD_MODE:
-						if leaf_curve.get_point_count() > 3:
-							detect_intersection(event.position, false)
-						else:
-							add_point(event.position, -1, false)
-					elif current_mode == Mode.EDIT_MODE:
-						pass
-					elif current_mode == Mode.DELETE_MODE:
-						pass
+				if editor_mode == EditorMode.SHAPE_MODE \
+				and current_mode == Mode.ADD_MODE:
+					if leaf_curve.get_point_count() > 3:
+						detect_intersection(event.position, false)
+					else:
+						add_point(event.position, -1, false)
+				## Used to check for Edit Mode and Delete Mode here
+				## Decided to scrap that because using this system would require
+				## Unnecessary filtering to find the closest leafpoint to target
+				## with desired action.
+				## By using the Built In input detections on each leaf point
+				## instead, we can eliminate that entire process of filtering.
 			if event.button_index == 2:
 				print("Right Click")
 			if event.button_index == 3:
 				print("Middle Click")
+
+
+func point_selected(visual : Area2D):
+	print("Point Selected: ", visual)
+	var leaf_point = null
+	leaf_point = find_leafpoint_from_visual(visual)
+	if leaf_point != null:
+		if visual.position != leaf_origin.position:
+			selected_point = leaf_point
+		else:
+			selected_point = null
+		if editor_mode == EditorMode.SHAPE_MODE \
+		and current_mode == Mode.DELETE_MODE:
+			remove_point(leaf_point)
+
+
+func point_tapped(visual : Area2D):
+	print("VisualNode Tapped: ", visual)
+	var leafpoint = null
+	leafpoint = find_leafpoint_from_visual(visual)
+	if leafpoint != null and visual.position != leaf_origin.position:
+		if editor_mode == EditorMode.SHAPE_MODE \
+		and current_mode == Mode.EDIT_MODE:
+			switch_point_type(leafpoint)
+			visual.set_node_type(leafpoint.round_point)
+			update_round_neighbors(leafpoint)
+			if symmetry_mode and leafpoint.symmetry:
+				switch_point_type(leafpoint.symmetry_pair)
+				leafpoint.symmetry_pair.visual_node.set_node_type(leafpoint.round_point)
+				update_round_neighbors(leafpoint.symmetry_pair)
+		elif editor_mode == EditorMode.VEIN_MODE:
+			print("Tapping LeafPoint: ", leafpoint, " In Vein Editor Mode")
+		update_leaf_visual(true)
 
 
 func detect_intersection(pos : Vector2, sym_pair : bool):
@@ -414,37 +449,6 @@ func find_leafpoint_from_visual(visual : Area2D):
 			if lp.visual_node == visual:
 				return lp
 				break
-
-
-func point_selected(visual : Area2D):
-	print("Point Selected: ", visual)
-	var leaf_point = null
-	leaf_point = find_leafpoint_from_visual(visual)
-	if leaf_point != null:
-		if visual.position != leaf_origin.position:
-			selected_point = leaf_point
-		else:
-			selected_point = null
-		if editor_mode == EditorMode.SHAPE_MODE and current_mode == Mode.DELETE_MODE:
-			remove_point(leaf_point)
-
-
-func point_tapped(visual : Area2D):
-	print("VisualNode Tapped: ", visual)
-	var leafpoint = null
-	leafpoint = find_leafpoint_from_visual(visual)
-	if leafpoint != null and visual.position != leaf_origin.position:
-		if editor_mode == EditorMode.SHAPE_MODE and current_mode == Mode.EDIT_MODE:
-			switch_point_type(leafpoint)
-			visual.set_node_type(leafpoint.round_point)
-			update_round_neighbors(leafpoint)
-			if symmetry_mode and leafpoint.symmetry:
-				switch_point_type(leafpoint.symmetry_pair)
-				leafpoint.symmetry_pair.visual_node.set_node_type(leafpoint.round_point)
-				update_round_neighbors(leafpoint.symmetry_pair)
-		elif editor_mode == EditorMode.VEIN_MODE:
-			print("Tapping LeafPoint: ", leafpoint, " In Vein Editor Mode")
-		update_leaf_visual(true)
 
 
 func update_round_point(leaf_point):
