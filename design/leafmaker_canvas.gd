@@ -233,9 +233,28 @@ func build_detection_grid():
 	for y_pos in range(1, grid_density - 1):
 		for x_pos in range(1, grid_density - 1):
 			pos_array.append(Vector2(x_pos * x_div, y_pos * y_div))
-	print(pos_array.size())
-	for i in clamp(pos_array.size(), 80, 120):
-		print("GridPoint: ", i, " = ", pos_array[i])
+	if detection_grid.size() > 0:
+		for d in detection_grid:
+			d.queue_free()
+	detection_grid.clear()
+	var circle_shape = CircleShape2D.new()
+	circle_shape.radius = 2.5
+	for p in pos_array:
+		var new_area = Area2D.new()
+		var new_coll_shape = CollisionShape2D.new()
+		new_coll_shape.set_shape(circle_shape)
+		new_area.add_child(new_coll_shape)
+		new_area.monitoring = true
+		new_area.input_pickable = false
+		new_area.set_collision_layer_value(1, false)
+		new_area.set_collision_layer_value(4, true)
+		new_area.set_collision_mask_value(1, false)
+		new_area.set_collision_mask_value(4, true)
+		new_area.position = p
+		new_area.name = "X_" + str(int(p.x)) + "_Y_" + str(int(p.y))
+		detection_grid.append(new_area)
+		add_child(new_area)
+	detection_grid_ready = true
 
 
 func _on_table_gui_input(event):
