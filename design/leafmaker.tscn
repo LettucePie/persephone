@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=12 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://design/leafmaker_ui.gd" id="5"]
 [ext_resource type="Texture2D" uid="uid://dpku2yu6uoroy" path="res://design/temp_vein_icon.png" id="5_rh8kf"]
 [ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/designer_tools_theme.tres" id="7"]
+[ext_resource type="Script" path="res://design/leaf_area.gd" id="7_5xsp6"]
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
 
@@ -41,6 +42,14 @@ round_precision = 20
 position = Vector2(512, 450)
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("4")
+
+[node name="Area2D" type="Area2D" parent="canvas"]
+collision_layer = 8
+collision_mask = 8
+input_pickable = false
+script = ExtResource("7_5xsp6")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="canvas/Area2D"]
 
 [node name="ui" type="Control" parent="."]
 layout_mode = 3
@@ -142,6 +151,8 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
+[connection signal="body_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
+[connection signal="body_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]

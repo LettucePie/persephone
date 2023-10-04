@@ -17,6 +17,7 @@ config/icon="res://icon.png"
 
 [display]
 
+window/size/viewport_width=1154
 window/handheld/orientation=1
 
 [gui]

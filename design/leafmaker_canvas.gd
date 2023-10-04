@@ -6,6 +6,8 @@ extends Node2D
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
 @export var vein_texture : Texture2D
+#@export var grid_size : float = 10.0
+@export var grid_density : int = 12
 @export var in_tangent_height : float = 0.75
 @export var out_tangent_height : float = 0.75
 @export var in_dir_force : float = 0.5
@@ -66,6 +68,8 @@ enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 var current_mode = Mode.ADD_MODE
 var symmetry_mode : bool = false
 var screen_size : Vector2
+var detection_grid_ready : bool = false
+var detection_grid : Array = []
 var screen_pressed : bool = false
 var selected_point : LeafPoint
 var leaf_points : Array = []
@@ -89,6 +93,7 @@ func _ready():
 	add_point(leaf_origin.position, -1, false)
 	print("Building Rest of the Leaf")
 	starting_leaf()
+	build_detection_grid()
 
 
 func _input(event):
@@ -217,6 +222,22 @@ func starting_leaf():
 	add_point(leaf_origin.position, -1, false)
 
 
+func build_detection_grid():
+#	var x_mod = grid_size * screen_size.aspect()
+#	var y_mod = grid_size
+#	var mod_vec = Vector2(x_mod, y_mod)
+#	print(mod_vec)
+	var x_div = screen_size.x / grid_density
+	var y_div = leaf_origin.position.y / grid_density
+	var pos_array : PackedVector2Array = []
+	for y_pos in range(1, grid_density - 1):
+		for x_pos in range(1, grid_density - 1):
+			pos_array.append(Vector2(x_pos * x_div, y_pos * y_div))
+	print(pos_array.size())
+	for i in clamp(pos_array.size(), 80, 120):
+		print("GridPoint: ", i, " = ", pos_array[i])
+
+
 func _on_table_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed:
@@ -339,9 +360,10 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 	var new_point = LeafPoint.new(leaf_point_node, false, curve_index, false, null)
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_point_indeces(curve_index)
-	map_leaf_veins()
 #	update_round_neighbors(new_point)
 	update_leaf_visual(true)
+	update_leaf_shape()
+	map_leaf_veins()
 	if symmetry_mode:
 		if !sym_pair:
 			print("Add in sym pair coords")
@@ -359,9 +381,11 @@ func remove_point(leaf_point : LeafPoint):
 		leaf_curve.remove_point(leaf_point.curve_index)
 		leaf_points.remove_at(leaf_point.curve_index)
 		leaf_point.queue_free()
-		update_leaf_visual(true)
 		update_leaf_point_indeces(previous_index)
 		update_round_neighbors(leaf_points[previous_index])
+		update_leaf_visual(true)
+		update_leaf_shape()
+		map_leaf_veins()
 
 
 func update_leaf_point_indeces(range_start : int):
@@ -510,8 +534,9 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			leafpoint.visual_node.position.x = leaf_origin.position.x
 	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	update_round_neighbors(leafpoint)
-	map_leaf_veins()
 	update_leaf_visual(true)
+	update_leaf_shape()
+	map_leaf_veins()
 
 
 func set_point_position(leafpoint, pos):
@@ -593,6 +618,16 @@ func update_leaf_visual(hd : bool):
 	else:
 		leaf_poly.visible = false
 		print("Leaf has too few points")
+
+
+func update_leaf_shape():
+	var simple_points : PackedVector2Array = []
+	simple_points.append(leaf_origin.position)
+	for lp in leaf_points:
+		var pos = lp.visual_node.position
+		if pos != leaf_origin.position:
+			simple_points.append(pos)
+	$Area2D/CollisionPolygon2D.set_polygon(simple_points)
 
 
 func draw_leaf_shape(points : PackedVector2Array):
