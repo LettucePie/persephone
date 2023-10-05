@@ -21,3 +21,11 @@ func gather_point_positions():
 	for o in occupants:
 		positions.append(o.position)
 	positions.sort()
+
+
+func bundle_relevant_points(min, max):
+	var bundle : PackedVector2Array = []
+	for p in positions:
+		if p > min and p < max:
+			bundle.append(p)
+	return bundle

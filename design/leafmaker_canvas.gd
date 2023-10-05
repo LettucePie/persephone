@@ -382,7 +382,7 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 #	update_round_neighbors(new_point)
 	update_leaf_visual(true)
 	update_leaf_shape()
-	map_leaf_veins()
+	map_leaf_veins_v2()
 	if symmetry_mode:
 		if !sym_pair:
 			print("Add in sym pair coords")
@@ -404,7 +404,7 @@ func remove_point(leaf_point : LeafPoint):
 		update_round_neighbors(leaf_points[previous_index])
 		update_leaf_visual(true)
 		update_leaf_shape()
-		map_leaf_veins()
+		map_leaf_veins_v2()
 
 
 func update_leaf_point_indeces(range_start : int):
@@ -555,7 +555,7 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 	update_round_neighbors(leafpoint)
 	update_leaf_visual(true)
 	update_leaf_shape()
-	map_leaf_veins()
+	map_leaf_veins_v2()
 
 
 func set_point_position(leafpoint, pos):
@@ -615,11 +615,54 @@ func map_leaf_veins():
 				float(i) / 10.0)
 		)
 	vein_paths.append(main_path)
-#	print("Then declare that as Vein Target One")
-#	print("If the player wants more they can adjust somehow")
-#	print("Refer to future Vein Targets by finding furthest point from MidPoint of Origin and Vein Target One")
-#	print("Effectively finding the furthest points from the center?")
-#	print("Backup plan, let player enter a state where they tap points to declare as Vein Targets")
+
+
+func map_leaf_veins_v2():
+	vein_paths.clear()
+	print("Find Highest Point from Origin")
+	var baked_points = leaf_curve.get_baked_points()
+	var origin_pos : Vector2 = leaf_origin.position
+	var high_center = origin_pos
+	for bp in baked_points:
+		if bp.x > origin_pos.x - 3 and bp.x < origin_pos.x + 3:
+			if bp.y < high_center.y:
+				high_center = bp
+	print("Find Farthest Point from Origin")
+	var farthest_point = leaf_points[0]
+	var farthest_dist = 0.0
+	for lp in leaf_points:
+		var dist_to_point = lp.visual_node.position.distance_to(origin_pos)
+		if dist_to_point > farthest_dist:
+			farthest_point = lp
+			farthest_dist = dist_to_point
+	print("Find Midpoints for origin to Highest, and Highest to Farthest")
+	var midpoint_origin = origin_pos.lerp(high_center, 0.5)
+	var midpoint_farthest = farthest_point.visual_node.position.lerp(high_center, 0.5)
+	print("Interpolate Points")
+	var main_path : PackedVector2Array = []
+	var min_vec = farthest_point.visual_node.position
+	var max_vec = origin_pos
+	if min_vec > origin_pos:
+		max_vec = min_vec
+		min_vec = origin_pos
+	var valid_points = $Area2D.bundle_relevant_points(min_vec, max_vec)
+	for i in 10:
+		var interpos = origin_pos.bezier_interpolate(
+			midpoint_origin, 
+			midpoint_farthest, 
+			farthest_point.visual_node.position, 
+			float(i) / 10.0)
+		var smallest_dist = 100000
+		var safest_point = interpos
+		for vp in valid_points:
+			var dist = interpos.distance_squared_to(vp)
+			if dist < smallest_dist:
+				smallest_dist = dist
+				safest_point = vp
+		main_path.append(safest_point)
+		print("Try making this a test instead of a search")
+		print("Initial curve looks good, make sure it's close enough to a valid point or set of points")
+	vein_paths.append(main_path)
 
 
 func update_leaf_visual(hd : bool):
