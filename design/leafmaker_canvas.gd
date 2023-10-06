@@ -227,12 +227,12 @@ func build_detection_grid():
 #	var y_mod = grid_size
 #	var mod_vec = Vector2(x_mod, y_mod)
 #	print(mod_vec)
-	var x_div = screen_size.x / grid_density
-	var y_div = leaf_origin.position.y / grid_density
+	var x_div = floorf(screen_size.x / grid_density)
+	var y_div = floorf(leaf_origin.position.y / grid_density)
 	var pos_array : PackedVector2Array = []
 	for y_pos in range(1, grid_density - 1):
 		for x_pos in range(1, grid_density - 1):
-			pos_array.append(Vector2(x_pos * x_div, y_pos * y_div))
+			pos_array.append(Vector2(floorf(x_pos * x_div), floorf(y_pos * y_div)))
 	if detection_grid.size() > 0:
 		for d in detection_grid:
 			d.queue_free()
@@ -254,6 +254,7 @@ func build_detection_grid():
 		new_area.name = "X_" + str(int(p.x)) + "_Y_" + str(int(p.y))
 		detection_grid.append(new_area)
 		add_child(new_area)
+	$Area2D.setup_grid_params(Vector2(x_div, y_div))
 	detection_grid_ready = true
 
 
@@ -635,7 +636,10 @@ func map_leaf_veins_v2():
 		if dist_to_point > farthest_dist:
 			farthest_point = lp
 			farthest_dist = dist_to_point
-	print("Find Midpoints for origin to Highest, and Highest to Farthest")
+#	print("Find Midpoints for origin to Highest, and Highest to Farthest")
+	print("Instead maybe use Central Points that have a lot of grid neighbors to detect a central mass")
+	print("Then use those coordinates to make a curve to the furthest from origin...")
+	print("Central Points (from the leaf_area.gd) could also function as starting points for more veins...")
 	var midpoint_origin = origin_pos.lerp(high_center, 0.5)
 	var midpoint_farthest = farthest_point.visual_node.position.lerp(high_center, 0.5)
 	print("Interpolate Points")
@@ -652,7 +656,7 @@ func map_leaf_veins_v2():
 			midpoint_farthest, 
 			farthest_point.visual_node.position, 
 			float(i) / 10.0)
-		var smallest_dist = 100000
+		var smallest_dist = 10000000
 		var safest_point = interpos
 		for vp in valid_points:
 			var dist = interpos.distance_squared_to(vp)
@@ -769,6 +773,7 @@ func _on_ui_symmetry(mode):
 func _on_ui_resized():
 	if leaf_origin != null:
 		recenter_origin()
+		build_detection_grid()
 	screen_size = get_window().get_size()
 
 
