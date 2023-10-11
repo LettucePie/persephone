@@ -95,3 +95,16 @@ func get_closest_central_point(pos : Vector2):
 				closest_point = cen_point["point"]
 		print("Returning Central Point: ", closest_point)
 		return closest_point
+
+
+func get_closest_grid_point(pos : Vector2, min_frame : Vector2, max_frame : Vector2):
+	var compare_distance = get_window().get_size().length() * 2.0
+	var closest_grid_point = null
+	for grid_pos in positions:
+		if grid_pos > min_frame and grid_pos < max_frame:
+			var dist = pos.distance_to(grid_pos)
+			if dist < compare_distance:
+				compare_distance = dist
+				closest_grid_point = grid_pos
+	print("Returning Closest grid point: ", closest_grid_point, " with distance of: ", compare_distance)
+	return closest_grid_point

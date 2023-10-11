@@ -26,6 +26,14 @@ leaf_gradient_default = SubResource("1")
 leaf_texture_default = ExtResource("9")
 vein_texture = ExtResource("5_rh8kf")
 grid_density = 14
+in_tangent_height = null
+out_tangent_height = null
+in_dir_force = null
+out_dir_force = null
+in_tangent_height_round = null
+out_tangent_height_round = null
+in_dir_force_round = null
+out_dir_force_round = null
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false

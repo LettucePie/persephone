@@ -640,18 +640,36 @@ func map_leaf_veins_v2():
 		var closest_cen_point = $Area2D.get_closest_central_point(percent_pos)
 		if !point_steps.has(closest_cen_point) and closest_cen_point != null:
 			point_steps.append(closest_cen_point)
-	if point_steps.size() > 0:
-		print("Point Steps!")
-		for i in point_steps.size():
-			print(i, " / ", point_steps.size() - 1)
-			print("Okay, what if the vein is supposed to be a straight line?")
-			print("I need to check the angle or something to detect if pathing is necessary...")
-#	print("Instead maybe use Central Points that have a lot of grid neighbors to detect a central mass")
-#	print("Then use those coordinates to make a curve to the furthest from origin...")
-#	print("Central Points (from the leaf_area.gd) could also function as starting points for more veins...")
-#	print("Interpolate Points")
+	print("Build the line, using point steps if necessary")
 	var main_path : PackedVector2Array = []
-#	vein_paths.append(main_path)
+	var control_1 = origin_pos.lerp(farthest_point.visual_node.position, 0.5)
+	var control_2 = control_1
+	if point_steps.size() > 0:
+		print("Point Steps are present, use them.")
+		if point_steps.size() == 2:
+			print("2 Point Steps are marked, perfect for control_1 and control_2 of bezier_interpolate")
+		elif point_steps.size() > 2:
+			print("Excess point steps are available, truncate and average them out.")
+	else:
+		print("No point steps are available, resort to anchoring to closest grid point.")
+		var min_clamp = origin_pos
+		var max_clamp = farthest_point.visual_node.position
+		if origin_pos > max_clamp:
+			min_clamp = max_clamp
+			max_clamp = origin_pos
+		var closest_point = $Area2D.get_closest_grid_point(control_1, min_clamp, max_clamp)
+		if closest_point != null:
+			control_1 = closest_point
+			control_2 = closest_point
+	for i in 10:
+		main_path.append(
+			origin_pos.bezier_interpolate(
+				control_1, 
+				control_2, 
+				farthest_point.visual_node.position, 
+				float(i) / 10.0)
+		)
+	vein_paths.append(main_path)
 
 
 func update_leaf_visual(hd : bool):
