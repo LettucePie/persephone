@@ -72,3 +72,17 @@ func get_best_central_points():
 		print("Sort_custom")
 	else:
 		return PackedVector2Array()
+
+
+func get_closest_central_point(pos : Vector2):
+	print("Searching for closest Central Point to pos: ", pos)
+	if central_points.size() > 0:
+		var closest_point : Vector2 = central_points[0]["point"]
+		var compare_distance = get_window().get_size().length() * 2.0
+		for cen_point in central_points:
+			var dist = cen_point["point"].distance_to(pos)
+			if dist < compare_distance:
+				compare_distance = dist
+				closest_point = cen_point["point"]
+		print("Returning Central Point: ", closest_point)
+		return closest_point

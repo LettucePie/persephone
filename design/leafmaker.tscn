@@ -25,6 +25,7 @@ node_scale = Vector2(0.2, 0.2)
 leaf_gradient_default = SubResource("1")
 leaf_texture_default = ExtResource("9")
 vein_texture = ExtResource("5_rh8kf")
+grid_density = 14
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false

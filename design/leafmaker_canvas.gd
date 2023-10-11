@@ -620,14 +620,8 @@ func map_leaf_veins():
 
 func map_leaf_veins_v2():
 	vein_paths.clear()
-	print("Find Highest Point from Origin")
 	var baked_points = leaf_curve.get_baked_points()
 	var origin_pos : Vector2 = leaf_origin.position
-	var high_center = origin_pos
-	for bp in baked_points:
-		if bp.x > origin_pos.x - 3 and bp.x < origin_pos.x + 3:
-			if bp.y < high_center.y:
-				high_center = bp
 	print("Find Farthest Point from Origin")
 	var farthest_point = leaf_points[0]
 	var farthest_dist = 0.0
@@ -636,37 +630,25 @@ func map_leaf_veins_v2():
 		if dist_to_point > farthest_dist:
 			farthest_point = lp
 			farthest_dist = dist_to_point
-#	print("Find Midpoints for origin to Highest, and Highest to Farthest")
-	print("Instead maybe use Central Points that have a lot of grid neighbors to detect a central mass")
-	print("Then use those coordinates to make a curve to the furthest from origin...")
-	print("Central Points (from the leaf_area.gd) could also function as starting points for more veins...")
-	var midpoint_origin = origin_pos.lerp(high_center, 0.5)
-	var midpoint_farthest = farthest_point.visual_node.position.lerp(high_center, 0.5)
-	print("Interpolate Points")
+	print("Build list of Central Points")
+	## Crawl along straight light from Origin to Furthest
+	## Find closest Central Point and add to list
+	var point_steps : Array = []
+	for i in 8:
+		var percent = float(i) / 8.0
+		var percent_pos = origin_pos.lerp(farthest_point.visual_node.position, percent)
+		var closest_cen_point = $Area2D.get_closest_central_point(percent_pos)
+		if !point_steps.has(closest_cen_point):
+			point_steps.append(closest_cen_point)
+	if point_steps.size() > 0:
+		print("Point Steps!")
+		print(point_steps.size())
+#	print("Instead maybe use Central Points that have a lot of grid neighbors to detect a central mass")
+#	print("Then use those coordinates to make a curve to the furthest from origin...")
+#	print("Central Points (from the leaf_area.gd) could also function as starting points for more veins...")
+#	print("Interpolate Points")
 	var main_path : PackedVector2Array = []
-	var min_vec = farthest_point.visual_node.position
-	var max_vec = origin_pos
-	if min_vec > origin_pos:
-		max_vec = min_vec
-		min_vec = origin_pos
-	var valid_points = $Area2D.bundle_relevant_points(min_vec, max_vec)
-	for i in 10:
-		var interpos = origin_pos.bezier_interpolate(
-			midpoint_origin, 
-			midpoint_farthest, 
-			farthest_point.visual_node.position, 
-			float(i) / 10.0)
-		var smallest_dist = 10000000
-		var safest_point = interpos
-		for vp in valid_points:
-			var dist = interpos.distance_squared_to(vp)
-			if dist < smallest_dist:
-				smallest_dist = dist
-				safest_point = vp
-		main_path.append(safest_point)
-		print("Try making this a test instead of a search")
-		print("Initial curve looks good, make sure it's close enough to a valid point or set of points")
-	vein_paths.append(main_path)
+#	vein_paths.append(main_path)
 
 
 func update_leaf_visual(hd : bool):
