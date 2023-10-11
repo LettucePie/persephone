@@ -638,11 +638,14 @@ func map_leaf_veins_v2():
 		var percent = float(i) / 8.0
 		var percent_pos = origin_pos.lerp(farthest_point.visual_node.position, percent)
 		var closest_cen_point = $Area2D.get_closest_central_point(percent_pos)
-		if !point_steps.has(closest_cen_point):
+		if !point_steps.has(closest_cen_point) and closest_cen_point != null:
 			point_steps.append(closest_cen_point)
 	if point_steps.size() > 0:
 		print("Point Steps!")
-		print(point_steps.size())
+		for i in point_steps.size():
+			print(i, " / ", point_steps.size() - 1)
+			print("Okay, what if the vein is supposed to be a straight line?")
+			print("I need to check the angle or something to detect if pathing is necessary...")
 #	print("Instead maybe use Central Points that have a lot of grid neighbors to detect a central mass")
 #	print("Then use those coordinates to make a curve to the furthest from origin...")
 #	print("Central Points (from the leaf_area.gd) could also function as starting points for more veins...")

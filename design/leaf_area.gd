@@ -74,6 +74,15 @@ func get_best_central_points():
 		return PackedVector2Array()
 
 
+func get_rank_at_point(point : Vector2):
+	if central_points.size() > 0:
+		for cen_point in central_points:
+			if point == cen_point["point"]:
+				return cen_point["rank"]
+	else:
+		return null
+
+
 func get_closest_central_point(pos : Vector2):
 	print("Searching for closest Central Point to pos: ", pos)
 	if central_points.size() > 0:
