@@ -646,9 +646,23 @@ func map_leaf_veins_v2():
 	var control_2 = control_1
 	if point_steps.size() > 0:
 		print("Point Steps are present, use them.")
-		if point_steps.size() == 2:
-			print("2 Point Steps are marked, perfect for control_1 and control_2 of bezier_interpolate")
+		if point_steps.size() < 2:
+			control_1 = point_steps[0]
+			control_2 = control_1
+		elif point_steps.size() == 2:
+			control_1 = point_steps[0]
+			control_2 = point_steps[1]
 		elif point_steps.size() > 2:
+			if point_steps.size() % 2 == 0:
+				var section_a = range(0, (point_steps.size() / 2) - 1)
+				var section_b = range(point_steps.size() / 2, point_steps.size() - 1)
+				## Get centroid of a and b, use result as control_1 and 2
+			else:
+				var midpoint = point_steps.size() / 2
+				var section_a = range(0, midpoint - 1)
+				var section_b = range(midpoint + 1, point_steps.size() - 1)
+				## Get centroid of a and b, 0.5 lerp from a to mid, and b to mid
+				## use results of lerp for control_1 and 2
 			print("Excess point steps are available, truncate and average them out.")
 	else:
 		print("No point steps are available, resort to anchoring to closest grid point.")

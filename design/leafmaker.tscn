@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=13 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
@@ -9,6 +9,7 @@
 [ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/designer_tools_theme.tres" id="7"]
 [ext_resource type="Script" path="res://design/leaf_area.gd" id="7_5xsp6"]
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
+[ext_resource type="Script" path="res://design/Math.gd" id="8_jcn1r"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
 
 [sub_resource type="Gradient" id="1"]
@@ -26,14 +27,6 @@ leaf_gradient_default = SubResource("1")
 leaf_texture_default = ExtResource("9")
 vein_texture = ExtResource("5_rh8kf")
 grid_density = 14
-in_tangent_height = null
-out_tangent_height = null
-in_dir_force = null
-out_dir_force = null
-in_tangent_height_round = null
-out_tangent_height_round = null
-in_dir_force_round = null
-out_dir_force_round = null
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false
@@ -59,6 +52,9 @@ input_pickable = false
 script = ExtResource("7_5xsp6")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="canvas/Area2D"]
+
+[node name="Math" type="Node" parent="canvas"]
+script = ExtResource("8_jcn1r")
 
 [node name="ui" type="Control" parent="."]
 layout_mode = 3
