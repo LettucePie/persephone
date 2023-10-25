@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccydlsnabquhk"]
+
+[ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="1_rg5lk"]
+
+[node name="polygon_test" type="Node2D"]
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+texture = ExtResource("1_rg5lk")
+polygon = PackedVector2Array(1, 44, -16, 38, -31, 28, -31, 21, -17, 13, -32, 4, -14, -11, -32, -23, -17, -38, 9, -46, 30, -36, 13, -22, 42, -13, 57, -21, 70, -11, 50, 5, 38, 2, 27, 7, 32, 19, 66, 27, 72, 36, 64, 48, 35, 39, 21, 52)
+uv = PackedVector2Array(0, 0, 0, 1, 1, 1, 1, 0)

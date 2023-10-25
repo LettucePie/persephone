@@ -1,0 +1,10 @@
+[gd_scene load_steps=4 format=3 uid="uid://2vbp4tsparpo"]
+
+[ext_resource type="Script" path="res://testing/perf_test_textures_v_polygons.gd" id="1_5gats"]
+[ext_resource type="PackedScene" uid="uid://c3ol7f6p5lrt1" path="res://testing/texture_test.tscn" id="2_00aa1"]
+[ext_resource type="PackedScene" uid="uid://ccydlsnabquhk" path="res://testing/polygon_test.tscn" id="3_44voj"]
+
+[node name="perf_test_textures_v_polygons" type="Node2D"]
+script = ExtResource("1_5gats")
+texture_scene = ExtResource("2_00aa1")
+polygon_scene = ExtResource("3_44voj")

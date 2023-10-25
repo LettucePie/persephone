@@ -84,7 +84,7 @@ func get_rank_at_point(point : Vector2):
 
 
 func get_closest_central_point(pos : Vector2):
-	print("Searching for closest Central Point to pos: ", pos)
+#	print("Searching for closest Central Point to pos: ", pos)
 	if central_points.size() > 0:
 		var closest_point : Vector2 = central_points[0]["point"]
 		var compare_distance = get_window().get_size().length() * 2.0
@@ -93,7 +93,7 @@ func get_closest_central_point(pos : Vector2):
 			if dist < compare_distance:
 				compare_distance = dist
 				closest_point = cen_point["point"]
-		print("Returning Central Point: ", closest_point)
+#		print("Returning Central Point: ", closest_point)
 		return closest_point
 
 

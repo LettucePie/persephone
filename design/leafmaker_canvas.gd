@@ -535,13 +535,13 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 	leafpoint.visual_node.translate(relative)
 	if symmetry_mode:
 		if leafpoint.symmetry:
-			print("Moving Symm Pair")
+#			print("Moving Symm Pair")
 			var new_pos = leafpoint.visual_node.position
 			if leafpoint.side_a:
-				print("Side A")
+#				print("Side A")
 				new_pos.x = clamp(new_pos.x, 0, leaf_origin.position.x)
 			else:
-				print("Side B")
+#				print("Side B")
 				new_pos.x = clamp(new_pos.x, leaf_origin.position.x, screen_size.x)
 			var difference = leaf_origin.position.x - new_pos.x
 			var mirror_pos = new_pos
@@ -550,7 +550,7 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			leafpoint.symmetry_pair.set_position(mirror_pos)
 			update_round_neighbors(leafpoint.symmetry_pair)
 		elif leafpoint.midpoint:
-			print("Moving Midpoint")
+#			print("Moving Midpoint")
 			leafpoint.visual_node.position.x = leaf_origin.position.x
 	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	update_round_neighbors(leafpoint)
@@ -586,7 +586,7 @@ func switch_point_type(leaf_point):
 
 func map_leaf_veins():
 	vein_paths.clear()
-	print("Find Highest Point from Origin")
+#	print("Find Highest Point from Origin")
 	var baked_points = leaf_curve.get_baked_points()
 	var origin_pos : Vector2 = leaf_origin.position
 	var high_center = origin_pos
@@ -594,7 +594,7 @@ func map_leaf_veins():
 		if bp.x > origin_pos.x - 3 and bp.x < origin_pos.x + 3:
 			if bp.y < high_center.y:
 				high_center = bp
-	print("Find Farthest Point from Origin")
+#	print("Find Farthest Point from Origin")
 	var farthest_point = leaf_points[0]
 	var farthest_dist = 0.0
 	for lp in leaf_points:
@@ -602,10 +602,10 @@ func map_leaf_veins():
 		if dist_to_point > farthest_dist:
 			farthest_point = lp
 			farthest_dist = dist_to_point
-	print("Find Midpoints for origin to Highest, and Highest to Farthest")
+#	print("Find Midpoints for origin to Highest, and Highest to Farthest")
 	var midpoint_origin = origin_pos.lerp(high_center, 0.5)
 	var midpoint_farthest = farthest_point.visual_node.position.lerp(high_center, 0.5)
-	print("Interpolate Points")
+#	print("Interpolate Points")
 	var main_path : PackedVector2Array = []
 	for i in 10:
 		main_path.append(
@@ -622,7 +622,7 @@ func map_leaf_veins_v2():
 	vein_paths.clear()
 	var baked_points = leaf_curve.get_baked_points()
 	var origin_pos : Vector2 = leaf_origin.position
-	print("Find Farthest Point from Origin")
+#	print("Find Farthest Point from Origin")
 	var farthest_point = leaf_points[0]
 	var farthest_dist = 0.0
 	for lp in leaf_points:
@@ -630,7 +630,7 @@ func map_leaf_veins_v2():
 		if dist_to_point > farthest_dist:
 			farthest_point = lp
 			farthest_dist = dist_to_point
-	print("Build list of Central Points")
+#	print("Build list of Central Points")
 	## Crawl along straight light from Origin to Furthest
 	## Find closest Central Point and add to list
 	var point_steps : Array = []
@@ -640,12 +640,12 @@ func map_leaf_veins_v2():
 		var closest_cen_point = $Area2D.get_closest_central_point(percent_pos)
 		if !point_steps.has(closest_cen_point) and closest_cen_point != null:
 			point_steps.append(closest_cen_point)
-	print("Build the line, using point steps if necessary")
+#	print("Build the line, using point steps if necessary")
 	var main_path : PackedVector2Array = []
 	var control_1 = origin_pos.lerp(farthest_point.visual_node.position, 0.5)
 	var control_2 = control_1
 	if point_steps.size() > 0:
-		print("Point Steps are present, use them.")
+#		print("Point Steps are present, use them.")
 		if point_steps.size() < 2:
 			control_1 = point_steps[0]
 			control_2 = control_1
@@ -663,9 +663,9 @@ func map_leaf_veins_v2():
 				var section_b = range(midpoint + 1, point_steps.size() - 1)
 				## Get centroid of a and b, 0.5 lerp from a to mid, and b to mid
 				## use results of lerp for control_1 and 2
-			print("Excess point steps are available, truncate and average them out.")
+#			print("Excess point steps are available, truncate and average them out.")
 	else:
-		print("No point steps are available, resort to anchoring to closest grid point.")
+#		print("No point steps are available, resort to anchoring to closest grid point.")
 		var min_clamp = origin_pos
 		var max_clamp = farthest_point.visual_node.position
 		if origin_pos > max_clamp:
@@ -700,7 +700,7 @@ func update_leaf_visual(hd : bool):
 		draw_leaf_veins()
 	else:
 		leaf_poly.visible = false
-		print("Leaf has too few points")
+#		print("Leaf has too few points")
 
 
 func update_leaf_shape():
@@ -719,7 +719,7 @@ func draw_leaf_shape(points : PackedVector2Array):
 
 
 func draw_leaf_texture(points : PackedVector2Array):
-	print("Polygon UV Data works on a scale of the Texture!")
+#	print("Polygon UV Data works on a scale of the Texture!")
 	var count = points.size()
 	var colors : PackedColorArray = PackedColorArray()
 	var uvs : PackedVector2Array = PackedVector2Array()

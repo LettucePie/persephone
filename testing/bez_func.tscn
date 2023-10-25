@@ -10,11 +10,11 @@ icon = ExtResource("2_u80bp")
 
 [node name="control_1" type="Sprite2D" parent="."]
 modulate = Color(1, 0.266667, 1, 1)
-position = Vector2(173, 305)
+position = Vector2(409, 435)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_vmusl")
 
 [node name="control_2" type="Sprite2D" parent="."]
-position = Vector2(524, 42)
+position = Vector2(434, 434)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_vmusl")
