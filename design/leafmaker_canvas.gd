@@ -1,11 +1,11 @@
 extends Node2D
 
-
 @export var leaf_point_object : PackedScene
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var leaf_gradient_default: Gradient
 @export var leaf_texture_default: Texture2D
 @export var vein_texture : Texture2D
+@export var round_points_enabled : bool = false
 #@export var grid_size : float = 10.0
 @export var grid_density : int = 12
 @export var in_tangent_height : float = 0.75
@@ -125,7 +125,7 @@ func recenter_origin():
 		slide_curve(old_position - new_position)
 		maximize_curve_scale(new_position)
 		fit_curve_scale(new_position, get_window().get_size().x, new_position.y)
-		update_leaf_visual(true)
+		update_leaf_visual(round_points_enabled)
 
 
 func slide_curve(offset : Vector2):
@@ -299,21 +299,24 @@ func point_selected(visual : Area2D):
 
 func point_tapped(visual : Area2D):
 	print("VisualNode Tapped: ", visual)
-	var leafpoint = null
-	leafpoint = find_leafpoint_from_visual(visual)
-	if leafpoint != null and visual.position != leaf_origin.position:
-		if editor_mode == EditorMode.SHAPE_MODE \
-		and current_mode == Mode.EDIT_MODE:
-			switch_point_type(leafpoint)
-			visual.set_node_type(leafpoint.round_point)
-			update_round_neighbors(leafpoint)
-			if symmetry_mode and leafpoint.symmetry:
-				switch_point_type(leafpoint.symmetry_pair)
-				leafpoint.symmetry_pair.visual_node.set_node_type(leafpoint.round_point)
-				update_round_neighbors(leafpoint.symmetry_pair)
-		elif editor_mode == EditorMode.VEIN_MODE:
-			print("Tapping LeafPoint: ", leafpoint, " In Vein Editor Mode")
-		update_leaf_visual(true)
+	if round_points_enabled:
+		var leafpoint = null
+		leafpoint = find_leafpoint_from_visual(visual)
+		if leafpoint != null and visual.position != leaf_origin.position:
+			if editor_mode == EditorMode.SHAPE_MODE \
+			and current_mode == Mode.EDIT_MODE:
+				switch_point_type(leafpoint)
+				visual.set_node_type(leafpoint.round_point)
+				update_round_neighbors(leafpoint)
+				if symmetry_mode and leafpoint.symmetry:
+					switch_point_type(leafpoint.symmetry_pair)
+					leafpoint.symmetry_pair.visual_node.set_node_type(leafpoint.round_point)
+					update_round_neighbors(leafpoint.symmetry_pair)
+			elif editor_mode == EditorMode.VEIN_MODE:
+				print("Tapping LeafPoint: ", leafpoint, " In Vein Editor Mode")
+			update_leaf_visual(round_points_enabled)
+	else:
+		print("Isn't that fun")
 
 
 func detect_intersection(pos : Vector2, sym_pair : bool):
@@ -381,9 +384,8 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 	leaf_points.insert(curve_index, new_point)
 	update_leaf_point_indeces(curve_index)
 #	update_round_neighbors(new_point)
-	update_leaf_visual(true)
+	update_leaf_visual(round_points_enabled)
 	update_leaf_shape()
-	map_leaf_veins_v2()
 	if symmetry_mode:
 		if !sym_pair:
 			print("Add in sym pair coords")
@@ -402,10 +404,10 @@ func remove_point(leaf_point : LeafPoint):
 		leaf_points.remove_at(leaf_point.curve_index)
 		leaf_point.queue_free()
 		update_leaf_point_indeces(previous_index)
-		update_round_neighbors(leaf_points[previous_index])
-		update_leaf_visual(true)
+		if round_points_enabled:
+			update_round_neighbors(leaf_points[previous_index])
+		update_leaf_visual(round_points_enabled)
 		update_leaf_shape()
-		map_leaf_veins_v2()
 
 
 func update_leaf_point_indeces(range_start : int):
@@ -467,7 +469,7 @@ func pair_symmetry_points():
 			pos_b.x = leaf_origin.position.x
 			pos_b.x += leaf_origin.position.x - pos_a.x
 			set_point_position(side_b[i], pos_b)
-			if side_a[i].round_point != side_b[i].round_point:
+			if side_a[i].round_point != side_b[i].round_point and round_points_enabled:
 				switch_point_type(side_b[i])
 				side_b[i].visual_node.set_node_type(side_b[i].round_point)
 				update_round_neighbors(side_b[i])
@@ -476,7 +478,7 @@ func pair_symmetry_points():
 			pos_center.x = leaf_origin.position.x
 			set_point_position(leaf_points[midpoint], pos_center)
 			leaf_points[midpoint].midpoint = true
-		update_leaf_visual(true)
+		update_leaf_visual(round_points_enabled)
 	else:
 		print("ERROR Symmetry Sides are uneven... somehow")
 
@@ -548,15 +550,16 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			mirror_pos.x = leaf_origin.position.x + difference
 			leaf_curve.set_point_position(leafpoint.symmetry_pair.curve_index, mirror_pos)
 			leafpoint.symmetry_pair.set_position(mirror_pos)
-			update_round_neighbors(leafpoint.symmetry_pair)
+			if round_points_enabled:
+				update_round_neighbors(leafpoint.symmetry_pair)
 		elif leafpoint.midpoint:
 #			print("Moving Midpoint")
 			leafpoint.visual_node.position.x = leaf_origin.position.x
 	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
-	update_round_neighbors(leafpoint)
-	update_leaf_visual(true)
+	if round_points_enabled:
+		update_round_neighbors(leafpoint)
+	update_leaf_visual(round_points_enabled)
 	update_leaf_shape()
-	map_leaf_veins_v2()
 
 
 func set_point_position(leafpoint, pos):
@@ -575,115 +578,14 @@ func update_round_neighbors(leafpoint : LeafPoint):
 
 
 func switch_point_type(leaf_point):
-	if leaf_point.round_point:
-		leaf_curve.set_point_in(leaf_point.curve_index, Vector2.ZERO)
-		leaf_curve.set_point_out(leaf_point.curve_index, Vector2.ZERO)
-		leaf_point.round_point = false
-	else:
-		update_round_point(leaf_point)
-		leaf_point.round_point = true
-
-
-func map_leaf_veins():
-	vein_paths.clear()
-#	print("Find Highest Point from Origin")
-	var baked_points = leaf_curve.get_baked_points()
-	var origin_pos : Vector2 = leaf_origin.position
-	var high_center = origin_pos
-	for bp in baked_points:
-		if bp.x > origin_pos.x - 3 and bp.x < origin_pos.x + 3:
-			if bp.y < high_center.y:
-				high_center = bp
-#	print("Find Farthest Point from Origin")
-	var farthest_point = leaf_points[0]
-	var farthest_dist = 0.0
-	for lp in leaf_points:
-		var dist_to_point = lp.visual_node.position.distance_to(origin_pos)
-		if dist_to_point > farthest_dist:
-			farthest_point = lp
-			farthest_dist = dist_to_point
-#	print("Find Midpoints for origin to Highest, and Highest to Farthest")
-	var midpoint_origin = origin_pos.lerp(high_center, 0.5)
-	var midpoint_farthest = farthest_point.visual_node.position.lerp(high_center, 0.5)
-#	print("Interpolate Points")
-	var main_path : PackedVector2Array = []
-	for i in 10:
-		main_path.append(
-			origin_pos.bezier_interpolate(
-				midpoint_origin, 
-				midpoint_farthest, 
-				farthest_point.visual_node.position, 
-				float(i) / 10.0)
-		)
-	vein_paths.append(main_path)
-
-
-func map_leaf_veins_v2():
-	vein_paths.clear()
-	var baked_points = leaf_curve.get_baked_points()
-	var origin_pos : Vector2 = leaf_origin.position
-#	print("Find Farthest Point from Origin")
-	var farthest_point = leaf_points[0]
-	var farthest_dist = 0.0
-	for lp in leaf_points:
-		var dist_to_point = lp.visual_node.position.distance_to(origin_pos)
-		if dist_to_point > farthest_dist:
-			farthest_point = lp
-			farthest_dist = dist_to_point
-#	print("Build list of Central Points")
-	## Crawl along straight light from Origin to Furthest
-	## Find closest Central Point and add to list
-	var point_steps : Array = []
-	for i in 8:
-		var percent = float(i) / 8.0
-		var percent_pos = origin_pos.lerp(farthest_point.visual_node.position, percent)
-		var closest_cen_point = $Area2D.get_closest_central_point(percent_pos)
-		if !point_steps.has(closest_cen_point) and closest_cen_point != null:
-			point_steps.append(closest_cen_point)
-#	print("Build the line, using point steps if necessary")
-	var main_path : PackedVector2Array = []
-	var control_1 = origin_pos.lerp(farthest_point.visual_node.position, 0.5)
-	var control_2 = control_1
-	if point_steps.size() > 0:
-#		print("Point Steps are present, use them.")
-		if point_steps.size() < 2:
-			control_1 = point_steps[0]
-			control_2 = control_1
-		elif point_steps.size() == 2:
-			control_1 = point_steps[0]
-			control_2 = point_steps[1]
-		elif point_steps.size() > 2:
-			if point_steps.size() % 2 == 0:
-				var section_a = range(0, (point_steps.size() / 2) - 1)
-				var section_b = range(point_steps.size() / 2, point_steps.size() - 1)
-				## Get centroid of a and b, use result as control_1 and 2
-			else:
-				var midpoint = point_steps.size() / 2
-				var section_a = range(0, midpoint - 1)
-				var section_b = range(midpoint + 1, point_steps.size() - 1)
-				## Get centroid of a and b, 0.5 lerp from a to mid, and b to mid
-				## use results of lerp for control_1 and 2
-#			print("Excess point steps are available, truncate and average them out.")
-	else:
-#		print("No point steps are available, resort to anchoring to closest grid point.")
-		var min_clamp = origin_pos
-		var max_clamp = farthest_point.visual_node.position
-		if origin_pos > max_clamp:
-			min_clamp = max_clamp
-			max_clamp = origin_pos
-		var closest_point = $Area2D.get_closest_grid_point(control_1, min_clamp, max_clamp)
-		if closest_point != null:
-			control_1 = closest_point
-			control_2 = closest_point
-	for i in 10:
-		main_path.append(
-			origin_pos.bezier_interpolate(
-				control_1, 
-				control_2, 
-				farthest_point.visual_node.position, 
-				float(i) / 10.0)
-		)
-	vein_paths.append(main_path)
+	if round_points_enabled:
+		if leaf_point.round_point:
+			leaf_curve.set_point_in(leaf_point.curve_index, Vector2.ZERO)
+			leaf_curve.set_point_out(leaf_point.curve_index, Vector2.ZERO)
+			leaf_point.round_point = false
+		else:
+			update_round_point(leaf_point)
+			leaf_point.round_point = true
 
 
 func update_leaf_visual(hd : bool):
@@ -798,34 +700,3 @@ func _on_Maximize_pressed():
 #	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
 
-
-func _on_adjustment_slide_changed_value(target, value):
-	if target == 0:
-		in_tangent_height = value
-	elif target == 1:
-		out_tangent_height = value
-	elif target == 2:
-		in_dir_force = value
-	elif target == 3:
-		out_dir_force = value
-	print("Updating Square_Point float params")
-	for lp in leaf_points:
-		if lp.round_point:
-			update_round_point(lp)
-	update_leaf_visual(true)
-
-
-func _on_adjustment_slide_changed_round_value(target, value):
-	if target == 0:
-		in_tangent_height_round = value
-	elif target == 1:
-		out_tangent_height_round = value
-	elif target == 2:
-		in_dir_force_round = value
-	elif target == 3:
-		out_dir_force_round = value
-	print("Updating Round_Point float params")
-	for lp in leaf_points:
-		if lp.round_point:
-			update_round_point(lp)
-	update_leaf_visual(true)
