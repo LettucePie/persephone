@@ -1,0 +1,40 @@
+[gd_scene load_steps=3 format=3 uid="uid://d1fav6mylmh6d"]
+
+[ext_resource type="Script" path="res://design/coloring.gd" id="1_ushvk"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ghb7t"]
+
+[node name="coloring" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_ushvk")
+
+[node name="canvas" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.883
+offset_bottom = -0.184021
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("PlaceholderTexture2D_ghb7t")
+expand_mode = 1
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.887
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.223999
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.8, 0.427451, 0.988235, 1)
+
+[connection signal="gui_input" from="canvas" to="." method="_on_canvas_gui_input"]
+[connection signal="mouse_exited" from="canvas" to="." method="_on_canvas_mouse_exited"]
