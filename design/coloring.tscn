@@ -36,5 +36,4 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.8, 0.427451, 0.988235, 1)
 
-[connection signal="gui_input" from="canvas" to="." method="_on_canvas_gui_input"]
 [connection signal="mouse_exited" from="canvas" to="." method="_on_canvas_mouse_exited"]
