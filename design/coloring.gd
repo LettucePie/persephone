@@ -56,13 +56,26 @@ func convert_to_image_space(canvas_point : Vector2, dimension : Vector2):
 
 
 func color_at(point : Vector2):
-	print(point.distance_squared_to(prev_point))
-	prev_point = point
 	var center_offset = point - (Vector2(brush_size, brush_size) * 0.5)
-	canvas_img.blend_rect(
-		brush_tip, 
-		Rect2i(Vector2i.ZERO, Vector2i(brush_size, brush_size)), 
-		center_offset)
+	var dist = center_offset.distance_squared_to(prev_point)
+	var gapcount = int(dist / brush_size)
+	if gapcount > 0 and gapcount < 200:
+		for gap_idx in gapcount:
+			var percent = float(gap_idx + 1) / float(gapcount + 1)
+			canvas_img.blend_rect(
+				brush_tip, 
+				Rect2i(Vector2i.ZERO, Vector2i(brush_size, brush_size)), 
+				prev_point.lerp(center_offset, percent)
+			)
+	if gapcount >= 200:
+		print("Draw Request too large")
+		brush_pressed = false
+	else:
+		prev_point = center_offset
+		canvas_img.blend_rect(
+			brush_tip, 
+			Rect2i(Vector2i.ZERO, Vector2i(brush_size, brush_size)), 
+			center_offset)
 	display_image()
 
 
