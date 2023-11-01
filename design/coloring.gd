@@ -2,10 +2,21 @@ extends Control
 
 @export var image_w : int = 1024
 @export var image_h : int = 1024
+@export var brush_tip_textures : Array[Texture2D]
+#@export var brush_12 : Texture2D
+#@export var brush_24 : Texture2D
+#@export var brush_48 : Texture2D
+
+class BrushTip:
+	var tex : Texture
+	var img : Image
+	var pix : int
+
 
 var canvas_img : Image
-var brush_tip : Image
-var brush_size : int = 24
+var brush_tips : Array[BrushTip]
+var current_brush_tip : BrushTip
+var current_color : Color = Color.WHITE
 var brush_scale : float = 1.0
 
 var brush_pressed : bool = false
@@ -17,13 +28,21 @@ func _ready():
 	make_brush_tips()
 	canvas_img = Image.create(image_w, image_h, false, 5)
 	display_image()
-	print(brush_size, " ", brush_size * brush_size)
+#	print(brush_size, " ", brush_size * brush_size)
 
 
 func make_brush_tips():
-	var new_tip = Image.create(brush_size, brush_size, false, 5)
-	new_tip.fill(Color.WHITE)
-	brush_tip = new_tip
+	for btex in brush_tip_textures:
+		var new_tip = BrushTip.new()
+		new_tip.tex = btex
+		new_tip.img = btex.get_image()
+		new_tip.pix = new_tip.img.get_width()
+		brush_tips.append(new_tip)
+	current_brush_tip = brush_tips[0]
+
+
+func color_brush_tip(brush_tip : BrushTip):
+	pass
 
 
 func display_image():
@@ -56,15 +75,15 @@ func convert_to_image_space(canvas_point : Vector2, dimension : Vector2):
 
 
 func color_at(point : Vector2):
-	var center_offset = point - (Vector2(brush_size, brush_size) * 0.5)
+	var center_offset = point - (Vector2(current_brush_tip.pix, current_brush_tip.pix) * 0.5)
 	var dist = center_offset.distance_squared_to(prev_point)
-	var gapcount = int(dist / brush_size)
+	var gapcount = int(dist / current_brush_tip.pix)
 	if gapcount > 0 and gapcount < 200:
 		for gap_idx in gapcount:
 			var percent = float(gap_idx + 1) / float(gapcount + 1)
 			canvas_img.blend_rect(
-				brush_tip, 
-				Rect2i(Vector2i.ZERO, Vector2i(brush_size, brush_size)), 
+				current_brush_tip.img, 
+				Rect2i(Vector2i.ZERO, Vector2i(current_brush_tip.pix, current_brush_tip.pix)), 
 				prev_point.lerp(center_offset, percent)
 			)
 	if gapcount >= 200:
@@ -73,11 +92,14 @@ func color_at(point : Vector2):
 	else:
 		prev_point = center_offset
 		canvas_img.blend_rect(
-			brush_tip, 
-			Rect2i(Vector2i.ZERO, Vector2i(brush_size, brush_size)), 
+			current_brush_tip.img, 
+			Rect2i(Vector2i.ZERO, Vector2i(current_brush_tip.pix, current_brush_tip.pix)), 
 			center_offset)
 	display_image()
 
 
-
-
+func _on_brush_size_pressed(b_size : int):
+	print("Changing BrushTip to Size: ", b_size)
+	for b in brush_tips:
+		if b.pix == b_size:
+			current_brush_tip = b

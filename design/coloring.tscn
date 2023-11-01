@@ -1,6 +1,9 @@
-[gd_scene load_steps=3 format=3 uid="uid://d1fav6mylmh6d"]
+[gd_scene load_steps=6 format=3 uid="uid://d1fav6mylmh6d"]
 
 [ext_resource type="Script" path="res://design/coloring.gd" id="1_ushvk"]
+[ext_resource type="Texture2D" uid="uid://dnbu2cdn5efk5" path="res://design/brush_circle_12.png" id="2_rmphh"]
+[ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/brush_circle_24.png" id="3_yhktd"]
+[ext_resource type="Texture2D" uid="uid://ctwa633fuvfwu" path="res://design/brush_circle_48.png" id="4_o3o2o"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_ghb7t"]
 
@@ -13,6 +16,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_ushvk")
+brush_tip_textures = Array[Texture2D]([ExtResource("2_rmphh"), ExtResource("3_yhktd"), ExtResource("4_o3o2o")])
 
 [node name="canvas" type="TextureRect" parent="."]
 layout_mode = 1
@@ -36,4 +40,30 @@ grow_horizontal = 2
 grow_vertical = 0
 color = Color(0.8, 0.427451, 0.988235, 1)
 
+[node name="HBoxContainer" type="HBoxContainer" parent="ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="brush_size" type="Button" parent="ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brush Size 12"
+
+[node name="brush_size2" type="Button" parent="ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brush Size 24"
+
+[node name="brush_size3" type="Button" parent="ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brush Size 48"
+
 [connection signal="mouse_exited" from="canvas" to="." method="_on_canvas_mouse_exited"]
+[connection signal="pressed" from="ColorRect/HBoxContainer/brush_size" to="." method="_on_brush_size_pressed" binds= [12]]
+[connection signal="pressed" from="ColorRect/HBoxContainer/brush_size2" to="." method="_on_brush_size_pressed" binds= [24]]
+[connection signal="pressed" from="ColorRect/HBoxContainer/brush_size3" to="." method="_on_brush_size_pressed" binds= [48]]
