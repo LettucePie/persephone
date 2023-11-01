@@ -41,8 +41,19 @@ func make_brush_tips():
 	current_brush_tip = brush_tips[0]
 
 
-func color_brush_tip(brush_tip : BrushTip):
-	pass
+func color_brush_tip(brush_tip : BrushTip, color : Color):
+	var dimension = brush_tip.img.get_size()
+	## Refresh Image data by pulling from Tex again
+	brush_tip.img = brush_tip.tex.get_image()
+	for x in dimension.x:
+		for y in dimension.y:
+			var pix_color = brush_tip.img.get_pixel(x, y)
+			if pix_color != Color(0, 0, 0, 0):
+				pix_color.r = color.r
+				pix_color.g = color.g
+				pix_color.b = color.b
+				pix_color.a = lerp(0.0, color.a, (pix_color.a / 1.0))
+				brush_tip.img.set_pixel(x, y, pix_color)
 
 
 func display_image():
@@ -103,3 +114,10 @@ func _on_brush_size_pressed(b_size : int):
 	for b in brush_tips:
 		if b.pix == b_size:
 			current_brush_tip = b
+			color_brush_tip(b, current_color)
+
+
+func _on_color_picker_button_color_changed(color):
+	print("Changing BrushTip to Color: ", color)
+	current_color = color
+	color_brush_tip(current_brush_tip, color)

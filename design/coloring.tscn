@@ -63,7 +63,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Brush Size 48"
 
+[node name="ColorPickerButton" type="ColorPickerButton" parent="ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select Color"
+color = Color(1, 1, 1, 1)
+
 [connection signal="mouse_exited" from="canvas" to="." method="_on_canvas_mouse_exited"]
 [connection signal="pressed" from="ColorRect/HBoxContainer/brush_size" to="." method="_on_brush_size_pressed" binds= [12]]
 [connection signal="pressed" from="ColorRect/HBoxContainer/brush_size2" to="." method="_on_brush_size_pressed" binds= [24]]
 [connection signal="pressed" from="ColorRect/HBoxContainer/brush_size3" to="." method="_on_brush_size_pressed" binds= [48]]
+[connection signal="color_changed" from="ColorRect/HBoxContainer/ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
