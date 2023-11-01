@@ -74,3 +74,4 @@ color = Color(1, 1, 1, 1)
 [connection signal="pressed" from="ColorRect/HBoxContainer/brush_size2" to="." method="_on_brush_size_pressed" binds= [24]]
 [connection signal="pressed" from="ColorRect/HBoxContainer/brush_size3" to="." method="_on_brush_size_pressed" binds= [48]]
 [connection signal="color_changed" from="ColorRect/HBoxContainer/ColorPickerButton" to="." method="_on_color_picker_button_color_changed"]
+[connection signal="popup_closed" from="ColorRect/HBoxContainer/ColorPickerButton" to="." method="_on_color_picker_button_popup_closed"]

@@ -118,6 +118,10 @@ func _on_brush_size_pressed(b_size : int):
 
 
 func _on_color_picker_button_color_changed(color):
-	print("Changing BrushTip to Color: ", color)
+	print("Changing to Color: ", color)
 	current_color = color
-	color_brush_tip(current_brush_tip, color)
+
+
+func _on_color_picker_button_popup_closed():
+	print("Assigning Current Color: ", current_color, " to Current BrushTip.")
+	color_brush_tip(current_brush_tip, current_color)
