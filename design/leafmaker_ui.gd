@@ -2,6 +2,7 @@ extends Control
 
 signal symmetry(mode)
 
+@onready var coloring : ColorTool = $coloring
 var symmetry_mode : bool = false
 enum EditorMode {MAIN_MODE, COLOR_MODE}
 var control_mode : EditorMode = EditorMode.MAIN_MODE
@@ -11,6 +12,11 @@ func _ready():
 	$SymmetryLine.visible = symmetry_mode
 	$main_controls.show()
 	$coloring.hide()
+
+
+func _input(event):
+	if control_mode == EditorMode.COLOR_MODE:
+		coloring.color_input(event)
 
 
 func _on_mode_item_selected(index):

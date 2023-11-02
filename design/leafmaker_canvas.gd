@@ -707,3 +707,9 @@ func _on_ui_resized():
 func _on_Maximize_pressed():
 	maximize_curve_scale(leaf_origin.position)
 
+
+func _on_coloring_send_texture(tex):
+	leaf_texture = tex
+	## Full update or direct update?
+#	update_leaf_visual(round_points_enabled)
+	leaf_poly.texture = tex

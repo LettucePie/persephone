@@ -1,5 +1,7 @@
 extends Control
 
+class_name ColorTool
+
 signal send_texture(tex)
 
 @export var image_w : int = 1024
@@ -16,6 +18,8 @@ class BrushTip:
 
 
 var canvas_img : Image
+var canvas_min : Vector2 = Vector2.ZERO
+var canvas_max : Vector2 = size
 var brush_tips : Array[BrushTip]
 var current_brush_tip : BrushTip
 var current_color : Color = Color.WHITE
@@ -72,33 +76,33 @@ func display_image():
 	emit_signal("send_texture", ImageTexture.create_from_image(canvas_img))
 
 
-func _process(delta):
-	pass
-
-
-func _input(event):
+func color_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == 1:
 			brush_pressed = event.pressed
 			if event.pressed:
 				print("Canvas Pressed")
-				prev_point = convert_to_image_space($canvas.get_local_mouse_position(), $canvas.size)
+				prev_point = convert_to_image_space(get_local_mouse_position())
 	if event is InputEventMouseMotion and brush_pressed:
-		color_at(convert_to_image_space($canvas.get_local_mouse_position(), $canvas.size))
+		color_at(convert_to_image_space(get_local_mouse_position()))
 
 
 func _on_canvas_mouse_exited():
 	brush_pressed = false
 
 
-func convert_to_image_space(canvas_point : Vector2, dimension : Vector2):
-#	print("Canvas Point: ", canvas_point, " Dimension: ", dimension)
-	var x = canvas_point.x / dimension.x
-	var y = canvas_point.y / dimension.y
+func convert_to_image_space(canvas_point : Vector2):
+	print("Converting Canvas Point: ", canvas_point)
+	var x = inverse_lerp(canvas_min.x, canvas_max.x, canvas_point.x)
+	var y = inverse_lerp(canvas_min.y, canvas_max.y, canvas_point.y)
+#	var x = canvas_point.x - canvas_min.x / canvas_max.x - canvas_min.x
+#	var y = canvas_point.y - canvas_min.y / canvas_max.y - canvas_min.y
+	print("Canvas Position Percents x y: ", x, " | ", y)
 	return Vector2(int(image_w * x), int(image_h * y))
 
 
 func color_at(point : Vector2):
+	print("Coloring at point: ", point)
 	var center_offset = point - (Vector2(current_brush_tip.pix, current_brush_tip.pix) * 0.5)
 	var dist = center_offset.distance_squared_to(prev_point)
 	var gapcount = int(dist / current_brush_tip.pix)
@@ -140,6 +144,7 @@ func _on_color_picker_button_popup_closed():
 	color_brush_tip(current_brush_tip, current_color)
 
 
-func _on_canvas_color_bounds(min, max):
-	$canvas.position = min
-	$canvas.size = max
+func _on_canvas_color_bounds(min : Vector2, max : Vector2):
+	print("Setting Canvas Min and Max: ", min, " | ", max)
+	canvas_min = min
+	canvas_max = max
