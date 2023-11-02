@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=16 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/leafmaker.gd" id="2"]
@@ -11,20 +11,19 @@
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Script" path="res://design/Math.gd" id="8_jcn1r"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="9"]
-
-[sub_resource type="Gradient" id="1"]
-offsets = PackedFloat32Array(0, 0.481283, 1)
-colors = PackedColorArray(0.0666667, 0.866667, 0.0196078, 1, 0.0604248, 0.34375, 0.0781326, 1, 0.0666667, 0.866667, 0.0196078, 1)
+[ext_resource type="Script" path="res://design/coloring.gd" id="12_a3032"]
+[ext_resource type="Texture2D" uid="uid://dnbu2cdn5efk5" path="res://design/brush_circle_12.png" id="13_tcdno"]
+[ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/brush_circle_24.png" id="14_qxpf8"]
+[ext_resource type="Texture2D" uid="uid://ctwa633fuvfwu" path="res://design/brush_circle_48.png" id="15_5l1ma"]
 
 [node name="leafmaker" type="Node"]
 script = ExtResource("2")
+leaf_texture_default = ExtResource("9")
 
 [node name="canvas" type="Node2D" parent="."]
 script = ExtResource("1")
 leaf_point_object = ExtResource("3_w3m6b")
 node_scale = Vector2(0.2, 0.2)
-leaf_gradient_default = SubResource("1")
-leaf_texture_default = ExtResource("9")
 vein_texture = ExtResource("5_rh8kf")
 grid_density = 14
 
@@ -68,7 +67,6 @@ theme = ExtResource("7")
 script = ExtResource("5")
 
 [node name="main_controls" type="HBoxContainer" parent="ui"]
-visible = false
 layout_mode = 0
 anchor_top = 1.0
 anchor_right = 1.0
@@ -85,11 +83,6 @@ text = "Symmetry Toggle"
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Color Settings"
-
-[node name="Vein" type="Button" parent="ui/main_controls"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Vein Settings"
 
 [node name="HSlider" type="HSlider" parent="ui/main_controls"]
 custom_minimum_size = Vector2(100, 0)
@@ -116,24 +109,6 @@ popup/item_1/id = 1
 popup/item_2/text = "Delete Mode"
 popup/item_2/id = 2
 
-[node name="vein_controls" type="HBoxContainer" parent="ui"]
-layout_mode = 0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -94.0
-alignment = 1
-
-[node name="close_vein" type="Button" parent="ui/vein_controls"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Finish"
-
-[node name="auto_vein" type="Button" parent="ui/vein_controls"]
-layout_mode = 2
-size_flags_horizontal = 3
-text = "Auto Vein"
-
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
 layout_mode = 0
 anchor_left = 0.5
@@ -155,6 +130,70 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="coloring" type="Control" parent="ui"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("12_a3032")
+brush_tip_textures = Array[Texture2D]([ExtResource("13_tcdno"), ExtResource("14_qxpf8"), ExtResource("15_5l1ma")])
+
+[node name="canvas" type="Control" parent="ui/coloring"]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.846
+offset_bottom = -0.208008
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ColorRect" type="ColorRect" parent="ui/coloring"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.856
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 0.311951
+grow_horizontal = 2
+grow_vertical = 0
+color = Color(0.8, 0.427451, 0.988235, 1)
+
+[node name="HBoxContainer" type="HBoxContainer" parent="ui/coloring/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="done_color" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+layout_mode = 2
+text = "Done"
+
+[node name="brush_size" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brush Size 12"
+
+[node name="brush_size2" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brush Size 24"
+
+[node name="brush_size3" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Brush Size 48"
+
+[node name="ColorPickerButton" type="ColorPickerButton" parent="ui/coloring/ColorRect/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Select Color"
+color = Color(1, 1, 1, 1)
+
+[connection signal="color_bounds" from="canvas" to="ui/coloring" method="_on_canvas_color_bounds"]
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
 [connection signal="area_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
 [connection signal="area_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
@@ -164,8 +203,14 @@ size_flags_vertical = 3
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]
 [connection signal="toggled" from="ui/main_controls/Symmetry" to="ui" method="_on_symmetry_toggled"]
-[connection signal="pressed" from="ui/main_controls/Vein" to="ui" method="_on_vein_pressed"]
+[connection signal="pressed" from="ui/main_controls/Color" to="ui" method="_on_color_pressed"]
 [connection signal="item_selected" from="ui/main_controls/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="item_selected" from="ui/main_controls/Mode" to="ui" method="_on_mode_item_selected"]
-[connection signal="pressed" from="ui/vein_controls/close_vein" to="ui" method="_on_close_vein_pressed"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
+[connection signal="mouse_exited" from="ui/coloring/canvas" to="ui/coloring" method="_on_canvas_mouse_exited"]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/done_color" to="ui" method="_on_done_color_pressed"]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [12]]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size2" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [24]]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size3" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [48]]
+[connection signal="color_changed" from="ui/coloring/ColorRect/HBoxContainer/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_color_changed" flags=18]
+[connection signal="popup_closed" from="ui/coloring/ColorRect/HBoxContainer/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_popup_closed" flags=18]

@@ -1,9 +1,9 @@
 extends Node2D
 
+signal color_bounds(min, max)
+
 @export var leaf_point_object : PackedScene
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
-@export var leaf_gradient_default: Gradient
-@export var leaf_texture_default: Texture2D
 @export var vein_texture : Texture2D
 @export var round_points_enabled : bool = false
 #@export var grid_size : float = 10.0
@@ -79,14 +79,21 @@ var vein_visuals : Array = []
 @onready var leaf_origin = $LeafOrigin
 @onready var leaf_curve : Curve2D = Curve2D.new()
 @onready var leaf_color : Color = Color(0.2, 0.8, 0.1, 1.0)
-@onready var leaf_gradient : Gradient = leaf_gradient_default
-@onready var leaf_texture : Texture2D = leaf_texture_default
+@onready var leaf_texture : Texture2D
 
 
 func _ready():
 	screen_size = get_window().get_size()
 	print("Centering Origin First Time")
 	recenter_origin()
+
+
+func load_data(data):
+	leaf_texture = data
+	build_default()
+
+
+func build_default():
 	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
@@ -623,7 +630,7 @@ func draw_leaf_shape(points : PackedVector2Array):
 func draw_leaf_texture(points : PackedVector2Array):
 #	print("Polygon UV Data works on a scale of the Texture!")
 	var count = points.size()
-	var colors : PackedColorArray = PackedColorArray()
+#	var colors : PackedColorArray = PackedColorArray()
 	var uvs : PackedVector2Array = PackedVector2Array()
 	var screen_uv_0 = Vector2(5, 5)
 	var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
@@ -639,19 +646,20 @@ func draw_leaf_texture(points : PackedVector2Array):
 			space_uv_0.y = b.y
 		if b.y > space_uv_1.y:
 			space_uv_1.y = b.y
+	emit_signal("color_bounds", space_uv_0, space_uv_1)
 	for i in count:
 		var baked_point_pos = points[i]
 		var percent = float(i) / float(count)
 		var scale_position = Vector2(
 				inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
 				inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
-		colors.append(leaf_gradient.sample(scale_position.x))
+#		colors.append(leaf_gradient.sample(scale_position.x))
 		var scale_texture = Vector2(
 				lerp(0.0, texture_size.x, scale_position.x),
 				lerp(0.0, texture_size.y, scale_position.y))
 		uvs.append(scale_texture)
 	leaf_poly.texture = leaf_texture
-	leaf_poly.vertex_colors = colors
+#	leaf_poly.vertex_colors = colors
 	leaf_poly.uv = uvs
 
 
@@ -697,6 +705,5 @@ func _on_ui_resized():
 
 
 func _on_Maximize_pressed():
-#	print("Maximize Curve Pressed")
 	maximize_curve_scale(leaf_origin.position)
 

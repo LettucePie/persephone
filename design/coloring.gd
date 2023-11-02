@@ -1,5 +1,7 @@
 extends Control
 
+signal send_texture(tex)
+
 @export var image_w : int = 1024
 @export var image_h : int = 1024
 @export var brush_tip_textures : Array[Texture2D]
@@ -26,9 +28,18 @@ var prev_point : Vector2
 func _ready():
 	print(size)
 	make_brush_tips()
-	canvas_img = Image.create(image_w, image_h, false, 5)
-	display_image()
+#	canvas_img = Image.create(image_w, image_h, false, 5)
+#	display_image()
 #	print(brush_size, " ", brush_size * brush_size)
+
+
+func load_texture(tex : Texture2D):
+	canvas_img = tex.get_image()
+	image_w = tex.get_width()
+	image_h = tex.get_height()
+	print("LeafTex Format: ", canvas_img.get_format())
+	if canvas_img.get_format() != 5:
+		canvas_img.convert(5)
 
 
 func make_brush_tips():
@@ -36,6 +47,7 @@ func make_brush_tips():
 		var new_tip = BrushTip.new()
 		new_tip.tex = btex
 		new_tip.img = btex.get_image()
+		print("Brush Tip Format: ", new_tip.img.get_format())
 		new_tip.pix = new_tip.img.get_width()
 		brush_tips.append(new_tip)
 	current_brush_tip = brush_tips[0]
@@ -57,7 +69,7 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 
 
 func display_image():
-	$canvas.texture = ImageTexture.create_from_image(canvas_img)
+	emit_signal("send_texture", ImageTexture.create_from_image(canvas_img))
 
 
 func _process(delta):
@@ -69,6 +81,7 @@ func _input(event):
 		if event.button_index == 1:
 			brush_pressed = event.pressed
 			if event.pressed:
+				print("Canvas Pressed")
 				prev_point = convert_to_image_space($canvas.get_local_mouse_position(), $canvas.size)
 	if event is InputEventMouseMotion and brush_pressed:
 		color_at(convert_to_image_space($canvas.get_local_mouse_position(), $canvas.size))
@@ -125,3 +138,8 @@ func _on_color_picker_button_color_changed(color):
 func _on_color_picker_button_popup_closed():
 	print("Assigning Current Color: ", current_color, " to Current BrushTip.")
 	color_brush_tip(current_brush_tip, current_color)
+
+
+func _on_canvas_color_bounds(min, max):
+	$canvas.position = min
+	$canvas.size = max
