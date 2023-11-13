@@ -82,7 +82,7 @@ func color_input(event):
 			brush_pressed = event.pressed
 			if event.pressed:
 				print("Canvas Pressed")
-				prev_point = convert_to_image_space(get_local_mouse_position())
+				prev_point = center_to_brush(convert_to_image_space(get_local_mouse_position()))
 	if event is InputEventMouseMotion and brush_pressed:
 		color_at(convert_to_image_space(get_local_mouse_position()))
 
@@ -101,9 +101,13 @@ func convert_to_image_space(canvas_point : Vector2):
 	return Vector2(int(image_w * x), int(image_h * y))
 
 
+func center_to_brush(point : Vector2):
+	return point - (Vector2(current_brush_tip.pix, current_brush_tip.pix) * 0.5)
+
+
 func color_at(point : Vector2):
-	print("Coloring at point: ", point)
-	var center_offset = point - (Vector2(current_brush_tip.pix, current_brush_tip.pix) * 0.5)
+	print("**Coloring at point: ", point)
+	var center_offset = center_to_brush(point)
 	var dist = center_offset.distance_squared_to(prev_point)
 	var gapcount = int(dist / current_brush_tip.pix)
 	if gapcount > 0 and gapcount < 200:
