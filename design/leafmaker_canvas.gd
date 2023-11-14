@@ -1,6 +1,7 @@
 extends Node2D
 
 signal color_bounds(min, max)
+signal update_canvas_tex(tex)
 
 @export var leaf_point_object : PackedScene
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
@@ -708,8 +709,10 @@ func _on_Maximize_pressed():
 	maximize_curve_scale(leaf_origin.position)
 
 
-func _on_coloring_send_texture(tex):
-	leaf_texture = tex
-	## Full update or direct update?
-#	update_leaf_visual(round_points_enabled)
+func _on_coloring_display_brush_image(tex):
 	leaf_poly.texture = tex
+
+
+func _on_coloring_apply_brush_image():
+	leaf_texture = leaf_poly.texture
+	emit_signal("update_canvas_tex", leaf_texture)

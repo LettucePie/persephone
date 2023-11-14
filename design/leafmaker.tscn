@@ -179,6 +179,13 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Brush Size 48"
 
+[node name="brush_opac" type="HSlider" parent="ui/coloring/ColorRect/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+value = 100.0
+
 [node name="ColorPickerButton" type="ColorPickerButton" parent="ui/coloring/ColorRect/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -187,6 +194,7 @@ color = Color(1, 1, 1, 1)
 
 [connection signal="color_bounds" from="canvas" to="ui/coloring" method="_on_canvas_color_bounds"]
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
+[connection signal="update_canvas_tex" from="canvas" to="ui/coloring" method="load_texture"]
 [connection signal="area_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
 [connection signal="area_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
 [connection signal="body_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
@@ -199,10 +207,12 @@ color = Color(1, 1, 1, 1)
 [connection signal="item_selected" from="ui/main_controls/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="item_selected" from="ui/main_controls/Mode" to="ui" method="_on_mode_item_selected"]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
-[connection signal="send_texture" from="ui/coloring" to="canvas" method="_on_coloring_send_texture"]
+[connection signal="apply_brush_image" from="ui/coloring" to="canvas" method="_on_coloring_apply_brush_image"]
+[connection signal="display_brush_image" from="ui/coloring" to="canvas" method="_on_coloring_display_brush_image"]
 [connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/done_color" to="ui" method="_on_done_color_pressed"]
 [connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [12]]
 [connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size2" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [24]]
 [connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size3" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [48]]
+[connection signal="value_changed" from="ui/coloring/ColorRect/HBoxContainer/brush_opac" to="ui/coloring" method="_on_brush_opac_value_changed"]
 [connection signal="color_changed" from="ui/coloring/ColorRect/HBoxContainer/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_color_changed" flags=18]
 [connection signal="popup_closed" from="ui/coloring/ColorRect/HBoxContainer/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_popup_closed" flags=18]

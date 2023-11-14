@@ -2,7 +2,8 @@ extends Control
 
 class_name ColorTool
 
-signal send_texture(tex)
+signal display_brush_image(tex)
+signal apply_brush_image()
 
 @export var image_w : int = 1024
 @export var image_h : int = 1024
@@ -20,9 +21,12 @@ class BrushTip:
 var canvas_img : Image
 var canvas_min : Vector2 = Vector2.ZERO
 var canvas_max : Vector2 = size
+var brush_img : Image
+var merge_img : Image
 var brush_tips : Array[BrushTip]
 var current_brush_tip : BrushTip
 var current_color : Color = Color.WHITE
+var current_opac : float = 1.0
 var brush_scale : float = 1.0
 
 var brush_pressed : bool = false
@@ -44,6 +48,7 @@ func load_texture(tex : Texture2D):
 	print("LeafTex Format: ", canvas_img.get_format())
 	if canvas_img.get_format() != 5:
 		canvas_img.convert(5)
+	setup_brush_image()
 
 
 func make_brush_tips():
@@ -55,6 +60,13 @@ func make_brush_tips():
 		new_tip.pix = new_tip.img.get_width()
 		brush_tips.append(new_tip)
 	current_brush_tip = brush_tips[0]
+
+
+func setup_brush_image():
+	brush_img = Image.create(image_w, image_h, false, canvas_img.get_format())
+	brush_img.fill(Color(0.0, 0.0, 0.0, 0.0))
+	merge_img = Image.create(image_w, image_h, false, canvas_img.get_format())
+	merge_img.copy_from(canvas_img)
 
 
 func color_brush_tip(brush_tip : BrushTip, color : Color):
@@ -73,7 +85,24 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 
 
 func display_image():
-	emit_signal("send_texture", ImageTexture.create_from_image(canvas_img))
+	##emit_signal("send_texture", ImageTexture.create_from_image(canvas_img))
+	merge_img.copy_from(canvas_img)
+	## Apply Opac to entire brush_img
+	var brush_stroke = Image.new()
+	brush_stroke.copy_from(brush_img)
+	if current_opac < 0.99:
+		for x in image_w:
+			for y in image_h:
+				var pix_color = brush_img.get_pixel(x, y)
+				pix_color.a = lerp(0.0, current_opac, pix_color.a)
+				brush_stroke.set_pixel(x, y, pix_color)
+	merge_img.blend_rect(
+		brush_stroke, 
+		Rect2i(
+			Vector2i.ZERO,
+			Vector2i(image_w, image_h)),
+		Vector2i.ZERO)
+	emit_signal("display_brush_image", ImageTexture.create_from_image(merge_img))
 
 
 func color_input(event):
@@ -82,7 +111,15 @@ func color_input(event):
 			brush_pressed = event.pressed
 			if event.pressed:
 				print("Canvas Pressed")
-				prev_point = center_to_brush(convert_to_image_space(get_local_mouse_position()))
+				setup_brush_image()
+				prev_point = center_to_brush(
+					convert_to_image_space(
+						get_local_mouse_position()
+					)
+				)
+			else:
+				print("Canvas Released")
+				emit_signal("apply_brush_image")
 	if event is InputEventMouseMotion and brush_pressed:
 		color_at(convert_to_image_space(get_local_mouse_position()))
 
@@ -113,9 +150,11 @@ func color_at(point : Vector2):
 	if gapcount > 0 and gapcount < 200:
 		for gap_idx in gapcount:
 			var percent = float(gap_idx + 1) / float(gapcount + 1)
-			canvas_img.blend_rect(
+			brush_img.blend_rect(
 				current_brush_tip.img, 
-				Rect2i(Vector2i.ZERO, Vector2i(current_brush_tip.pix, current_brush_tip.pix)), 
+				Rect2i(Vector2i.ZERO, Vector2i(
+					current_brush_tip.pix, 
+					current_brush_tip.pix)), 
 				prev_point.lerp(center_offset, percent)
 			)
 	if gapcount >= 200:
@@ -123,7 +162,7 @@ func color_at(point : Vector2):
 		brush_pressed = false
 	else:
 		prev_point = center_offset
-		canvas_img.blend_rect(
+		brush_img.blend_rect(
 			current_brush_tip.img, 
 			Rect2i(Vector2i.ZERO, Vector2i(current_brush_tip.pix, current_brush_tip.pix)), 
 			center_offset)
@@ -152,3 +191,8 @@ func _on_canvas_color_bounds(min : Vector2, max : Vector2):
 	print("Setting Canvas Min and Max: ", min, " | ", max)
 	canvas_min = min
 	canvas_max = max
+
+
+func _on_brush_opac_value_changed(value):
+	current_opac = float(value) / float(100)
+	print("Changing Current Opacity to ", current_opac)
