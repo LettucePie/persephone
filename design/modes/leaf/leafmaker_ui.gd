@@ -6,6 +6,11 @@ signal symmetry(mode)
 var symmetry_mode : bool = false
 enum EditorMode {MAIN_MODE, COLOR_MODE}
 var control_mode : EditorMode = EditorMode.MAIN_MODE
+@onready var point_edit_buttons : Array = [
+	$main_controls/Add_Mode,
+	$main_controls/Move_Mode,
+	$main_controls/Remove_Mode
+]
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -24,6 +29,9 @@ func _on_mode_item_selected(index):
 		$table.mouse_filter = 2
 	else:
 		$table.mouse_filter = 0
+	for i in point_edit_buttons.size():
+		point_edit_buttons[i].button_pressed = (i == index)
+		point_edit_buttons[i].update_state()
 
 
 func _on_symmetry_toggled(button_pressed):

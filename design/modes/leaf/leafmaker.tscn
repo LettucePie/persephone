@@ -106,6 +106,7 @@ icon_alignment = 1
 expand_icon = true
 
 [node name="Mode" type="OptionButton" parent="ui/main_controls"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 item_count = 3
@@ -128,17 +129,6 @@ script = ExtResource("12_it2pa")
 unchecked = ExtResource("15_ur4ru")
 checked = ExtResource("16_0feru")
 
-[node name="Remove_Mode" type="CheckButton" parent="ui/main_controls"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_type_variation = &"empty_toggle"
-icon = ExtResource("15_ur4ru")
-icon_alignment = 1
-expand_icon = true
-script = ExtResource("12_it2pa")
-unchecked = ExtResource("17_qi3ng")
-checked = ExtResource("18_0032b")
-
 [node name="Move_Mode" type="CheckButton" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -149,6 +139,17 @@ expand_icon = true
 script = ExtResource("12_it2pa")
 unchecked = ExtResource("19_svng3")
 checked = ExtResource("20_p7wbl")
+
+[node name="Remove_Mode" type="CheckButton" parent="ui/main_controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("15_ur4ru")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
+unchecked = ExtResource("17_qi3ng")
+checked = ExtResource("18_0032b")
 
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
 visible = false
@@ -249,6 +250,12 @@ color = Color(1, 1, 1, 1)
 [connection signal="pressed" from="ui/main_controls/Color" to="ui" method="_on_color_pressed"]
 [connection signal="item_selected" from="ui/main_controls/Mode" to="canvas" method="_on_Mode_item_selected"]
 [connection signal="item_selected" from="ui/main_controls/Mode" to="ui" method="_on_mode_item_selected"]
+[connection signal="pressed" from="ui/main_controls/Add_Mode" to="canvas" method="_on_Mode_item_selected" binds= [0]]
+[connection signal="pressed" from="ui/main_controls/Add_Mode" to="ui" method="_on_mode_item_selected" binds= [0]]
+[connection signal="pressed" from="ui/main_controls/Move_Mode" to="canvas" method="_on_Mode_item_selected" binds= [1]]
+[connection signal="pressed" from="ui/main_controls/Move_Mode" to="ui" method="_on_mode_item_selected" binds= [1]]
+[connection signal="pressed" from="ui/main_controls/Remove_Mode" to="canvas" method="_on_Mode_item_selected" binds= [2]]
+[connection signal="pressed" from="ui/main_controls/Remove_Mode" to="ui" method="_on_mode_item_selected" binds= [2]]
 [connection signal="gui_input" from="ui/table" to="canvas" method="_on_table_gui_input"]
 [connection signal="apply_brush_image" from="ui/coloring" to="canvas" method="_on_coloring_apply_brush_image"]
 [connection signal="display_brush_image" from="ui/coloring" to="canvas" method="_on_coloring_display_brush_image"]
