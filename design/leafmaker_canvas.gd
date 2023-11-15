@@ -7,8 +7,6 @@ signal update_canvas_tex(tex)
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
 @export var vein_texture : Texture2D
 @export var round_points_enabled : bool = false
-#@export var grid_size : float = 10.0
-@export var grid_density : int = 12
 @export var in_tangent_height : float = 0.75
 @export var out_tangent_height : float = 0.75
 @export var in_dir_force : float = 0.5
@@ -63,7 +61,7 @@ class LeafPoint:
 
 
 var ui_control : Control
-enum EditorMode {SHAPE_MODE, VEIN_MODE, COLOR_MODE}
+enum EditorMode {SHAPE_MODE, COLOR_MODE}
 var editor_mode : EditorMode = EditorMode.SHAPE_MODE
 enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 var current_mode = Mode.ADD_MODE
@@ -85,7 +83,6 @@ var vein_visuals : Array = []
 
 func _ready():
 	screen_size = get_window().get_size()
-	print("Centering Origin First Time")
 	recenter_origin()
 
 
@@ -95,21 +92,13 @@ func load_data(data):
 
 
 func build_default():
-	print("Building Start of the Leaf")
 	leaf_curve = Curve2D.new()
 	leaf_curve.set_bake_interval(5)
 	add_point(leaf_origin.position, -1, false)
-	print("Building Rest of the Leaf")
 	starting_leaf()
-	build_detection_grid()
 
 
 func _input(event):
-	if event is InputEventKey:
-		if event.pressed:
-			if event.keycode == KEY_R:
-				print("Randomizing UV End")
-				randomize()
 	if event is InputEventMouseButton:
 		screen_pressed = event.pressed
 		if screen_pressed == false:
@@ -123,7 +112,6 @@ func _input(event):
 
 
 func recenter_origin():
-	print(leaf_origin)
 	var old_position = leaf_origin.position
 	var new_position = Vector2(get_window().get_size())
 	new_position.x *= 0.5
@@ -165,7 +153,6 @@ func fit_curve_scale(anchor : Vector2, w : float, h : float):
 			if !safe:
 				bad_actors.append([i, i_pos, bound])
 	if bad_actors.size() > 0:
-		print("Leaf Curve exceeds bounds, resize curve.")
 		## Find furthest bad actor, by comparing their position to their,
 		## exceeded Boundary.
 		var worst_actor : Array = bad_actors[0]
@@ -230,69 +217,19 @@ func starting_leaf():
 	add_point(leaf_origin.position, -1, false)
 
 
-func build_detection_grid():
-#	var x_mod = grid_size * screen_size.aspect()
-#	var y_mod = grid_size
-#	var mod_vec = Vector2(x_mod, y_mod)
-#	print(mod_vec)
-	var x_div = floorf(screen_size.x / grid_density)
-	var y_div = floorf(leaf_origin.position.y / grid_density)
-	var pos_array : PackedVector2Array = []
-	for y_pos in range(1, grid_density - 1):
-		for x_pos in range(1, grid_density - 1):
-			pos_array.append(Vector2(floorf(x_pos * x_div), floorf(y_pos * y_div)))
-	if detection_grid.size() > 0:
-		for d in detection_grid:
-			d.queue_free()
-	detection_grid.clear()
-	var circle_shape = CircleShape2D.new()
-	circle_shape.radius = 2.5
-	for p in pos_array:
-		var new_area = Area2D.new()
-		var new_coll_shape = CollisionShape2D.new()
-		new_coll_shape.set_shape(circle_shape)
-		new_area.add_child(new_coll_shape)
-		new_area.monitoring = true
-		new_area.input_pickable = false
-		new_area.set_collision_layer_value(1, false)
-		new_area.set_collision_layer_value(4, true)
-		new_area.set_collision_mask_value(1, false)
-		new_area.set_collision_mask_value(4, true)
-		new_area.position = p
-		new_area.name = "X_" + str(int(p.x)) + "_Y_" + str(int(p.y))
-		detection_grid.append(new_area)
-		add_child(new_area)
-	$Area2D.setup_grid_params(Vector2(x_div, y_div))
-	detection_grid_ready = true
-
-
 func _on_table_gui_input(event):
 	if event is InputEventMouseButton:
 		if event.pressed:
-			print(event.position)
-			print(event.button_index)
 			if event.button_index == 1:
-				print("Left Click")
 				if editor_mode == EditorMode.SHAPE_MODE \
 				and current_mode == Mode.ADD_MODE:
 					if leaf_curve.get_point_count() > 3:
 						detect_intersection(event.position, false)
 					else:
 						add_point(event.position, -1, false)
-				## Used to check for Edit Mode and Delete Mode here
-				## Decided to scrap that because using this system would require
-				## Unnecessary filtering to find the closest leafpoint to target
-				## with desired action.
-				## By using the Built In input detections on each leaf point
-				## instead, we can eliminate that entire process of filtering.
-			if event.button_index == 2:
-				print("Right Click")
-			if event.button_index == 3:
-				print("Middle Click")
 
 
 func point_selected(visual : Area2D):
-	print("Point Selected: ", visual)
 	var leaf_point = null
 	leaf_point = find_leafpoint_from_visual(visual)
 	if leaf_point != null:
@@ -306,7 +243,6 @@ func point_selected(visual : Area2D):
 
 
 func point_tapped(visual : Area2D):
-	print("VisualNode Tapped: ", visual)
 	if round_points_enabled:
 		var leafpoint = null
 		leafpoint = find_leafpoint_from_visual(visual)
@@ -318,21 +254,19 @@ func point_tapped(visual : Area2D):
 				update_round_neighbors(leafpoint)
 				if symmetry_mode and leafpoint.symmetry:
 					switch_point_type(leafpoint.symmetry_pair)
-					leafpoint.symmetry_pair.visual_node.set_node_type(leafpoint.round_point)
+					leafpoint.symmetry_pair.visual_node.set_node_type
+					(
+						leafpoint.round_point
+					)
 					update_round_neighbors(leafpoint.symmetry_pair)
-			elif editor_mode == EditorMode.VEIN_MODE:
-				print("Tapping LeafPoint: ", leafpoint, " In Vein Editor Mode")
 			update_leaf_visual(round_points_enabled)
 	else:
-		print("Isn't that fun")
+		print("round_points_enabled == false")
 
 
 func detect_intersection(pos : Vector2, sym_pair : bool):
-	print("Looking for Intersection near point ", pos)
 	var baked_points = leaf_curve.get_baked_points()
-	print("Baked Points Size: ", baked_points.size())
 	var target_point = leaf_curve.get_closest_point(pos)
-	print("Target Point: ", target_point, " Click_Pos: ", pos)
 	if target_point.distance_squared_to(pos) < 10000:
 		## Find Closest two
 		## Start by getting each Baked Point
@@ -351,7 +285,6 @@ func detect_intersection(pos : Vector2, sym_pair : bool):
 			if baked_points.has(c):
 				baked_indeces.append(baked_points.find(c))
 			else:
-				print("Baked Points cannot find ", c)
 				var distance = 10000
 				var baked_point = baked_points[0]
 				for b in baked_points:
@@ -359,23 +292,17 @@ func detect_intersection(pos : Vector2, sym_pair : bool):
 					if dist < distance:
 						distance = dist
 						baked_point = b
-				print("Additional Filtering brought us point ", baked_point, " from baked_points")
 				if baked_points.has(baked_point):
 					baked_indeces.append(baked_points.find(baked_point))
 				else:
-					print("Literally what the fuck.")
-		print("Baked Indeces pre-sort: ", baked_indeces)
+					print("Thumbs Down Emoji")
 		var baked_intersect_index = baked_indeces[0]
 		baked_indeces.sort()
-		print("Baked Indeces post-sort: ", baked_indeces)
-		print("Intersection found at index, ", baked_intersect_index, " among baked points")
 		var intersect_index = baked_indeces.find(baked_intersect_index)
-		print("Intersect index rests between point, ", intersect_index - 1, " and ", intersect_index + 1)
 		add_point(pos, intersect_index, sym_pair)
 
 
 func add_point(pos : Vector2, idx : int, sym_pair : bool):
-	print("Add Point Called with Pos ", pos, " and idx: ", idx)
 	var leaf_point_node = leaf_point_object.instantiate()
 	leaf_point_node.spawn_node(node_scale)
 	leaf_point_node.clicked.connect(Callable(self, "point_selected"))
@@ -396,7 +323,6 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 	update_leaf_shape()
 	if symmetry_mode:
 		if !sym_pair:
-			print("Add in sym pair coords")
 			var center = leaf_origin.get_position().x
 			var flip = center - pos.x
 			detect_intersection(Vector2(center + flip, pos.y), true)
@@ -405,7 +331,6 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 
 
 func remove_point(leaf_point : LeafPoint):
-	print("Remove LeafPoint: ", leaf_point)
 	if leaf_points.size() > 4:
 		var previous_index = leaf_point.curve_index - 1
 		leaf_curve.remove_point(leaf_point.curve_index)
@@ -425,30 +350,20 @@ func update_leaf_point_indeces(range_start : int):
 
 
 func pair_symmetry_points():
-	print("Pairing Symmetry Points")
 	var side_a = []
 	var side_b = []
 	var origin_a = 0
 	var origin_b = leaf_points.size() - 1
-	print("Origin A: ", origin_a, " Origin B: ", origin_b)
 	var workable_point_count = origin_b - 1
-	print("Workable Point Count: ", workable_point_count)
 	var even = false
 	var midpoint = (leaf_points.size() / 2) - 1
-	print("midpoint Starting at: ", midpoint)
 	if workable_point_count >= 2:
-		print("Valid number of points")
 		if workable_point_count % 2 == 0:
-			print("Even number of workable points")
 			even = true
 		if !even:
 			midpoint = leaf_points.size() / 2
-			print(midpoint)
-			print("midpoint Assigned to: ", midpoint)
-		print("Even Number of Points: ", even)
 		for i in leaf_points.size():
 			if i != origin_a and i != origin_b:
-				print(i, " valid!")
 				if even:
 					if i <= midpoint:
 						side_a.append(leaf_points[i])
@@ -459,8 +374,6 @@ func pair_symmetry_points():
 						side_a.append(leaf_points[i])
 					elif i > midpoint:
 						side_b.append(leaf_points[i])
-	print("SIDE A : ", side_a)
-	print("SIDE B : ", side_b)
 	side_b.reverse()
 	if side_a.size() == side_b.size():
 		for i in side_a.size():
@@ -492,7 +405,6 @@ func pair_symmetry_points():
 
 
 func break_symmetry_points():
-	print("Breaking Symmetry Points")
 	for p in leaf_points:
 		p.break_pair()
 
@@ -545,13 +457,10 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 	leafpoint.visual_node.translate(relative)
 	if symmetry_mode:
 		if leafpoint.symmetry:
-#			print("Moving Symm Pair")
 			var new_pos = leafpoint.visual_node.position
 			if leafpoint.side_a:
-#				print("Side A")
 				new_pos.x = clamp(new_pos.x, 0, leaf_origin.position.x)
 			else:
-#				print("Side B")
 				new_pos.x = clamp(new_pos.x, leaf_origin.position.x, screen_size.x)
 			var difference = leaf_origin.position.x - new_pos.x
 			var mirror_pos = new_pos
@@ -561,7 +470,6 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			if round_points_enabled:
 				update_round_neighbors(leafpoint.symmetry_pair)
 		elif leafpoint.midpoint:
-#			print("Moving Midpoint")
 			leafpoint.visual_node.position.x = leaf_origin.position.x
 	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
 	if round_points_enabled:
@@ -610,7 +518,6 @@ func update_leaf_visual(hd : bool):
 		draw_leaf_veins()
 	else:
 		leaf_poly.visible = false
-#		print("Leaf has too few points")
 
 
 func update_leaf_shape():
@@ -624,14 +531,11 @@ func update_leaf_shape():
 
 
 func draw_leaf_shape(points : PackedVector2Array):
-#	print("Setting Leaf Shape")
 	leaf_poly.set_polygon(points)
 
 
 func draw_leaf_texture(points : PackedVector2Array):
-#	print("Polygon UV Data works on a scale of the Texture!")
 	var count = points.size()
-#	var colors : PackedColorArray = PackedColorArray()
 	var uvs : PackedVector2Array = PackedVector2Array()
 	var screen_uv_0 = Vector2(5, 5)
 	var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
@@ -654,13 +558,11 @@ func draw_leaf_texture(points : PackedVector2Array):
 		var scale_position = Vector2(
 				inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
 				inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
-#		colors.append(leaf_gradient.sample(scale_position.x))
 		var scale_texture = Vector2(
 				lerp(0.0, texture_size.x, scale_position.x),
 				lerp(0.0, texture_size.y, scale_position.y))
 		uvs.append(scale_texture)
 	leaf_poly.texture = leaf_texture
-#	leaf_poly.vertex_colors = colors
 	leaf_poly.uv = uvs
 
 
@@ -687,7 +589,6 @@ func draw_leaf_veins():
 
 func _on_Mode_item_selected(index):
 	current_mode = index
-	print("Current Mode: ", current_mode)
 
 
 func _on_ui_symmetry(mode):
@@ -701,7 +602,6 @@ func _on_ui_symmetry(mode):
 func _on_ui_resized():
 	if leaf_origin != null:
 		recenter_origin()
-		build_detection_grid()
 	screen_size = get_window().get_size()
 
 

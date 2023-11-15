@@ -25,7 +25,6 @@ script = ExtResource("1")
 leaf_point_object = ExtResource("3_w3m6b")
 node_scale = Vector2(0.2, 0.2)
 vein_texture = ExtResource("5_rh8kf")
-grid_density = 14
 
 [node name="Polygon2D" type="Polygon2D" parent="canvas"]
 visible = false

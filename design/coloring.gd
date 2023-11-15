@@ -8,9 +8,6 @@ signal apply_brush_image()
 @export var image_w : int = 1024
 @export var image_h : int = 1024
 @export var brush_tip_textures : Array[Texture2D]
-#@export var brush_12 : Texture2D
-#@export var brush_24 : Texture2D
-#@export var brush_48 : Texture2D
 
 class BrushTip:
 	var tex : Texture
@@ -36,16 +33,12 @@ var prev_point : Vector2
 func _ready():
 	print(size)
 	make_brush_tips()
-#	canvas_img = Image.create(image_w, image_h, false, 5)
-#	display_image()
-#	print(brush_size, " ", brush_size * brush_size)
 
 
 func load_texture(tex : Texture2D):
 	canvas_img = tex.get_image()
 	image_w = tex.get_width()
 	image_h = tex.get_height()
-	print("LeafTex Format: ", canvas_img.get_format())
 	if canvas_img.get_format() != 5:
 		canvas_img.convert(5)
 	setup_brush_image()
@@ -56,7 +49,6 @@ func make_brush_tips():
 		var new_tip = BrushTip.new()
 		new_tip.tex = btex
 		new_tip.img = btex.get_image()
-		print("Brush Tip Format: ", new_tip.img.get_format())
 		new_tip.pix = new_tip.img.get_width()
 		brush_tips.append(new_tip)
 	current_brush_tip = brush_tips[0]
@@ -85,7 +77,6 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 
 
 func display_image():
-	##emit_signal("send_texture", ImageTexture.create_from_image(canvas_img))
 	merge_img.copy_from(canvas_img)
 	## Apply Opac to entire brush_img
 	var brush_stroke = Image.new()
@@ -110,7 +101,6 @@ func color_input(event):
 		if event.button_index == 1:
 			brush_pressed = event.pressed
 			if event.pressed:
-				print("Canvas Pressed")
 				setup_brush_image()
 				prev_point = center_to_brush(
 					convert_to_image_space(
@@ -118,7 +108,6 @@ func color_input(event):
 					)
 				)
 			else:
-				print("Canvas Released")
 				emit_signal("apply_brush_image")
 	if event is InputEventMouseMotion and brush_pressed:
 		color_at(convert_to_image_space(get_local_mouse_position()))
@@ -129,12 +118,8 @@ func _on_canvas_mouse_exited():
 
 
 func convert_to_image_space(canvas_point : Vector2):
-	print("Converting Canvas Point: ", canvas_point)
 	var x = inverse_lerp(canvas_min.x, canvas_max.x, canvas_point.x)
 	var y = inverse_lerp(canvas_min.y, canvas_max.y, canvas_point.y)
-#	var x = canvas_point.x - canvas_min.x / canvas_max.x - canvas_min.x
-#	var y = canvas_point.y - canvas_min.y / canvas_max.y - canvas_min.y
-	print("Canvas Position Percents x y: ", x, " | ", y)
 	return Vector2(int(image_w * x), int(image_h * y))
 
 
@@ -143,7 +128,6 @@ func center_to_brush(point : Vector2):
 
 
 func color_at(point : Vector2):
-	print("**Coloring at point: ", point)
 	var center_offset = center_to_brush(point)
 	var dist = center_offset.distance_squared_to(prev_point)
 	var gapcount = int(dist / current_brush_tip.pix)
@@ -158,7 +142,6 @@ func color_at(point : Vector2):
 				prev_point.lerp(center_offset, percent)
 			)
 	if gapcount >= 200:
-		print("Draw Request too large")
 		brush_pressed = false
 	else:
 		prev_point = center_offset
@@ -170,7 +153,6 @@ func color_at(point : Vector2):
 
 
 func _on_brush_size_pressed(b_size : int):
-	print("Changing BrushTip to Size: ", b_size)
 	for b in brush_tips:
 		if b.pix == b_size:
 			current_brush_tip = b
@@ -178,21 +160,17 @@ func _on_brush_size_pressed(b_size : int):
 
 
 func _on_color_picker_button_color_changed(color):
-	print("Changing to Color: ", color)
 	current_color = color
 
 
 func _on_color_picker_button_popup_closed():
-	print("Assigning Current Color: ", current_color, " to Current BrushTip.")
 	color_brush_tip(current_brush_tip, current_color)
 
 
 func _on_canvas_color_bounds(min : Vector2, max : Vector2):
-	print("Setting Canvas Min and Max: ", min, " | ", max)
 	canvas_min = min
 	canvas_max = max
 
 
 func _on_brush_opac_value_changed(value):
 	current_opac = float(value) / float(100)
-	print("Changing Current Opacity to ", current_opac)
