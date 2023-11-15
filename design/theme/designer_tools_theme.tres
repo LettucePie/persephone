@@ -1,4 +1,7 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://buu3fgon4752m"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://buu3fgon4752m"]
+
+[ext_resource type="Texture2D" uid="uid://b7ys4cyy7u887" path="res://design/ui/symmetry_highlight.png" id="1_rp3cn"]
+[ext_resource type="Texture2D" uid="uid://dumwbunjhs2oy" path="res://design/ui/symmetry_shadow.png" id="2_7c5nd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ouhh1"]
 bg_color = Color(0.419608, 0.172549, 0.45098, 1)
@@ -13,5 +16,18 @@ corner_radius_top_right = 5
 corner_radius_bottom_right = 5
 corner_radius_bottom_left = 5
 
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vl535"]
+size = Vector2(0, 0)
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_1vb7f"]
+size = Vector2(0, 0)
+
 [resource]
 Button/styles/normal = SubResource("StyleBoxFlat_ouhh1")
+empty_toggle/base_type = &"CheckButton"
+empty_toggle/icons/checked = SubResource("PlaceholderTexture2D_vl535")
+empty_toggle/icons/unchecked = SubResource("PlaceholderTexture2D_1vb7f")
+symmetry_toggle/base_type = &"CheckButton"
+symmetry_toggle/font_sizes/font_size = 16
+symmetry_toggle/icons/checked = ExtResource("1_rp3cn")
+symmetry_toggle/icons/unchecked = ExtResource("2_7c5nd")

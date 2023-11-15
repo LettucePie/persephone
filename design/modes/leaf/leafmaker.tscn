@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=19 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker.gd" id="2"]
@@ -11,7 +11,10 @@
 [ext_resource type="Texture2D" uid="uid://b1r6b1l3mdxc6" path="res://design/ui/symmetry_dash_mini.png" id="8"]
 [ext_resource type="Script" path="res://design/Math.gd" id="8_jcn1r"]
 [ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/modes/leaf/leaf_texture.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://dumwbunjhs2oy" path="res://design/ui/symmetry_shadow.png" id="11_fbcbf"]
 [ext_resource type="Script" path="res://design/modes/leaf/coloring.gd" id="12_a3032"]
+[ext_resource type="Script" path="res://design/ui/custom_toggle_icons.gd" id="12_it2pa"]
+[ext_resource type="Texture2D" uid="uid://b7ys4cyy7u887" path="res://design/ui/symmetry_highlight.png" id="13_fi3m0"]
 [ext_resource type="Texture2D" uid="uid://dnbu2cdn5efk5" path="res://design/modes/leaf/brush_circle_12.png" id="13_tcdno"]
 [ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/modes/leaf/brush_circle_24.png" id="14_qxpf8"]
 [ext_resource type="Texture2D" uid="uid://ctwa633fuvfwu" path="res://design/modes/leaf/brush_circle_48.png" id="15_5l1ma"]
@@ -76,7 +79,14 @@ alignment = 1
 [node name="Symmetry" type="CheckButton" parent="ui/main_controls"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Symmetry Toggle"
+theme = ExtResource("7")
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("11_fbcbf")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
+unchecked = ExtResource("11_fbcbf")
+checked = ExtResource("13_fi3m0")
 
 [node name="Color" type="Button" parent="ui/main_controls"]
 layout_mode = 2
@@ -109,6 +119,7 @@ popup/item_2/text = "Delete Mode"
 popup/item_2/id = 2
 
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
+visible = false
 layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
@@ -130,6 +141,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="coloring" type="Control" parent="ui"]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
