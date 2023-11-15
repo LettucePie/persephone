@@ -1,20 +1,9 @@
-[gd_resource type="Theme" load_steps=6 format=3 uid="uid://buu3fgon4752m"]
+[gd_resource type="Theme" load_steps=7 format=3 uid="uid://buu3fgon4752m"]
 
-[ext_resource type="Texture2D" uid="uid://b7ys4cyy7u887" path="res://design/ui/symmetry_highlight.png" id="1_rp3cn"]
-[ext_resource type="Texture2D" uid="uid://dumwbunjhs2oy" path="res://design/ui/symmetry_shadow.png" id="2_7c5nd"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ouhh1"]
-bg_color = Color(0.419608, 0.172549, 0.45098, 1)
-border_width_left = 8
-border_width_top = 8
-border_width_right = 8
-border_width_bottom = 8
-border_color = Color(0.603922, 0.384314, 0.603922, 1)
-border_blend = true
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
+[ext_resource type="StyleBox" uid="uid://d3n718bki8srl" path="res://design/theme/button_tool_pressed.tres" id="1_5nwia"]
+[ext_resource type="StyleBox" uid="uid://jq1pfem4k10x" path="res://design/theme/button_tool_disabled.tres" id="1_bf373"]
+[ext_resource type="StyleBox" uid="uid://cv724fuc3k177" path="res://design/theme/button_tool_normal.tres" id="1_pgpwk"]
+[ext_resource type="StyleBox" uid="uid://h7dlacosto3b" path="res://design/theme/button_tool_hover.tres" id="2_iomcj"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vl535"]
 size = Vector2(0, 0)
@@ -23,11 +12,12 @@ size = Vector2(0, 0)
 size = Vector2(0, 0)
 
 [resource]
-Button/styles/normal = SubResource("StyleBoxFlat_ouhh1")
+Button/styles/disabled = ExtResource("1_bf373")
+Button/styles/focus = ExtResource("2_iomcj")
+Button/styles/hover = ExtResource("2_iomcj")
+Button/styles/normal = ExtResource("1_pgpwk")
+Button/styles/pressed = ExtResource("1_5nwia")
 empty_toggle/base_type = &"CheckButton"
 empty_toggle/icons/checked = SubResource("PlaceholderTexture2D_vl535")
 empty_toggle/icons/unchecked = SubResource("PlaceholderTexture2D_1vb7f")
-symmetry_toggle/base_type = &"CheckButton"
-symmetry_toggle/font_sizes/font_size = 16
-symmetry_toggle/icons/checked = ExtResource("1_rp3cn")
-symmetry_toggle/icons/unchecked = ExtResource("2_7c5nd")
+empty_toggle/styles/hover_pressed = ExtResource("1_5nwia")
