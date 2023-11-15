@@ -1,8 +1,8 @@
 [gd_scene load_steps=6 format=3 uid="uid://c7yiqktg8rgig"]
 
-[ext_resource type="Script" path="res://design/leaf_point.gd" id="1_oyajy"]
-[ext_resource type="Texture2D" uid="uid://c85ho8mxnuio7" path="res://design/bezier_square.png" id="2_enf0h"]
-[ext_resource type="Texture2D" uid="uid://dnhbvug2rhhce" path="res://design/bezier_circle.png" id="3_drp3c"]
+[ext_resource type="Script" path="res://design/modes/leaf/leaf_point.gd" id="1_oyajy"]
+[ext_resource type="Texture2D" uid="uid://c85ho8mxnuio7" path="res://design/modes/leaf/bezier_square.png" id="2_enf0h"]
+[ext_resource type="Texture2D" uid="uid://dnhbvug2rhhce" path="res://design/modes/leaf/bezier_circle.png" id="3_drp3c"]
 [ext_resource type="Texture2D" uid="uid://dmoscembmvgtc" path="res://design/crosshair.png" id="4_bndfq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e4b72"]

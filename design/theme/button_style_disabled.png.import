@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnhbvug2rhhce"
-path="res://.godot/imported/bezier_circle.png-1aa388971a91141e9bfb4114312f08d5.ctex"
+uid="uid://cqfb6sg14nasf"
+path="res://.godot/imported/button_style_disabled.png-2830646dcbb2027587000316ed69ea93.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/bezier_circle.png"
-dest_files=["res://.godot/imported/bezier_circle.png-1aa388971a91141e9bfb4114312f08d5.ctex"]
+source_file="res://design/theme/button_style_disabled.png"
+dest_files=["res://.godot/imported/button_style_disabled.png-2830646dcbb2027587000316ed69ea93.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cfqsb6fmrrvdc"
-path="res://.godot/imported/button_style_default.png-ba51c7a4218c6a2c4ac54a7c44b09a8d.ctex"
+uid="uid://dnbu2cdn5efk5"
+path="res://.godot/imported/brush_circle_12.png-e823804fd7aae3b09da2a34b5f0d9585.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/button_style_default.png"
-dest_files=["res://.godot/imported/button_style_default.png-ba51c7a4218c6a2c4ac54a7c44b09a8d.ctex"]
+source_file="res://design/modes/leaf/brush_circle_12.png"
+dest_files=["res://.godot/imported/brush_circle_12.png-e823804fd7aae3b09da2a34b5f0d9585.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b1r6b1l3mdxc6"
-path="res://.godot/imported/symmetry_dash_mini.png-bc56b20e0bedacbb08034d27c3b45ff0.ctex"
+uid="uid://dnhbvug2rhhce"
+path="res://.godot/imported/bezier_circle.png-8b16d760302412f91d879e9583ff1c10.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/symmetry_dash_mini.png"
-dest_files=["res://.godot/imported/symmetry_dash_mini.png-bc56b20e0bedacbb08034d27c3b45ff0.ctex"]
+source_file="res://design/modes/leaf/bezier_circle.png"
+dest_files=["res://.godot/imported/bezier_circle.png-8b16d760302412f91d879e9583ff1c10.ctex"]
 
 [params]
 

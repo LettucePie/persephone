@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://blhvenvqwbp7j"
-path="res://.godot/imported/branch_icon.png-93435917ca050ee2d497256ef1af3a68.ctex"
+uid="uid://dgqg674t6cna5"
+path="res://.godot/imported/button_style_selected.png-f0c15f716f544fd0b3062ce2ea7379a0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/branch_icon.png"
-dest_files=["res://.godot/imported/branch_icon.png-93435917ca050ee2d497256ef1af3a68.ctex"]
+source_file="res://design/theme/button_style_selected.png"
+dest_files=["res://.godot/imported/button_style_selected.png-f0c15f716f544fd0b3062ce2ea7379a0.ctex"]
 
 [params]
 

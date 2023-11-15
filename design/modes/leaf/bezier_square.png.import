@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dbkv1ntemxio1"
-path="res://.godot/imported/brush_circle_24.png-5f1cc5f34088120415a050be03ab3dbd.ctex"
+uid="uid://c85ho8mxnuio7"
+path="res://.godot/imported/bezier_square.png-65ad7814f5dba9c50b4bdecbc67172d4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/brush_circle_24.png"
-dest_files=["res://.godot/imported/brush_circle_24.png-5f1cc5f34088120415a050be03ab3dbd.ctex"]
+source_file="res://design/modes/leaf/bezier_square.png"
+dest_files=["res://.godot/imported/bezier_square.png-65ad7814f5dba9c50b4bdecbc67172d4.ctex"]
 
 [params]
 

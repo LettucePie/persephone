@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://x5jwvkngxxvl"
-path="res://.godot/imported/button_style_square.png-261d8fe63869ecb74bc2f3f18555044c.ctex"
+uid="uid://b1r6b1l3mdxc6"
+path="res://.godot/imported/symmetry_dash_mini.png-d8344f8a24d68d20457f1cf4055d05f4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/button_style_square.png"
-dest_files=["res://.godot/imported/button_style_square.png-261d8fe63869ecb74bc2f3f18555044c.ctex"]
+source_file="res://design/ui/symmetry_dash_mini.png"
+dest_files=["res://.godot/imported/symmetry_dash_mini.png-d8344f8a24d68d20457f1cf4055d05f4.ctex"]
 
 [params]
 

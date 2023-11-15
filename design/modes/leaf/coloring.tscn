@@ -1,9 +1,9 @@
 [gd_scene load_steps=5 format=3 uid="uid://d1fav6mylmh6d"]
 
-[ext_resource type="Script" path="res://design/coloring.gd" id="1_ushvk"]
-[ext_resource type="Texture2D" uid="uid://dnbu2cdn5efk5" path="res://design/brush_circle_12.png" id="2_rmphh"]
-[ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/brush_circle_24.png" id="3_yhktd"]
-[ext_resource type="Texture2D" uid="uid://ctwa633fuvfwu" path="res://design/brush_circle_48.png" id="4_o3o2o"]
+[ext_resource type="Script" path="res://design/modes/leaf/coloring.gd" id="1_ushvk"]
+[ext_resource type="Texture2D" uid="uid://dnbu2cdn5efk5" path="res://design/modes/leaf/brush_circle_12.png" id="2_rmphh"]
+[ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/modes/leaf/brush_circle_24.png" id="3_yhktd"]
+[ext_resource type="Texture2D" uid="uid://ctwa633fuvfwu" path="res://design/modes/leaf/brush_circle_48.png" id="4_o3o2o"]
 
 [node name="coloring" type="Control"]
 layout_mode = 3

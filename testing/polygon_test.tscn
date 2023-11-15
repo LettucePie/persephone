@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ccydlsnabquhk"]
 
-[ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/leaf_texture.png" id="1_rg5lk"]
+[ext_resource type="Texture2D" uid="uid://dfrapqr50au6w" path="res://design/modes/leaf/leaf_texture.png" id="1_rg5lk"]
 
 [node name="polygon_test" type="Node2D"]
 

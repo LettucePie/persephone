@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://csikyhhww727n"]
 
-[ext_resource type="Texture2D" uid="uid://blhvenvqwbp7j" path="res://design/branch_icon.png" id="1"]
-[ext_resource type="Theme" path="res://design/design_theme.tres" id="2"]
+[ext_resource type="Texture2D" uid="uid://blhvenvqwbp7j" path="res://design/ui/branch_icon.png" id="1"]
+[ext_resource type="Theme" path="res://design/theme/design_theme.tres" id="1_wqb04"]
 [ext_resource type="Texture2D" uid="uid://dxg58145b5pl1" path="res://design/flower_icon.png" id="3"]
 [ext_resource type="Texture2D" uid="uid://vul1juurijqf" path="res://design/leaf_icon.png" id="4"]
 
@@ -12,7 +12,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2")
+theme = ExtResource("1_wqb04")
 
 [node name="BubbleContainer" type="HBoxContainer" parent="."]
 layout_mode = 0

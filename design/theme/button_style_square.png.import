@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c85ho8mxnuio7"
-path="res://.godot/imported/bezier_square.png-77954cbd4703e90e90f136ccd9833ed7.ctex"
+uid="uid://x5jwvkngxxvl"
+path="res://.godot/imported/button_style_square.png-945d11e1e4633dc99210679d7ffe3e6f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://design/bezier_square.png"
-dest_files=["res://.godot/imported/bezier_square.png-77954cbd4703e90e90f136ccd9833ed7.ctex"]
+source_file="res://design/theme/button_style_square.png"
+dest_files=["res://.godot/imported/button_style_square.png-945d11e1e4633dc99210679d7ffe3e6f.ctex"]
 
 [params]
 
