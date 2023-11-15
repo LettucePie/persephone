@@ -17,11 +17,25 @@ func _ready():
 	$SymmetryLine.visible = symmetry_mode
 	$main_controls.show()
 	$coloring.hide()
+	adjust_table()
 
 
 func _input(event):
 	if control_mode == EditorMode.COLOR_MODE:
 		coloring.color_input(event)
+
+
+func adjust_table():
+	var table : Control = $table
+	var table_rect : Rect2i = Rect2i(table.get_rect())
+	var safe_area : Rect2i = DisplayServer.get_display_safe_area()
+	var table_label : Label = $table/debuglabel
+	table_label.text = "Table Rect: " + str(table_rect) \
+	+ "\nSafe Area: " + str(safe_area)
+	table_rect.position.y += safe_area.position.y
+	table_rect.size.y -= safe_area.position.y
+	print("TODO Fix this")
+	table.set_rect(table_rect)
 
 
 func _on_mode_item_selected(index):

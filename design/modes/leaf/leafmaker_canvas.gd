@@ -603,6 +603,13 @@ func _on_ui_resized():
 	if leaf_origin != null:
 		recenter_origin()
 	screen_size = get_window().get_size()
+	node_scale = Vector2(0.1, 0.1).lerp(
+		Vector2(1.0, 1.0), 
+		inverse_lerp(1000, 4500, screen_size.length())
+		)
+	if leaf_points.size() > 0:
+		for lp in leaf_points:
+			lp.visual_node.set_point_scale(node_scale)
 
 
 func _on_Maximize_pressed():

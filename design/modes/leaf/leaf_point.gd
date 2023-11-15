@@ -53,3 +53,7 @@ func set_in_out_points(in_pos : Vector2, out_pos : Vector2):
 
 func set_color(c):
 	modulate = c
+
+
+func set_point_scale(s):
+	$Sprite2D.scale = s
