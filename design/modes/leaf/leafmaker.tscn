@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=26 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker.gd" id="2"]
@@ -19,6 +19,12 @@
 [ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/modes/leaf/brush_circle_24.png" id="14_qxpf8"]
 [ext_resource type="Texture2D" uid="uid://bq7y6wgfhqn3h" path="res://design/ui/coloring_mode_icon.png" id="14_uin86"]
 [ext_resource type="Texture2D" uid="uid://ctwa633fuvfwu" path="res://design/modes/leaf/brush_circle_48.png" id="15_5l1ma"]
+[ext_resource type="Texture2D" uid="uid://drleocmyk3cs4" path="res://design/ui/add_leafpoint.png" id="15_ur4ru"]
+[ext_resource type="Texture2D" uid="uid://tohdr0r025tj" path="res://design/ui/add_leafpoint_highlight.png" id="16_0feru"]
+[ext_resource type="Texture2D" uid="uid://bhs7f07t2fw80" path="res://design/ui/remove_leafpoint.png" id="17_qi3ng"]
+[ext_resource type="Texture2D" uid="uid://b0uf3o25hpy3q" path="res://design/ui/remove_leafpoint_highlight.png" id="18_0032b"]
+[ext_resource type="Texture2D" uid="uid://64c4t48pc03j" path="res://design/ui/move_leafpoint.png" id="19_svng3"]
+[ext_resource type="Texture2D" uid="uid://cfw1bue4iv38h" path="res://design/ui/move_leafpoint_highlight.png" id="20_p7wbl"]
 
 [node name="leafmaker" type="Node"]
 script = ExtResource("2")
@@ -70,11 +76,14 @@ theme = ExtResource("7")
 script = ExtResource("5")
 
 [node name="main_controls" type="HBoxContainer" parent="ui"]
-layout_mode = 0
-anchor_top = 1.0
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.902
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -94.0
+offset_top = 0.0799561
+grow_horizontal = 2
+grow_vertical = 0
 alignment = 1
 
 [node name="Symmetry" type="CheckButton" parent="ui/main_controls"]
@@ -107,6 +116,39 @@ popup/item_1/text = "Edit Mode"
 popup/item_1/id = 1
 popup/item_2/text = "Delete Mode"
 popup/item_2/id = 2
+
+[node name="Add_Mode" type="CheckButton" parent="ui/main_controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("15_ur4ru")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
+unchecked = ExtResource("15_ur4ru")
+checked = ExtResource("16_0feru")
+
+[node name="Remove_Mode" type="CheckButton" parent="ui/main_controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("15_ur4ru")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
+unchecked = ExtResource("17_qi3ng")
+checked = ExtResource("18_0032b")
+
+[node name="Move_Mode" type="CheckButton" parent="ui/main_controls"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("15_ur4ru")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
+unchecked = ExtResource("19_svng3")
+checked = ExtResource("20_p7wbl")
 
 [node name="SymmetryLine" type="TextureRect" parent="ui"]
 visible = false
