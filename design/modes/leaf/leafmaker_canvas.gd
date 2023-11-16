@@ -562,7 +562,15 @@ func draw_leaf_texture(points : PackedVector2Array):
 			space_uv_0.y = b.y
 		if b.y > space_uv_1.y:
 			space_uv_1.y = b.y
-	emit_signal("color_bounds", space_uv_0, space_uv_1)
+	var coord_a = screen_uv_0
+	var coord_b = screen_uv_1
+	if stretch_x:
+		coord_a.x = space_uv_0.x
+		coord_b.x = space_uv_1.x
+	if stretch_y:
+		coord_a.y = space_uv_0.y
+		coord_b.y = space_uv_1.y
+	emit_signal("color_bounds", coord_a, coord_b)
 	print("space_uv_0: ", space_uv_0)
 	print("space_uv_1: ", space_uv_1)
 	var printout_array = []
