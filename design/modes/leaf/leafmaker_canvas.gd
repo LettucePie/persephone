@@ -114,9 +114,26 @@ func _input(event):
 				move_point(selected_point, event.relative)
 
 
+func _on_ui_update_table_constraints(rect):
+	table_rect = rect
+	if leaf_origin != null:
+		recenter_origin()
+	screen_size = get_window().get_size()
+	node_scale = Vector2(0.1, 0.1).lerp(
+		Vector2(1.0, 1.0), 
+		inverse_lerp(1000, 4500, screen_size.length())
+		)
+	if leaf_points.size() > 0:
+		for lp in leaf_points:
+			lp.visual_node.set_point_scale(node_scale)
+
+
 func recenter_origin():
 	var old_position = leaf_origin.position
-	var new_position = Vector2(get_window().get_size())
+#	var new_position = Vector2(get_window().get_size())
+	var new_position = Vector2(table_rect.size)
+	print("GetWindow.GetSize: ", Vector2(get_window().get_size()))
+	print("Table_rect.size: ", Vector2(table_rect.size))
 	new_position.x *= 0.5
 	new_position.y *= 0.75
 	leaf_origin.position = new_position
@@ -173,7 +190,8 @@ func fit_curve_scale(anchor : Vector2, w : float, h : float):
 
 func maximize_curve_scale(anchor : Vector2):
 	var center = leaf_origin.position
-	center.y *= 0.5
+#	center.y *= 0.5
+	center.y = lerp(float(table_rect.position.y), leaf_origin.position.y, 0.5)
 	var closest_distance : float = 100000
 	var closest_point = null
 	for i in leaf_curve.get_point_count():
@@ -183,7 +201,7 @@ func maximize_curve_scale(anchor : Vector2):
 			bound.x = 5
 		else:
 			bound.x = DisplayServer.screen_get_size().x - 5
-		if i_pos.y <= center.x:
+		if i_pos.y <= center.y:
 			bound.y = 5
 		else:
 			bound.y = i_pos.y
@@ -542,14 +560,11 @@ func draw_leaf_shape(points : PackedVector2Array):
 
 
 func draw_leaf_texture(points : PackedVector2Array):
-	print("\n\nI Made this ?!?!")
 	var count = points.size()
 	var uvs : PackedVector2Array = PackedVector2Array()
 	var screen_uv_0 = table_rect.position
 	var screen_uv_1 = table_rect.size
 	screen_uv_1.y = leaf_origin.position.y
-	print("screen_uv_0: ", screen_uv_0)
-	print("screen_uv_1: ", screen_uv_1)
 	var space_uv_0 = points[0]
 	var space_uv_1 = points[0]
 	var texture_size = leaf_texture.get_size()
@@ -571,14 +586,10 @@ func draw_leaf_texture(points : PackedVector2Array):
 		coord_a.y = space_uv_0.y
 		coord_b.y = space_uv_1.y
 	emit_signal("color_bounds", coord_a, coord_b)
-	print("space_uv_0: ", space_uv_0)
-	print("space_uv_1: ", space_uv_1)
 	var printout_array = []
 	for i in count:
-		var printout = "For index: " + str(i) + " / " + str(count - 1) + "\n"
 		var baked_point_pos = points[i]
 		var percent = float(i) / float(count - 1)
-		printout += "Float Percent of Count = " + str(percent) + "\n"
 		var scale_position = Vector2(
 				inverse_lerp(screen_uv_0.x, screen_uv_1.x, baked_point_pos.x),
 				inverse_lerp(screen_uv_0.y, screen_uv_1.y, baked_point_pos.y))
@@ -593,16 +604,7 @@ func draw_leaf_texture(points : PackedVector2Array):
 		var scale_texture = Vector2(
 				lerp(0.0, texture_size.x, scale_position.x),
 				lerp(0.0, texture_size.y, scale_position.y))
-		printout += "scale_position = " + str(scale_position) + "\n"
-		printout += "scale_texture = " + str(scale_texture)
-		printout_array.append(printout)
 		uvs.append(scale_texture)
-#		uvs.append(scale_position * Vector2(screen_uv_1))
-#		uvs.append(scale_position * texture_size)
-#		uvs.append(Vector2.ZERO.lerp(Vector2.ONE, percent))
-	print(printout_array.front())
-	print(printout_array[1])
-	print(printout_array[2])
 	leaf_poly.texture = leaf_texture
 	leaf_poly.uv = uvs
 
@@ -640,19 +642,6 @@ func _on_ui_symmetry(mode):
 		break_symmetry_points()
 
 
-func _on_ui_resized():
-	if leaf_origin != null:
-		recenter_origin()
-	screen_size = get_window().get_size()
-	node_scale = Vector2(0.1, 0.1).lerp(
-		Vector2(1.0, 1.0), 
-		inverse_lerp(1000, 4500, screen_size.length())
-		)
-	if leaf_points.size() > 0:
-		for lp in leaf_points:
-			lp.visual_node.set_point_scale(node_scale)
-
-
 func _on_Maximize_pressed():
 	maximize_curve_scale(leaf_origin.position)
 
@@ -665,6 +654,3 @@ func _on_coloring_apply_brush_image():
 	leaf_texture = leaf_poly.texture
 	emit_signal("update_canvas_tex", leaf_texture)
 
-
-func _on_ui_update_table_constraints(rect):
-	table_rect = rect

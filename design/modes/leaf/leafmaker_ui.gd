@@ -27,6 +27,7 @@ func _input(event):
 
 
 func adjust_table():
+	print("adjust_table")
 	var table : Control = $table
 	var table_rect : Rect2i = Rect2i(table.get_rect())
 	var safe_area : Rect2i = DisplayServer.get_display_safe_area()
