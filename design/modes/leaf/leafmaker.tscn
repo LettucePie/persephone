@@ -316,6 +316,7 @@ stretch_mode = 1
 [connection signal="body_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
+[connection signal="resized" from="ui" to="ui" method="_on_resized"]
 [connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]
 [connection signal="update_table_constraints" from="ui" to="canvas" method="_on_ui_update_table_constraints"]
 [connection signal="toggled" from="ui/main_controls/Symmetry" to="ui" method="_on_symmetry_toggled"]

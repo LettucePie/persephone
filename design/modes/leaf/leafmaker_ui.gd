@@ -67,3 +67,7 @@ func _on_done_color_pressed():
 	$main_controls.show()
 	$table.show()
 	$coloring.hide()
+
+
+func _on_resized():
+	emit_signal("update_table_constraints", $table.get_rect())
