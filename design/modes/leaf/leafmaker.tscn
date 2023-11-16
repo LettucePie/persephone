@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=32 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker.gd" id="2"]
@@ -30,6 +30,7 @@
 [ext_resource type="Texture2D" uid="uid://dkbr3d1fwnbld" path="res://design/ui/brush_tip_small_selected.png" id="28_5hrpl"]
 [ext_resource type="Texture2D" uid="uid://0gm008mp2dve" path="res://design/ui/brush_tip_med.png" id="29_358l8"]
 [ext_resource type="Texture2D" uid="uid://bvrw8c5o0ntug" path="res://design/ui/brush_tip_large.png" id="30_6ahj7"]
+[ext_resource type="Script" path="res://design/ui/custom_color_picker.gd" id="31_ah5hg"]
 
 [node name="leafmaker" type="Node"]
 script = ExtResource("2")
@@ -270,6 +271,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Select Color"
 color = Color(1, 1, 1, 1)
+script = ExtResource("31_ah5hg")
 
 [connection signal="color_bounds" from="canvas" to="ui/coloring" method="_on_canvas_color_bounds"]
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
