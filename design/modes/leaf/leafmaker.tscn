@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=31 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker.gd" id="2"]
@@ -25,6 +25,11 @@
 [ext_resource type="Texture2D" uid="uid://b0uf3o25hpy3q" path="res://design/ui/remove_leafpoint_highlight.png" id="18_0032b"]
 [ext_resource type="Texture2D" uid="uid://64c4t48pc03j" path="res://design/ui/move_leafpoint.png" id="19_svng3"]
 [ext_resource type="Texture2D" uid="uid://cfw1bue4iv38h" path="res://design/ui/move_leafpoint_highlight.png" id="20_p7wbl"]
+[ext_resource type="Texture2D" uid="uid://dhsmhdo672k6f" path="res://design/ui/check_mark.png" id="26_3glcn"]
+[ext_resource type="Texture2D" uid="uid://cp27esikgrhw4" path="res://design/ui/brush_tip_small.png" id="27_0qvjx"]
+[ext_resource type="Texture2D" uid="uid://dkbr3d1fwnbld" path="res://design/ui/brush_tip_small_selected.png" id="28_5hrpl"]
+[ext_resource type="Texture2D" uid="uid://0gm008mp2dve" path="res://design/ui/brush_tip_med.png" id="29_358l8"]
+[ext_resource type="Texture2D" uid="uid://bvrw8c5o0ntug" path="res://design/ui/brush_tip_large.png" id="30_6ahj7"]
 
 [node name="leafmaker" type="Node"]
 script = ExtResource("2")
@@ -220,22 +225,38 @@ grow_vertical = 2
 
 [node name="done_color" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
 layout_mode = 2
-text = "Done"
+icon = ExtResource("26_3glcn")
+icon_alignment = 1
+expand_icon = true
 
-[node name="brush_size" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+[node name="brush_size" type="CheckButton" parent="ui/coloring/ColorRect/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Brush Size 12"
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("27_0qvjx")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
+unchecked = ExtResource("27_0qvjx")
+checked = ExtResource("28_5hrpl")
 
-[node name="brush_size2" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+[node name="brush_size2" type="CheckButton" parent="ui/coloring/ColorRect/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Brush Size 24"
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("29_358l8")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
 
-[node name="brush_size3" type="Button" parent="ui/coloring/ColorRect/HBoxContainer"]
+[node name="brush_size3" type="CheckButton" parent="ui/coloring/ColorRect/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Brush Size 48"
+theme_type_variation = &"empty_toggle"
+icon = ExtResource("30_6ahj7")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("12_it2pa")
 
 [node name="brush_opac" type="HSlider" parent="ui/coloring/ColorRect/HBoxContainer"]
 custom_minimum_size = Vector2(100, 0)
@@ -275,9 +296,9 @@ color = Color(1, 1, 1, 1)
 [connection signal="apply_brush_image" from="ui/coloring" to="canvas" method="_on_coloring_apply_brush_image"]
 [connection signal="display_brush_image" from="ui/coloring" to="canvas" method="_on_coloring_display_brush_image"]
 [connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/done_color" to="ui" method="_on_done_color_pressed"]
-[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [12]]
-[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size2" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [24]]
-[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size3" to="ui/coloring" method="_on_brush_size_pressed" flags=18 binds= [48]]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size" to="ui/coloring" method="_on_brush_size_pressed" binds= [12]]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size2" to="ui/coloring" method="_on_brush_size_pressed" binds= [24]]
+[connection signal="pressed" from="ui/coloring/ColorRect/HBoxContainer/brush_size3" to="ui/coloring" method="_on_brush_size_pressed" binds= [48]]
 [connection signal="value_changed" from="ui/coloring/ColorRect/HBoxContainer/brush_opac" to="ui/coloring" method="_on_brush_opac_value_changed"]
 [connection signal="color_changed" from="ui/coloring/ColorRect/HBoxContainer/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_color_changed" flags=18]
 [connection signal="popup_closed" from="ui/coloring/ColorRect/HBoxContainer/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_popup_closed" flags=18]
