@@ -21,6 +21,11 @@ var canvas_max : Vector2 = size
 var brush_img : Image
 var merge_img : Image
 var brush_tips : Array[BrushTip]
+@onready var brush_tip_buttons : Array = [
+	$HBoxContainer/brush_size_12,
+	$HBoxContainer/brush_size_24,
+	$HBoxContainer/brush_size_48
+]
 var current_brush_tip : BrushTip
 var current_color : Color = Color.WHITE
 var current_opac : float = 1.0
@@ -157,6 +162,13 @@ func _on_brush_size_pressed(b_size : int):
 		if b.pix == b_size:
 			current_brush_tip = b
 			color_brush_tip(b, current_color)
+	for button in brush_tip_buttons:
+		var name_id = button.name.trim_prefix("brush_size_").to_int()
+		if name_id == b_size:
+			button.button_pressed = true
+		else:
+			button.button_pressed = false
+		button.update_state()
 
 
 func _on_color_picker_button_color_changed(color):
