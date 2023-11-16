@@ -1,6 +1,7 @@
 extends Control
 
 signal symmetry(mode)
+signal update_table_constraints(rect)
 
 @onready var coloring : ColorTool = $coloring
 var symmetry_mode : bool = false
@@ -29,13 +30,11 @@ func adjust_table():
 	var table : Control = $table
 	var table_rect : Rect2i = Rect2i(table.get_rect())
 	var safe_area : Rect2i = DisplayServer.get_display_safe_area()
-	var table_label : Label = $table/debuglabel
-	table_label.text = "Table Rect: " + str(table_rect) \
-	+ "\nSafe Area: " + str(safe_area)
 	table_rect.position.y += safe_area.position.y
 	table_rect.size.y -= safe_area.position.y
-	print("TODO Fix this")
-	table.set_rect(table_rect)
+	table.position = table_rect.position
+	table.size = table_rect.size
+	emit_signal("update_table_constraints", table_rect)
 
 
 func _on_mode_item_selected(index):

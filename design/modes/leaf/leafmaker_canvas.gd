@@ -67,6 +67,7 @@ enum Mode {ADD_MODE, EDIT_MODE, DELETE_MODE}
 var current_mode = Mode.ADD_MODE
 var symmetry_mode : bool = false
 var screen_size : Vector2
+var table_rect : Rect2i
 var detection_grid_ready : bool = false
 var detection_grid : Array = []
 var screen_pressed : bool = false
@@ -205,7 +206,7 @@ func scale_curve(anchor : Vector2, percent : float):
 
 func starting_leaf():
 	var top_point = leaf_origin.position
-	top_point.y = 60
+	top_point.y = DisplayServer.get_display_safe_area().position.y + 60
 	var center_point = leaf_origin.position.lerp(top_point, 0.3)
 	var left_point = center_point
 	left_point.x = left_point.x * 0.7
@@ -454,7 +455,8 @@ func update_round_point(leaf_point):
 
 
 func move_point(leafpoint : LeafPoint, relative : Vector2):
-	leafpoint.visual_node.translate(relative)
+#	leafpoint.visual_node.translate(relative)
+	leafpoint.visual_node.clamped_translate(relative, table_rect)
 	if symmetry_mode:
 		if leafpoint.symmetry:
 			var new_pos = leafpoint.visual_node.position
@@ -465,13 +467,16 @@ func move_point(leafpoint : LeafPoint, relative : Vector2):
 			var difference = leaf_origin.position.x - new_pos.x
 			var mirror_pos = new_pos
 			mirror_pos.x = leaf_origin.position.x + difference
-			leaf_curve.set_point_position(leafpoint.symmetry_pair.curve_index, mirror_pos)
+			leaf_curve.set_point_position(
+				leafpoint.symmetry_pair.curve_index, mirror_pos)
 			leafpoint.symmetry_pair.set_position(mirror_pos)
 			if round_points_enabled:
 				update_round_neighbors(leafpoint.symmetry_pair)
 		elif leafpoint.midpoint:
 			leafpoint.visual_node.position.x = leaf_origin.position.x
-	leaf_curve.set_point_position(leafpoint.curve_index, leafpoint.visual_node.position)
+	leaf_curve.set_point_position(
+		leafpoint.curve_index, 
+		leafpoint.visual_node.position)
 	if round_points_enabled:
 		update_round_neighbors(leafpoint)
 	update_leaf_visual(round_points_enabled)
@@ -623,3 +628,7 @@ func _on_coloring_display_brush_image(tex):
 func _on_coloring_apply_brush_image():
 	leaf_texture = leaf_poly.texture
 	emit_signal("update_canvas_tex", leaf_texture)
+
+
+func _on_ui_update_table_constraints(rect):
+	table_rect = rect

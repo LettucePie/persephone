@@ -33,6 +33,11 @@ func set_origin_visual():
 	$Sprite2D.scale *= 0.5
 
 
+func clamped_translate(relative : Vector2, clamp_rect : Rect2i):
+	translate(relative)
+	position = position.clamp(clamp_rect.position, clamp_rect.size)
+
+
 func set_curve_index(i):
 	curve_index = i
 

@@ -177,22 +177,15 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="debuglabel" type="Label" parent="ui/table"]
+[node name="ColorRect" type="ColorRect" parent="ui/table"]
 layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
+anchors_preset = 15
+anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -166.0
-offset_top = -161.264
-offset_right = 166.0
-offset_bottom = -0.263977
 grow_horizontal = 2
-grow_vertical = 0
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(1, 0.380392, 0.313726, 0.466667)
 
 [node name="coloring" type="Control" parent="ui"]
 visible = false
@@ -267,6 +260,7 @@ color = Color(1, 1, 1, 1)
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]
+[connection signal="update_table_constraints" from="ui" to="canvas" method="_on_ui_update_table_constraints"]
 [connection signal="toggled" from="ui/main_controls/Symmetry" to="ui" method="_on_symmetry_toggled"]
 [connection signal="pressed" from="ui/main_controls/Color" to="ui" method="_on_color_pressed"]
 [connection signal="item_selected" from="ui/main_controls/Mode" to="canvas" method="_on_Mode_item_selected"]
