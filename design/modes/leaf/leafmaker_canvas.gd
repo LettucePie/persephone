@@ -114,8 +114,7 @@ func _input(event):
 				move_point(selected_point, event.relative)
 
 
-func _on_ui_update_table_constraints(rect):
-	table_rect = rect
+func _on_ui_resized():
 	if leaf_origin != null:
 		recenter_origin()
 	screen_size = get_window().get_size()
@@ -128,12 +127,15 @@ func _on_ui_update_table_constraints(rect):
 			lp.visual_node.set_point_scale(node_scale)
 
 
+func _on_ui_update_table_constraints(rect):
+	table_rect = rect
+
+
 func recenter_origin():
 	var old_position = leaf_origin.position
-#	var new_position = Vector2(get_window().get_size())
-	var new_position = Vector2(table_rect.size)
-	print("GetWindow.GetSize: ", Vector2(get_window().get_size()))
-	print("Table_rect.size: ", Vector2(table_rect.size))
+	var new_position = Vector2(get_window().get_size())
+#	if table_rect.size != Vector2i(0, 0):
+#		new_position = Vector2(table_rect.size)
 	new_position.x *= 0.5
 	new_position.y *= 0.75
 	leaf_origin.position = new_position
@@ -150,48 +152,10 @@ func slide_curve(offset : Vector2):
 		leaf_points[i].visual_node.position -= offset
 
 
-func fit_curve_scale(anchor : Vector2, w : float, h : float):
-	var bad_actors : Array = []
-	for i in leaf_curve.get_point_count():
-		## Filter out the Origin Point
-		if i > 0:
-			var i_pos = leaf_curve.get_point_position(i)
-			var safe = true
-			var bound = i_pos
-			if i_pos.x < 5:
-				safe = false
-				bound.x = 5
-			if i_pos.x > (w - 5):
-				safe = false
-				bound.x = w - 5
-			if i_pos.y < 5: 
-				safe = false
-				bound.y = 5
-			if i_pos.y > (h - 5):
-				safe = false
-				bound.y = h - 5
-			if !safe:
-				bad_actors.append([i, i_pos, bound])
-	if bad_actors.size() > 0:
-		## Find furthest bad actor, by comparing their position to their,
-		## exceeded Boundary.
-		var worst_actor : Array = bad_actors[0]
-		var greatest_distance : float = 0
-		for b in bad_actors:
-			var distance = b[2].distance_to(b[1])
-			if distance > greatest_distance:
-				greatest_distance = distance
-				worst_actor = b
-		## Compare distance from bound to distance from anchor.
-		## Use value to produce an offset percentage.
-		var anchor_distance = anchor.distance_to(worst_actor[1])
-		scale_curve(anchor, greatest_distance / anchor_distance)
-
-
 func maximize_curve_scale(anchor : Vector2):
 	var center = leaf_origin.position
-#	center.y *= 0.5
-	center.y = lerp(float(table_rect.position.y), leaf_origin.position.y, 0.5)
+	center.y *= 0.5
+#	center.y = lerp(float(table_rect.position.y), leaf_origin.position.y, 0.5)
 	var closest_distance : float = 100000
 	var closest_point = null
 	for i in leaf_curve.get_point_count():
@@ -212,6 +176,45 @@ func maximize_curve_scale(anchor : Vector2):
 	if closest_point != null:
 		var anchor_distance = anchor.distance_to(closest_point[2])
 		scale_curve(anchor, (closest_point[3] / anchor_distance) * -1.0)
+
+
+func fit_curve_scale(anchor : Vector2, w : float, h : float):
+	var bad_actors : Array = []
+	var safe_area_top = DisplayServer.get_display_safe_area().position.y
+	for i in leaf_curve.get_point_count():
+		## Filter out the Origin Point
+		if i > 0:
+			var i_pos = leaf_curve.get_point_position(i)
+			var safe = true
+			var bound = i_pos
+			if i_pos.x < 5:
+				safe = false
+				bound.x = 5
+			if i_pos.x > (w - 5):
+				safe = false
+				bound.x = w - 5
+			if i_pos.y < safe_area_top: 
+				safe = false
+				bound.y = safe_area_top
+			if i_pos.y > (h - 5):
+				safe = false
+				bound.y = h - 5
+			if !safe:
+				bad_actors.append([i, i_pos, bound])
+	if bad_actors.size() > 0:
+		## Find furthest bad actor, by comparing their position to their,
+		## exceeded Boundary.
+		var worst_actor : Array = bad_actors[0]
+		var greatest_distance : float = 0
+		for b in bad_actors:
+			var distance = b[2].distance_to(b[1])
+			if distance > greatest_distance:
+				greatest_distance = distance
+				worst_actor = b
+		## Compare distance from bound to distance from anchor.
+		## Use value to produce an offset percentage.
+		var anchor_distance = anchor.distance_to(worst_actor[1])
+		scale_curve(anchor, greatest_distance / anchor_distance)
 
 
 func scale_curve(anchor : Vector2, percent : float):

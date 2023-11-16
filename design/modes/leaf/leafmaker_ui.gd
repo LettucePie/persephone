@@ -31,10 +31,11 @@ func adjust_table():
 	var table : Control = $table
 	var table_rect : Rect2i = Rect2i(table.get_rect())
 	var safe_area : Rect2i = DisplayServer.get_display_safe_area()
-	table_rect.position.y += safe_area.position.y
-	table_rect.size.y -= safe_area.position.y
+	var difference = abs(table_rect.position.y - safe_area.position.y)
+	table_rect.position.y = safe_area.position.y
+	table_rect.size.y -= difference
 	table.position = table_rect.position
-	table.size = table_rect.size
+	table.size.y = table_rect.size.y
 	emit_signal("update_table_constraints", table_rect)
 
 
