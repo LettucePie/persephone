@@ -5,6 +5,8 @@ signal update_canvas_tex(tex)
 
 @export var leaf_point_object : PackedScene
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
+@export var stretch_x : bool = false
+@export var stretch_y : bool = false
 @export var vein_texture : Texture2D
 @export var round_points_enabled : bool = false
 @export var in_tangent_height : float = 0.75
@@ -543,10 +545,9 @@ func draw_leaf_texture(points : PackedVector2Array):
 	print("\n\nI Made this ?!?!")
 	var count = points.size()
 	var uvs : PackedVector2Array = PackedVector2Array()
-	var screen_uv_0 = Vector2(5, 5)
-	var screen_uv_1 = Vector2(
-		DisplayServer.screen_get_size().x - 5, 
-		leaf_origin.position.y - 5)
+	var screen_uv_0 = table_rect.position
+	var screen_uv_1 = table_rect.size
+	screen_uv_1.y = leaf_origin.position.y
 	print("screen_uv_0: ", screen_uv_0)
 	print("screen_uv_1: ", screen_uv_1)
 	var space_uv_0 = points[0]
@@ -571,8 +572,16 @@ func draw_leaf_texture(points : PackedVector2Array):
 		var percent = float(i) / float(count - 1)
 		printout += "Float Percent of Count = " + str(percent) + "\n"
 		var scale_position = Vector2(
-				inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
-				inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
+				inverse_lerp(screen_uv_0.x, screen_uv_1.x, baked_point_pos.x),
+				inverse_lerp(screen_uv_0.y, screen_uv_1.y, baked_point_pos.y))
+		if stretch_x:
+			scale_position.x = inverse_lerp(
+				space_uv_0.x, space_uv_1.x, baked_point_pos.x
+			)
+		if stretch_y:
+			scale_position.y = inverse_lerp(
+				space_uv_0.y, space_uv_1.y, baked_point_pos.y
+			)
 		var scale_texture = Vector2(
 				lerp(0.0, texture_size.x, scale_position.x),
 				lerp(0.0, texture_size.y, scale_position.y))
@@ -580,7 +589,11 @@ func draw_leaf_texture(points : PackedVector2Array):
 		printout += "scale_texture = " + str(scale_texture)
 		printout_array.append(printout)
 		uvs.append(scale_texture)
+#		uvs.append(scale_position * Vector2(screen_uv_1))
+#		uvs.append(scale_position * texture_size)
+#		uvs.append(Vector2.ZERO.lerp(Vector2.ONE, percent))
 	print(printout_array.front())
+	print(printout_array[1])
 	print(printout_array[2])
 	leaf_poly.texture = leaf_texture
 	leaf_poly.uv = uvs
