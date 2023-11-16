@@ -540,10 +540,15 @@ func draw_leaf_shape(points : PackedVector2Array):
 
 
 func draw_leaf_texture(points : PackedVector2Array):
+	print("\n\nI Made this ?!?!")
 	var count = points.size()
 	var uvs : PackedVector2Array = PackedVector2Array()
 	var screen_uv_0 = Vector2(5, 5)
-	var screen_uv_1 = Vector2(DisplayServer.screen_get_size().x - 5, leaf_origin.position.y - 5)
+	var screen_uv_1 = Vector2(
+		DisplayServer.screen_get_size().x - 5, 
+		leaf_origin.position.y - 5)
+	print("screen_uv_0: ", screen_uv_0)
+	print("screen_uv_1: ", screen_uv_1)
 	var space_uv_0 = points[0]
 	var space_uv_1 = points[0]
 	var texture_size = leaf_texture.get_size()
@@ -557,16 +562,26 @@ func draw_leaf_texture(points : PackedVector2Array):
 		if b.y > space_uv_1.y:
 			space_uv_1.y = b.y
 	emit_signal("color_bounds", space_uv_0, space_uv_1)
+	print("space_uv_0: ", space_uv_0)
+	print("space_uv_1: ", space_uv_1)
+	var printout_array = []
 	for i in count:
+		var printout = "For index: " + str(i) + " / " + str(count - 1) + "\n"
 		var baked_point_pos = points[i]
-		var percent = float(i) / float(count)
+		var percent = float(i) / float(count - 1)
+		printout += "Float Percent of Count = " + str(percent) + "\n"
 		var scale_position = Vector2(
 				inverse_lerp(space_uv_0.x, space_uv_1.x, baked_point_pos.x),
 				inverse_lerp(space_uv_0.y, space_uv_1.y, baked_point_pos.y))
 		var scale_texture = Vector2(
 				lerp(0.0, texture_size.x, scale_position.x),
 				lerp(0.0, texture_size.y, scale_position.y))
+		printout += "scale_position = " + str(scale_position) + "\n"
+		printout += "scale_texture = " + str(scale_texture)
+		printout_array.append(printout)
 		uvs.append(scale_texture)
+	print(printout_array.front())
+	print(printout_array[2])
 	leaf_poly.texture = leaf_texture
 	leaf_poly.uv = uvs
 
