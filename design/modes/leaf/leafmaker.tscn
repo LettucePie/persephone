@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=35 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker.gd" id="2"]
@@ -33,6 +33,7 @@
 [ext_resource type="Texture2D" uid="uid://dr0vrc3l6oquw" path="res://design/ui/brush_tip_med_selected.png" id="30_67url"]
 [ext_resource type="Script" path="res://design/ui/custom_color_picker.gd" id="31_ah5hg"]
 [ext_resource type="Texture2D" uid="uid://c366ywdrcbkj7" path="res://design/ui/brush_tip_large_selected.png" id="32_qh3u5"]
+[ext_resource type="Texture2D" uid="uid://b8dex6ep6mmse" path="res://design/ui/grid_tex_repeat.png" id="34_atgvn"]
 
 [node name="leafmaker" type="Node"]
 script = ExtResource("2")
@@ -292,6 +293,19 @@ size_flags_horizontal = 3
 text = "Select Color"
 color = Color(1, 1, 1, 1)
 script = ExtResource("31_ah5hg")
+
+[node name="opac_display" type="TextureRect" parent="ui/coloring/ColorPickerButton"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 7.0
+offset_right = -8.0
+offset_bottom = -8.0
+mouse_filter = 2
+texture = ExtResource("34_atgvn")
+stretch_mode = 1
 
 [connection signal="color_bounds" from="canvas" to="ui/coloring" method="_on_canvas_color_bounds"]
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]

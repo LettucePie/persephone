@@ -38,6 +38,7 @@ var prev_point : Vector2
 func _ready():
 	print(size)
 	make_brush_tips()
+	update_opac_display()
 
 
 func load_texture(tex : Texture2D):
@@ -118,6 +119,13 @@ func color_input(event):
 		color_at(convert_to_image_space(get_local_mouse_position()))
 
 
+func update_opac_display():
+	$ColorPickerButton/opac_display.modulate = Color(
+		1.0, 1.0, 1.0, 
+		1.0 - current_opac 
+		)
+
+
 func _on_canvas_mouse_exited():
 	brush_pressed = false
 
@@ -186,3 +194,4 @@ func _on_canvas_color_bounds(min : Vector2, max : Vector2):
 
 func _on_brush_opac_value_changed(value):
 	current_opac = float(value) / float(100)
+	update_opac_display()
