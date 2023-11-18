@@ -1,9 +1,40 @@
-[gd_resource type="Theme" load_steps=7 format=3 uid="uid://buu3fgon4752m"]
+[gd_resource type="Theme" load_steps=11 format=3 uid="uid://buu3fgon4752m"]
 
 [ext_resource type="StyleBox" uid="uid://d3n718bki8srl" path="res://design/theme/button_tool_pressed.tres" id="1_5nwia"]
 [ext_resource type="StyleBox" uid="uid://jq1pfem4k10x" path="res://design/theme/button_tool_disabled.tres" id="1_bf373"]
 [ext_resource type="StyleBox" uid="uid://cv724fuc3k177" path="res://design/theme/button_tool_normal.tres" id="1_pgpwk"]
 [ext_resource type="StyleBox" uid="uid://h7dlacosto3b" path="res://design/theme/button_tool_hover.tres" id="2_iomcj"]
+[ext_resource type="Texture2D" uid="uid://dbkv1ntemxio1" path="res://design/modes/leaf/brush_circle_24.png" id="5_0ghkf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_842ko"]
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+expand_margin_top = 20.0
+expand_margin_right = 10.0
+expand_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8yrea"]
+bg_color = Color(0.733333, 0.733333, 0.733333, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.909804, 0.741176, 0.870588, 1)
+expand_margin_top = 20.0
+expand_margin_right = 10.0
+expand_margin_bottom = 20.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nhlb0"]
+bg_color = Color(0.858824, 0.447059, 0.607843, 1)
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.188235, 0.772549, 0.819608, 1)
+expand_margin_top = 20.0
+expand_margin_bottom = 20.0
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_vl535"]
 size = Vector2(0, 0)
@@ -17,6 +48,12 @@ Button/styles/focus = ExtResource("2_iomcj")
 Button/styles/hover = ExtResource("2_iomcj")
 Button/styles/normal = ExtResource("1_pgpwk")
 Button/styles/pressed = ExtResource("1_5nwia")
+HSlider/icons/grabber = ExtResource("5_0ghkf")
+HSlider/icons/grabber_disabled = ExtResource("5_0ghkf")
+HSlider/icons/grabber_highlight = ExtResource("5_0ghkf")
+HSlider/styles/grabber_area = SubResource("StyleBoxFlat_842ko")
+HSlider/styles/grabber_area_highlight = SubResource("StyleBoxFlat_8yrea")
+HSlider/styles/slider = SubResource("StyleBoxFlat_nhlb0")
 empty_toggle/base_type = &"CheckButton"
 empty_toggle/icons/checked = SubResource("PlaceholderTexture2D_vl535")
 empty_toggle/icons/unchecked = SubResource("PlaceholderTexture2D_1vb7f")

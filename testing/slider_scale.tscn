@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dd17cxw0p6e4u"]
+
+[ext_resource type="Theme" uid="uid://buu3fgon4752m" path="res://design/theme/designer_tools_theme.tres" id="1_d5hr1"]
+[ext_resource type="Script" path="res://design/ui/custom_slider_scale.gd" id="2_ehy11"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_d5hr1")
+
+[node name="HSlider" type="HSlider" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.789
+anchor_bottom = 0.17
+offset_right = -0.0600281
+offset_bottom = -0.199997
+value = 50.0
+script = ExtResource("2_ehy11")
