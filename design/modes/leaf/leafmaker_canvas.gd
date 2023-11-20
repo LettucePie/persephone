@@ -61,6 +61,9 @@ class LeafPoint:
 	func set_position(pos):
 		visual_node.position = pos
 	
+	func get_position():
+		return visual_node.position
+	
 	func hide_point():
 		hidden = true
 		visual_node.visible = false
