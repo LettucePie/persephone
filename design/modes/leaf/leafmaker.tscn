@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=3 uid="uid://yh4sseyibqfb"]
+[gd_scene load_steps=37 format=3 uid="uid://yh4sseyibqfb"]
 
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker_canvas.gd" id="1"]
 [ext_resource type="Script" path="res://design/modes/leaf/leafmaker.gd" id="2"]
@@ -33,7 +33,9 @@
 [ext_resource type="Texture2D" uid="uid://dr0vrc3l6oquw" path="res://design/ui/brush_tip_med_selected.png" id="30_67url"]
 [ext_resource type="Script" path="res://design/ui/custom_color_picker.gd" id="31_ah5hg"]
 [ext_resource type="Texture2D" uid="uid://c366ywdrcbkj7" path="res://design/ui/brush_tip_large_selected.png" id="32_qh3u5"]
+[ext_resource type="Script" path="res://design/ui/custom_slider_scale.gd" id="33_g7o63"]
 [ext_resource type="Texture2D" uid="uid://b8dex6ep6mmse" path="res://design/ui/grid_tex_repeat.png" id="34_atgvn"]
+[ext_resource type="StyleBox" uid="uid://ctk8lnp2rryqf" path="res://design/theme/slider_scales/slider_over_x3.tres" id="35_mns8k"]
 
 [node name="leafmaker" type="Node"]
 script = ExtResource("2")
@@ -276,6 +278,7 @@ grow_vertical = 0
 size_flags_horizontal = 3
 size_flags_vertical = 4
 value = 100.0
+script = ExtResource("33_g7o63")
 
 [node name="ColorPickerButton" type="ColorPickerButton" parent="ui/coloring"]
 layout_mode = 1
@@ -293,6 +296,7 @@ size_flags_horizontal = 3
 text = "Select Color"
 color = Color(1, 1, 1, 1)
 script = ExtResource("31_ah5hg")
+stylebox = ExtResource("35_mns8k")
 
 [node name="opac_display" type="TextureRect" parent="ui/coloring/ColorPickerButton"]
 layout_mode = 1
