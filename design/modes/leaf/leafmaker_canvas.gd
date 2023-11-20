@@ -2,6 +2,7 @@ extends Node2D
 
 signal color_bounds(min, max)
 signal update_canvas_tex(tex)
+signal update_point_percents(simple_positions)
 
 @export var leaf_point_object : PackedScene
 @export var node_scale: Vector2 = Vector2(0.1, 0.1)
@@ -101,9 +102,12 @@ func _ready():
 	recenter_origin()
 
 
-func load_data(data):
-	leaf_texture = data
-	build_default()
+func load_data(texture, positions):
+	leaf_texture = texture
+	leaf_curve = Curve2D.new()
+	leaf_curve.set_bake_interval(5)
+	for p in positions:
+		add_point(p, -1, false)
 
 
 func build_default():
@@ -126,9 +130,16 @@ func _input(event):
 				move_point(selected_point, event.relative)
 
 
-func _on_ui_resized():
-	if leaf_origin != null:
-		recenter_origin()
+func _on_leafmaker_update_points_on_resize(positions : PackedVector2Array):
+#	if leaf_origin != null:
+#		recenter_origin()
+	leaf_origin.position = positions[0]
+	var index = 0
+	for pos in positions:
+		set_point_position(leaf_points[index], pos)
+		if index == 0:
+			set_point_position(leaf_points.back(), pos)
+		index += 1
 	screen_size = get_window().get_size()
 	node_scale = Vector2(0.1, 0.1).lerp(
 		Vector2(1.0, 1.0), 
@@ -381,12 +392,23 @@ func remove_point(leaf_point : LeafPoint):
 		var previous_index = leaf_point.curve_index - 1
 		leaf_curve.remove_point(leaf_point.curve_index)
 		leaf_points.remove_at(leaf_point.curve_index)
+		leaf_point.visual_node.queue_free()
 		leaf_point.queue_free()
 		update_leaf_point_indeces(previous_index)
 		if round_points_enabled:
 			update_round_neighbors(leaf_points[previous_index])
 		update_leaf_visual(round_points_enabled)
 		update_leaf_shape()
+
+
+func kill_all_leafpoints():
+	leaf_curve.clear_points()
+	if leaf_points.size() > 0:
+		for lp in leaf_points:
+			lp.visual_node.queue_free()
+			lp.queue_free()
+	update_leaf_visual(round_points_enabled)
+	update_leaf_shape()
 
 
 func update_leaf_point_indeces(range_start : int):
@@ -577,6 +599,7 @@ func update_leaf_shape():
 		var pos = lp.visual_node.position
 		if pos != leaf_origin.position:
 			simple_points.append(pos)
+	emit_signal("update_point_percents", simple_points)
 	$Area2D/CollisionPolygon2D.set_polygon(simple_points)
 
 
@@ -688,3 +711,6 @@ func _on_ui_mode_changed(mode):
 			hide_points(leaf_points)
 		elif mode == EditorMode.SHAPE_MODE:
 			show_points(leaf_points)
+
+
+

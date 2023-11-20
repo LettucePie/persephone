@@ -312,16 +312,18 @@ mouse_filter = 2
 texture = ExtResource("34_atgvn")
 stretch_mode = 1
 
+[connection signal="update_points_on_resize" from="." to="canvas" method="_on_leafmaker_update_points_on_resize"]
 [connection signal="color_bounds" from="canvas" to="ui/coloring" method="_on_canvas_color_bounds"]
 [connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
 [connection signal="update_canvas_tex" from="canvas" to="ui/coloring" method="load_texture"]
+[connection signal="update_point_percents" from="canvas" to="." method="_on_canvas_update_point_percents"]
 [connection signal="area_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
 [connection signal="area_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
 [connection signal="body_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
 [connection signal="body_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
 [connection signal="mode_changed" from="ui" to="canvas" method="_on_ui_mode_changed"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
-[connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
+[connection signal="resized" from="ui" to="." method="_on_ui_resized"]
 [connection signal="resized" from="ui" to="ui" method="_on_resized"]
 [connection signal="symmetry" from="ui" to="canvas" method="_on_ui_symmetry"]
 [connection signal="update_table_constraints" from="ui" to="canvas" method="_on_ui_update_table_constraints"]
