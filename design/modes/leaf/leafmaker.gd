@@ -11,7 +11,10 @@ var leafpoint_position_percents : PackedVector2Array = []
 var leaf_texture : Texture2D = null
 var leaf_image : Image
 
+
 func _ready():
+	prep_table()
+	prep_canvas()
 	var target_positions = leafpoint_position_percents
 	var target_texture = leaf_texture
 	if target_positions.size() > 0:
@@ -29,12 +32,16 @@ func _ready():
 		$ui/coloring.load_texture(leaf_texture_default)
 
 
+func prep_table():
+	$ui.adjust_table()
+
+
+func prep_canvas():
+	$canvas.setup_canvas_dimensions($ui/table)
+
+
 func load_leaf(data):
 	pass
-
-
-func _on_canvas_ready():
-	pass # Replace with function body.
 
 
 func _on_ui_ready():

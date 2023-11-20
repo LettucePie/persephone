@@ -97,9 +97,11 @@ var vein_visuals : Array = []
 @onready var leaf_texture : Texture2D
 
 
-func _ready():
+func setup_canvas_dimensions(table : Control):
+	print(table)
+	table_rect = table.get_rect()
 	screen_size = get_window().get_size()
-	recenter_origin()
+	recenter_origin(table_rect)
 
 
 func load_data(texture, positions):
@@ -155,14 +157,14 @@ func _on_ui_update_table_constraints(rect):
 	table_rect = rect
 
 
-func recenter_origin():
+func recenter_origin(rect : Rect2i):
 	print("recenter Origin")
 	var old_position = leaf_origin.position
 	var new_position = Vector2(get_window().get_size())
-#	if table_rect.size != Vector2i(0, 0):
-#		new_position = Vector2(table_rect.size)
+	new_position = Vector2(rect.size)
 	new_position.x *= 0.5
-	new_position.y *= 0.75
+	new_position.y *= 0.95
+	new_position.y += rect.position.y
 	leaf_origin.position = new_position
 
 

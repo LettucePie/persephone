@@ -314,7 +314,6 @@ stretch_mode = 1
 
 [connection signal="update_points_on_resize" from="." to="canvas" method="_on_leafmaker_update_points_on_resize"]
 [connection signal="color_bounds" from="canvas" to="ui/coloring" method="_on_canvas_color_bounds"]
-[connection signal="ready" from="canvas" to="." method="_on_canvas_ready"]
 [connection signal="update_canvas_tex" from="canvas" to="ui/coloring" method="load_texture"]
 [connection signal="update_point_percents" from="canvas" to="." method="_on_canvas_update_point_percents"]
 [connection signal="area_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
