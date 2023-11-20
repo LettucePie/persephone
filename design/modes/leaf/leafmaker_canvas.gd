@@ -148,6 +148,7 @@ func _on_leafmaker_update_points_on_resize(positions : PackedVector2Array):
 	if leaf_points.size() > 0:
 		for lp in leaf_points:
 			lp.visual_node.set_point_scale(node_scale)
+	update_leaf_visual(round_points_enabled)
 
 
 func _on_ui_update_table_constraints(rect):
@@ -155,6 +156,7 @@ func _on_ui_update_table_constraints(rect):
 
 
 func recenter_origin():
+	print("recenter Origin")
 	var old_position = leaf_origin.position
 	var new_position = Vector2(get_window().get_size())
 #	if table_rect.size != Vector2i(0, 0):
@@ -162,92 +164,6 @@ func recenter_origin():
 	new_position.x *= 0.5
 	new_position.y *= 0.75
 	leaf_origin.position = new_position
-	if leaf_curve.get_point_count() > 0:
-		slide_curve(old_position - new_position)
-		maximize_curve_scale(new_position)
-		fit_curve_scale(new_position, get_window().get_size().x, new_position.y)
-		update_leaf_visual(round_points_enabled)
-
-
-func slide_curve(offset : Vector2):
-	for i in leaf_curve.get_point_count():
-		leaf_curve.set_point_position(i, leaf_curve.get_point_position(i) - offset)
-		leaf_points[i].visual_node.position -= offset
-
-
-func maximize_curve_scale(anchor : Vector2):
-	var center = leaf_origin.position
-	center.y *= 0.5
-#	center.y = lerp(float(table_rect.position.y), leaf_origin.position.y, 0.5)
-	var closest_distance : float = 100000
-	var closest_point = null
-	for i in leaf_curve.get_point_count():
-		var bound = Vector2.ZERO
-		var i_pos = leaf_curve.get_point_position(i)
-		if i_pos.x <= center.x:
-			bound.x = 5
-		else:
-			bound.x = DisplayServer.screen_get_size().x - 5
-		if i_pos.y <= center.y:
-			bound.y = 5
-		else:
-			bound.y = i_pos.y
-		var distance = i_pos.distance_to(bound)
-		if distance < closest_distance:
-			closest_distance = distance
-			closest_point = [i, i_pos, bound, distance]
-	if closest_point != null:
-		var anchor_distance = anchor.distance_to(closest_point[2])
-		scale_curve(anchor, (closest_point[3] / anchor_distance) * -1.0)
-
-
-func fit_curve_scale(anchor : Vector2, w : float, h : float):
-	var bad_actors : Array = []
-	var safe_area_top = DisplayServer.get_display_safe_area().position.y
-	for i in leaf_curve.get_point_count():
-		## Filter out the Origin Point
-		if i > 0:
-			var i_pos = leaf_curve.get_point_position(i)
-			var safe = true
-			var bound = i_pos
-			if i_pos.x < 5:
-				safe = false
-				bound.x = 5
-			if i_pos.x > (w - 5):
-				safe = false
-				bound.x = w - 5
-			if i_pos.y < safe_area_top: 
-				safe = false
-				bound.y = safe_area_top
-			if i_pos.y > (h - 5):
-				safe = false
-				bound.y = h - 5
-			if !safe:
-				bad_actors.append([i, i_pos, bound])
-	if bad_actors.size() > 0:
-		## Find furthest bad actor, by comparing their position to their,
-		## exceeded Boundary.
-		var worst_actor : Array = bad_actors[0]
-		var greatest_distance : float = 0
-		for b in bad_actors:
-			var distance = b[2].distance_to(b[1])
-			if distance > greatest_distance:
-				greatest_distance = distance
-				worst_actor = b
-		## Compare distance from bound to distance from anchor.
-		## Use value to produce an offset percentage.
-		var anchor_distance = anchor.distance_to(worst_actor[1])
-		scale_curve(anchor, greatest_distance / anchor_distance)
-
-
-func scale_curve(anchor : Vector2, percent : float):
-	for i in leaf_curve.get_point_count():
-		## Don't scale the origin
-		if i > 0:
-			leaf_curve.set_point_position(
-					i, 
-					leaf_curve.get_point_position(i).lerp(anchor, percent))
-			leaf_points[i].visual_node.position = leaf_points[i].visual_node.position.lerp(anchor, percent)
 
 
 func starting_leaf():
@@ -689,9 +605,6 @@ func _on_ui_symmetry(mode):
 	else:
 		break_symmetry_points()
 
-
-func _on_Maximize_pressed():
-	maximize_curve_scale(leaf_origin.position)
 
 
 func _on_coloring_display_brush_image(tex):
