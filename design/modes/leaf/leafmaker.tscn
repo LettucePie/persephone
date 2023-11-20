@@ -319,6 +319,7 @@ stretch_mode = 1
 [connection signal="area_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
 [connection signal="body_entered" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_entered"]
 [connection signal="body_exited" from="canvas/Area2D" to="canvas/Area2D" method="_on_body_exited"]
+[connection signal="mode_changed" from="ui" to="canvas" method="_on_ui_mode_changed"]
 [connection signal="ready" from="ui" to="." method="_on_ui_ready"]
 [connection signal="resized" from="ui" to="canvas" method="_on_ui_resized"]
 [connection signal="resized" from="ui" to="ui" method="_on_resized"]

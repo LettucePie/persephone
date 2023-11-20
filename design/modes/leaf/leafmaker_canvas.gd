@@ -28,6 +28,7 @@ class LeafPoint:
 	var midpoint : bool = false
 	var symmetry_pair : LeafPoint
 	var vein_target : bool = false
+	var hidden = false
 	
 	func _init(_visual_node, _round_point, _curve_index, _symmetry, _symmetry_pair):
 		visual_node = _visual_node
@@ -59,6 +60,14 @@ class LeafPoint:
 	
 	func set_position(pos):
 		visual_node.position = pos
+	
+	func hide_point():
+		hidden = true
+		visual_node.visible = false
+	
+	func show_point():
+		hidden = false
+		visual_node.visible = true
 
 
 
@@ -74,7 +83,7 @@ var detection_grid_ready : bool = false
 var detection_grid : Array = []
 var screen_pressed : bool = false
 var selected_point : LeafPoint
-var leaf_points : Array = []
+var leaf_points : Array[LeafPoint] = []
 var vein_paths : Array = []
 var vein_visuals : Array = []
 @onready var leaf_poly = $Polygon2D
@@ -352,6 +361,16 @@ func add_point(pos : Vector2, idx : int, sym_pair : bool):
 			detect_intersection(Vector2(center + flip, pos.y), true)
 		else:
 			pair_symmetry_points()
+
+
+func hide_points(points : Array[LeafPoint]):
+	for lp in points:
+		lp.hide_point()
+
+
+func show_points(points : Array[LeafPoint]):
+	for lp in points:
+		lp.show_point()
 
 
 func remove_point(leaf_point : LeafPoint):
@@ -657,3 +676,12 @@ func _on_coloring_apply_brush_image():
 	leaf_texture = leaf_poly.texture
 	emit_signal("update_canvas_tex", leaf_texture)
 
+
+
+func _on_ui_mode_changed(mode):
+	editor_mode = mode
+	if leaf_points.size() > 0:
+		if mode == EditorMode.COLOR_MODE:
+			hide_points(leaf_points)
+		elif mode == EditorMode.SHAPE_MODE:
+			show_points(leaf_points)

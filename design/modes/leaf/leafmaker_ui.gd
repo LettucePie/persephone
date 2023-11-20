@@ -2,6 +2,7 @@ extends Control
 
 signal symmetry(mode)
 signal update_table_constraints(rect)
+signal mode_changed(mode)
 
 @onready var coloring : ColorTool = $coloring
 var symmetry_mode : bool = false
@@ -60,6 +61,7 @@ func _on_color_pressed():
 	$main_controls.hide()
 	$table.hide()
 	$coloring.show()
+	emit_signal("mode_changed", control_mode)
 
 
 func _on_done_color_pressed():
@@ -67,6 +69,7 @@ func _on_done_color_pressed():
 	$main_controls.show()
 	$table.show()
 	$coloring.hide()
+	emit_signal("mode_changed", control_mode)
 
 
 func _on_resized():
