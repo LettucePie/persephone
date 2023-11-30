@@ -104,6 +104,9 @@ func make_trunk():
 	trunk.start_point.y *= 0.7
 	trunk.start_normal = Vector2.UP
 	trunk.length = trunk.start_point.y - (screen_size.y * 0.2)
+#	trunk.jagginess = 1.0
+#	trunk.jagginess = 0.5
+	trunk.jagginess = 0.15
 	make_layer(0, setup_branch_line(trunk))
 
 
@@ -140,14 +143,7 @@ func populate_layer(layer : BranchLayer, growth_points : Array):
 	print("Iterate over Start Points, making a new branch at each")
 	if layer.layer == 0:
 		print("Populating Trunk Layer... Ignore Start Points")
-		print(layer.master_branch_copy)
-		print(layer.master_branch_copy.line)
-		print(layer.master_branch_copy.start_point)
 		var new_branch_copy = layer.master_branch_copy.duplicate()
-		print("Copy Made")
-		print(new_branch_copy)
-		print(new_branch_copy.line)
-		print(new_branch_copy.start_point)
 		layer.layer_node.add_child(new_branch_copy.line)
 		layer.branches.append(new_branch_copy)
 	else:
@@ -230,7 +226,8 @@ func setup_branch_line(branch : Branch):
 		branch.start_point.direction_to(branch_points[2]).rotated(PI / 2)
 	var flip_direction = 1
 	for bp in branch_points:
-		bp += (sway_direction * flip_direction) * branch.jagginess
+		bp += (sway_direction * (branch.length / 6.0) * flip_direction) \
+		* branch.jagginess
 		if flip_direction > 0:
 			flip_direction = -1
 		else:
