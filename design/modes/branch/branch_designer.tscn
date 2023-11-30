@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://2u3xvhwjx3wi"]
+[gd_scene load_steps=5 format=3 uid="uid://2u3xvhwjx3wi"]
 
 [ext_resource type="Script" path="res://design/modes/branch/branch_designer.gd" id="1_7jalr"]
 [ext_resource type="Script" path="res://design/modes/branch/branch_canvas.gd" id="2_ryqc2"]
@@ -7,12 +7,17 @@
 _data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
 point_count = 2
 
+[sub_resource type="Curve" id="Curve_aif4o"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 1.4, 0.0, 0, 0]
+point_count = 2
+
 [node name="branch_designer" type="Node"]
 script = ExtResource("1_7jalr")
 
 [node name="branch_canvas" type="Node2D" parent="."]
 script = ExtResource("2_ryqc2")
 default_curve = SubResource("Curve_t6r4y")
+influence_curve = SubResource("Curve_aif4o")
 
 [node name="branch_control" type="Control" parent="."]
 layout_mode = 3
