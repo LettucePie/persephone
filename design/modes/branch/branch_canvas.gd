@@ -106,7 +106,11 @@ func create_branch_line(branch : Branch):
 		* branch.upward_influence
 		direction = direction.slerp(Vector2.UP, influence)
 		branch_points.append(reference + (direction * segment_length))
-	
+	## For Jagginess:
+	## Find direction from Start to last branch_points[]
+	## Calc the 90 degree positive and negative of that angle, called up and down
+	## re-iterate over the branch_points[] and add up and down direction, 
+	## multiplied by jagginess value.
 
 
 func draw_all_branches():
