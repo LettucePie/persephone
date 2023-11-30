@@ -98,7 +98,6 @@ var branch_layers : Array
 
 
 func _ready():
-	print(range(2, 2 + 1))
 	branch_layers.clear()
 	make_trunk()
 	draw_all_branches()
@@ -186,15 +185,9 @@ func map_out_growth_points(layer : BranchLayer):
 		if b.growth_coverage_end_to_base:
 			baked_points.reverse()
 		var end = baked_points.size() - 1
-#		var covered_points : PackedVector2Array = []
-#		for i in coverage_range:
-#			covered_points.append(baked_points[i])
 		var covered_points : PackedVector2Array = baked_points.slice(
 			0,
 			int(lerp(0, end, b.growth_coverage)))
-		## Concern about making population of coverage clusters or not...
-		## leaves are usually in clusters right?
-		## added cluster_size
 		var coverage_range = range(0, covered_points.size())
 		coverage_range.shuffle()
 		var population_indeces : Array = []
@@ -206,21 +199,53 @@ func map_out_growth_points(layer : BranchLayer):
 			for cluster_i in range(
 			coverage_range[i], 
 			coverage_range[i] + b.cluster_size + 1):
-				##
 				if !population_indeces.has(cluster_i) \
 				and coverage_range.has(cluster_i):
 					population_indeces.append(cluster_i)
+		##
+		var growth_points : Array = []
+		##
 		for p in population_indeces:
-			var growth_point_pos = covered_points[p]
+			##
+			var new_growth_point : GrowthPoint = GrowthPoint.new()
+			##
+			var point_pos = covered_points[p]
+			var angle_adjust = PI / 2
+			if randf() > 0.5:
+				angle_adjust = PI / -2
+			var compare_point = p - 1
+			if p == 0:
+				compare_point = p + 1
+			##
+			var point_dir = point_pos.direction_to(covered_points[compare_point])
+			point_dir = point_dir.rotated(angle_adjust)
+			##
+			var point_wid = b.start_width
+			var baked_index_percent = float(p + 1) / float(end + 1)
+			if b.growth_coverage_end_to_base:
+				point_wid = lerp(b.end_width, b.start_width, baked_index_percent)
+			else:
+				point_wid = lerp(b.start_width, b.end_width, baked_index_percent)
+			##
+			new_growth_point.point_position = point_pos
+			new_growth_point.point_normal = point_dir
+			new_growth_point.point_width = point_wid
+			growth_points.append(new_growth_point)
+			##
 			var test_dot = dot.instantiate()
-			test_dot.position = growth_point_pos
+			test_dot.position = point_pos
 			add_child(test_dot)
-#		print("Covered Points: ")
-#		print(covered_points)
-#		print("Coverage Range: ")
-#		print(coverage_range)
-#		print("Population Indeces: ")
-#		print(population_indeces)
+		##
+		if b.force_symmetry:
+			for gp in growth_points:
+				var mirrored_point : GrowthPoint = GrowthPoint.new()
+				mirrored_point.point_position = gp.point_position
+				mirrored_point.point_normal = Vector2(gp.point_normal)
+				mirrored_point.point_width = gp.point_width
+				mirrored_point.point_normal = mirrored_point.point_normal.rotated(PI)
+				growth_points.append(mirrored_point)
+		##
+		layer.growth_points = growth_points
 
 
 func draw_all_branches():
