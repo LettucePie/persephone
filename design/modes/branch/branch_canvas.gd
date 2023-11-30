@@ -36,6 +36,48 @@ class Branch:
 	var force_symmetry : bool = false
 	var leaf_size : float = 0.0
 	var leaf_size_random : float = 0.0
+	
+	func duplicate():
+		var new = Branch.new()
+		new.line = line.duplicate()
+		new.start_point = start_point
+		new.start_normal = start_normal
+		new.length = length
+		new.length_random = length_random
+		new.jagginess = jagginess
+		new.upward_direction = upward_direction
+		new.upward_angle = upward_angle
+		new.upward_influence = upward_influence
+		new.start_width = start_width
+		new.end_width = end_width
+		new.carries_leaves = carries_leaves
+		new.population = population
+		new.growth_coverage = growth_coverage
+		new.growth_coverage_end_to_base = growth_coverage_end_to_base
+		new.force_symmetry = force_symmetry
+		new.leaf_size = leaf_size
+		new.leaf_size_random = leaf_size_random
+		return new
+	
+	func apply_new_settings(new : Branch, ignore_start : bool):
+		if ignore_start == false:
+			start_point = new.start_point
+			start_normal = new.start_normal
+			start_width = new.start_width
+		length = new.length
+		length_random = new.length_random
+		jagginess = new.jagginess
+		upward_direction = new.upward_direction
+		upward_angle = new.upward_angle
+		upward_influence = new.upward_influence
+		end_width = new.end_width
+		carries_leaves = new.carries_leaves
+		population = new.population
+		growth_coverage = new.growth_coverage
+		growth_coverage_end_to_base = new.growth_coverage_end_to_base
+		force_symmetry = new.force_symmetry
+		leaf_size = new.leaf_size
+		leaf_size_random = new.leaf_size_random
 
 
 class GrowthPoint:
@@ -91,19 +133,26 @@ func make_layer(layer_num : int, master_branch : Branch):
 		populate_layer(new_layer, previous_layer_growth_points)
 		map_out_growth_points(new_layer)
 		branch_layers.append(new_layer)
-		draw_all_branches()
+#		draw_all_branches()
 
 
 func populate_layer(layer : BranchLayer, growth_points : Array):
 	print("Iterate over Start Points, making a new branch at each")
 	if layer.layer == 0:
 		print("Populating Trunk Layer... Ignore Start Points")
-		var new_branch_copy = layer.master_branch_copy.duplicate(true)
+		print(layer.master_branch_copy)
+		print(layer.master_branch_copy.line)
+		print(layer.master_branch_copy.start_point)
+		var new_branch_copy = layer.master_branch_copy.duplicate()
+		print("Copy Made")
+		print(new_branch_copy)
+		print(new_branch_copy.line)
+		print(new_branch_copy.start_point)
 		layer.layer_node.add_child(new_branch_copy.line)
 		layer.branches.append(new_branch_copy)
 	else:
 		for growth_point in growth_points:
-			var new_branch_copy = layer.master_branch_copy.duplicate(true)
+			var new_branch_copy = layer.master_branch_copy.duplicate()
 			new_branch_copy.start_point = growth_point.point_position
 			new_branch_copy.start_normal = growth_point.point_normal
 			new_branch_copy.start_width = growth_point.point_width
@@ -140,6 +189,23 @@ func draw_all_branches():
 			
 
 
+func branch_modified(layer : BranchLayer):
+	if layer.branches.size() > 0:
+		for branch in layer.branches:
+			branch.apply_new_settings(true)
+			branch = setup_branch_line(branch)
+			map_out_growth_points(layer)
+	for branch_layer in branch_layers:
+		if branch_layer.layer > layer.layer:
+			print("Making relative adjustments to layer ", layer.layer)
+			var growth_points = clamp(
+				branch_layer.layer - 1, 
+				0, 
+				branch_layers.size())
+			populate_layer(branch_layer, growth_points)
+			map_out_growth_points(branch_layer)
+
+
 func setup_branch_line(branch : Branch):
 	if branch.line != null:
 		branch.line.clear_points()
@@ -151,7 +217,7 @@ func setup_branch_line(branch : Branch):
 		branch.upward_angle)
 	var branch_points : PackedVector2Array = []
 	var segment_length = branch.length / 3.0
-	for p in 2:
+	for p in 3:
 		var reference = branch.start_point
 		if branch_points.size() > 0:
 			reference = branch_points[branch_points.size() - 1]
@@ -182,8 +248,6 @@ func set_branch_width_curve(branch : Branch):
 	new_curve.set_point_value(1, lowest_percent)
 	new_curve.bake()
 	line.set_curve(new_curve)
-
-
 
 
 func _process(delta):
