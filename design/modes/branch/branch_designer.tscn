@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://2u3xvhwjx3wi"]
+[gd_scene load_steps=6 format=3 uid="uid://2u3xvhwjx3wi"]
 
 [ext_resource type="Script" path="res://design/modes/branch/branch_designer.gd" id="1_7jalr"]
 [ext_resource type="Script" path="res://design/modes/branch/branch_canvas.gd" id="2_ryqc2"]
+[ext_resource type="PackedScene" uid="uid://cgk5sptc2x7ol" path="res://testing/red_dot.tscn" id="3_sg6gt"]
 
 [sub_resource type="Curve" id="Curve_t6r4y"]
 _data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
@@ -16,6 +17,7 @@ script = ExtResource("1_7jalr")
 
 [node name="branch_canvas" type="Node2D" parent="."]
 script = ExtResource("2_ryqc2")
+dot = ExtResource("3_sg6gt")
 default_curve = SubResource("Curve_t6r4y")
 influence_curve = SubResource("Curve_aif4o")
 

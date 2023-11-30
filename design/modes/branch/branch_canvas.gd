@@ -1,5 +1,8 @@
 extends Node2D
 
+## Testing
+@export var dot : PackedScene
+
 @export var default_curve : Curve
 @export var influence_curve : Curve
 
@@ -19,7 +22,6 @@ class Branch:
 	## Branch Shape Properties
 	var start_point : Vector2 = Vector2.ZERO
 	var start_normal : Vector2 = Vector2.RIGHT
-#	var target_points : PackedVector2Array = [Vector2.UP]
 	var length : float = 1.0
 	var length_random : float = 0.0
 	var jagginess : float = 0.0
@@ -30,12 +32,14 @@ class Branch:
 	var end_width : float = 1.0
 	## Growth Point Properties
 	var carries_leaves : bool = false
-	var population : float = 0.0
-	var growth_coverage : float = 0.0
+	var population : float = 0.4
+	var cluster_size : int = 0
+	var growth_coverage : float = 0.5
 	var growth_coverage_end_to_base : bool = true
 	var force_symmetry : bool = false
 	var leaf_size : float = 0.0
 	var leaf_size_random : float = 0.0
+	
 	
 	func duplicate():
 		var new = Branch.new()
@@ -52,12 +56,14 @@ class Branch:
 		new.end_width = end_width
 		new.carries_leaves = carries_leaves
 		new.population = population
+		new.cluster_size = cluster_size
 		new.growth_coverage = growth_coverage
 		new.growth_coverage_end_to_base = growth_coverage_end_to_base
 		new.force_symmetry = force_symmetry
 		new.leaf_size = leaf_size
 		new.leaf_size_random = leaf_size_random
 		return new
+	
 	
 	func apply_new_settings(new : Branch, ignore_start : bool):
 		if ignore_start == false:
@@ -73,6 +79,7 @@ class Branch:
 		end_width = new.end_width
 		carries_leaves = new.carries_leaves
 		population = new.population
+		cluster_size = new.cluster_size
 		growth_coverage = new.growth_coverage
 		growth_coverage_end_to_base = new.growth_coverage_end_to_base
 		force_symmetry = new.force_symmetry
@@ -91,6 +98,7 @@ var branch_layers : Array
 
 
 func _ready():
+	print(range(2, 2 + 1))
 	branch_layers.clear()
 	make_trunk()
 	draw_all_branches()
@@ -108,6 +116,11 @@ func make_trunk():
 #	trunk.jagginess = 0.5
 	trunk.jagginess = 0.15
 	make_layer(0, setup_branch_line(trunk))
+
+
+func make_default_branch_layer():
+	var branch : Branch = Branch.new()
+	
 
 
 func make_layer(layer_num : int, master_branch : Branch):
@@ -157,8 +170,57 @@ func populate_layer(layer : BranchLayer, growth_points : Array):
 			layer.branches.append(modified_branch)
 
 
+func bake_out_points(line : Line2D):
+	var curve_trick : Curve2D = Curve2D.new()
+	curve_trick.bake_interval = 10.0
+	for p in line.points:
+		curve_trick.add_point(p, Vector2.ZERO, Vector2.ZERO)
+	return curve_trick.get_baked_points()
+	curve_trick.free()
+
+
 func map_out_growth_points(layer : BranchLayer):
 	print("Iterate over fresh branches, gathering all viable growth points")
+	for b in layer.branches:
+		var baked_points = bake_out_points(b.line)
+		if b.growth_coverage_end_to_base:
+			baked_points.reverse()
+		var end = baked_points.size() - 1
+#		var covered_points : PackedVector2Array = []
+#		for i in coverage_range:
+#			covered_points.append(baked_points[i])
+		var covered_points : PackedVector2Array = baked_points.slice(
+			0,
+			int(lerp(0, end, b.growth_coverage)))
+		## Concern about making population of coverage clusters or not...
+		## leaves are usually in clusters right?
+		## added cluster_size
+		var coverage_range = range(0, covered_points.size())
+		coverage_range.shuffle()
+		var population_indeces : Array = []
+		for i in range(0, int(lerp(0, coverage_range.size(), b.population))):
+			## Spacing this out since it's a lot
+			if !population_indeces.has(coverage_range[i]):
+				population_indeces.append(coverage_range[i])
+			##
+			for cluster_i in range(
+			coverage_range[i], 
+			coverage_range[i] + b.cluster_size + 1):
+				##
+				if !population_indeces.has(cluster_i) \
+				and coverage_range.has(cluster_i):
+					population_indeces.append(cluster_i)
+		for p in population_indeces:
+			var growth_point_pos = covered_points[p]
+			var test_dot = dot.instantiate()
+			test_dot.position = growth_point_pos
+			add_child(test_dot)
+#		print("Covered Points: ")
+#		print(covered_points)
+#		print("Coverage Range: ")
+#		print(coverage_range)
+#		print("Population Indeces: ")
+#		print(population_indeces)
 
 
 func draw_all_branches():

@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgk5sptc2x7ol"]
+
+[ext_resource type="Texture2D" uid="uid://dnbu2cdn5efk5" path="res://design/modes/leaf/brush_circle_12.png" id="1_ju48i"]
+
+[node name="red_dot" type="Sprite2D"]
+modulate = Color(1, 0, 0, 1)
+z_index = 2
+texture = ExtResource("1_ju48i")
