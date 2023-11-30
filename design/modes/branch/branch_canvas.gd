@@ -5,6 +5,7 @@ extends Node2D
 
 class BranchLayer:
 	var layer : int = 0
+	var layer_node : Node2D
 	var master_branch_copy : Branch = null
 	var population : float = 0.0
 	var population_min : int = 1
@@ -39,6 +40,7 @@ class Branch:
 
 class GrowthPoint:
 	var point_position : Vector2 = Vector2.ZERO
+	var point_normal : Vector2 = Vector2.RIGHT
 	var point_width : float = 0.0
 
 
@@ -47,21 +49,9 @@ var branch_layers : Array
 
 
 func _ready():
-#	branches.clear()
 	branch_layers.clear()
 	make_trunk()
 	draw_all_branches()
-	var center = Vector2(get_window().get_size() / 2)
-	print(center)
-	var new_line : Line2D = Line2D.new()
-	new_line.add_point(center)
-	new_line.add_point(center + (Vector2.UP * 200))
-	add_child(new_line)
-	var new_branch : Branch = Branch.new()
-	new_branch.line = new_line
-#	branches.append(new_branch)
-	set_branch_width_curve(new_branch, 20, 10)
-	print(new_line.points)
 
 
 func make_trunk():
@@ -83,6 +73,10 @@ func make_layer(layer_num : int, master_branch : Branch):
 		var new_layer : BranchLayer = BranchLayer.new()
 		new_layer.layer = layer_num
 		new_layer.master_branch_copy = master_branch
+		var new_layer_node = Node2D.new()
+		new_layer_node.name = "Layer" + str(layer_num)
+		new_layer.layer_node = new_layer_node
+		add_child(new_layer_node)
 		var previous_layer_growth_points = []
 		if layer_num == 0:
 			## Trunk Layer
@@ -100,8 +94,22 @@ func make_layer(layer_num : int, master_branch : Branch):
 		draw_all_branches()
 
 
-func populate_layer(layer : BranchLayer, start_points : Array):
+func populate_layer(layer : BranchLayer, growth_points : Array):
 	print("Iterate over Start Points, making a new branch at each")
+	if layer.layer == 0:
+		print("Populating Trunk Layer... Ignore Start Points")
+		var new_branch_copy = layer.master_branch_copy.duplicate(true)
+		layer.layer_node.add_child(new_branch_copy.line)
+		layer.branches.append(new_branch_copy)
+	else:
+		for growth_point in growth_points:
+			var new_branch_copy = layer.master_branch_copy.duplicate(true)
+			new_branch_copy.start_point = growth_point.point_position
+			new_branch_copy.start_normal = growth_point.point_normal
+			new_branch_copy.start_width = growth_point.point_width
+			var modified_branch = setup_branch_line(new_branch_copy)
+			layer.layer_node.add_child(modified_branch.line)
+			layer.branches.append(modified_branch)
 
 
 func map_out_growth_points(layer : BranchLayer):
