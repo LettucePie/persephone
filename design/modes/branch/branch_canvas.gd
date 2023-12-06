@@ -33,6 +33,8 @@ class Branch:
 	## Growth Point Properties
 	var carries_leaves : bool = false
 	var population : float = 0.4
+	var cluster_random : bool = true
+	var cluster_gap : int = 0
 	var cluster_size : int = 0
 	var growth_coverage : float = 0.5
 	var growth_coverage_end_to_base : bool = true
@@ -56,6 +58,8 @@ class Branch:
 		new.end_width = end_width
 		new.carries_leaves = carries_leaves
 		new.population = population
+		new.cluster_random = cluster_random
+		new.cluster_gap  = cluster_gap
 		new.cluster_size = cluster_size
 		new.growth_coverage = growth_coverage
 		new.growth_coverage_end_to_base = growth_coverage_end_to_base
@@ -79,6 +83,8 @@ class Branch:
 		end_width = new.end_width
 		carries_leaves = new.carries_leaves
 		population = new.population
+		cluster_random = new.cluster_random
+		cluster_gap = new.cluster_gap
 		cluster_size = new.cluster_size
 		growth_coverage = new.growth_coverage
 		growth_coverage_end_to_base = new.growth_coverage_end_to_base
@@ -114,6 +120,9 @@ func make_trunk():
 #	trunk.jagginess = 1.0
 #	trunk.jagginess = 0.5
 	trunk.jagginess = 0.15
+	trunk.cluster_random = false
+	trunk.cluster_gap = 2
+	trunk.cluster_size = 0
 	make_layer(0, setup_branch_line(trunk))
 
 
@@ -189,7 +198,41 @@ func map_out_growth_points(layer : BranchLayer):
 			0,
 			int(lerp(0, end, b.growth_coverage)))
 		var coverage_range = range(0, covered_points.size())
-		coverage_range.shuffle()
+		##
+		## Apply gap
+		## Objective is to allow player to make evenly spaced growth \
+		## points.
+		##
+		if b.cluster_gap > 0:
+			var counter = b.cluster_gap
+			var removal_list = []
+			for coverage_index in coverage_range:
+				if counter <= 0:
+#					print("Remove ", coverage_index)
+					removal_list.append(coverage_index)
+					counter = b.cluster_gap
+				else:
+					counter -= 1
+			if removal_list.size() > 0:
+				for remove in removal_list:
+					coverage_range.erase(remove)
+#			removal_list.free()
+		##
+		## Apply random
+		## Objective is a bit self-explainatory. Shuffles all the \
+		## available coverage area. 
+		##
+		if b.cluster_random:
+			coverage_range.shuffle()
+		##
+		## Apply Cluster size within Population percent of Growth Coverage
+		## Objective is iterate through a percent of the coverage area \
+		## dictated by the float 0.0/1.0 "population". Upon reaching a \
+		## point, add additional points dictated by "cluster_size".
+		##
+		## Hopefully, this allows groups/clusters of growth points.
+		## This should work for wads/bundles of leaves.
+		##
 		var population_indeces : Array = []
 		for i in range(0, int(lerp(0, coverage_range.size(), b.population))):
 			## Spacing this out since it's a lot
