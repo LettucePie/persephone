@@ -205,7 +205,7 @@ func map_out_growth_points(layer : BranchLayer):
 		##
 		print("Coverage_Range size before gapping: ", coverage_range.size())
 		if b.cluster_gap > 0:
-			var counter = b.cluster_gap
+			var counter = 0
 			var removal_list = []
 			for coverage_index in coverage_range:
 				if counter <= 0:
