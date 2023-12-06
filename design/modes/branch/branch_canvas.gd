@@ -203,20 +203,21 @@ func map_out_growth_points(layer : BranchLayer):
 		## Objective is to allow player to make evenly spaced growth \
 		## points.
 		##
+		print("Coverage_Range size before gapping: ", coverage_range.size())
 		if b.cluster_gap > 0:
 			var counter = b.cluster_gap
 			var removal_list = []
 			for coverage_index in coverage_range:
 				if counter <= 0:
-#					print("Remove ", coverage_index)
-					removal_list.append(coverage_index)
 					counter = b.cluster_gap
 				else:
+					removal_list.append(coverage_index)
 					counter -= 1
 			if removal_list.size() > 0:
 				for remove in removal_list:
 					coverage_range.erase(remove)
 #			removal_list.free()
+		print("Coverage_Range size after gapping: ", coverage_range.size())
 		##
 		## Apply random
 		## Objective is a bit self-explainatory. Shuffles all the \
