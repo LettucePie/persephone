@@ -255,36 +255,37 @@ func map_out_growth_points(layer : BranchLayer):
 				and coverage_range.has(cluster_i):
 					population_indeces.append(cluster_i)
 		##
+		population_indeces.sort()
 		var growth_points : Array = []
-		var flip_flop : bool = true
+		var flip_flop_dir : bool = false
 		##
 		for p in population_indeces:
+			print(p)
 			##
 			var new_growth_point : GrowthPoint = GrowthPoint.new()
 			##
 			var point_pos = covered_points[p]
-			var angle_adjust = PI / 2
-			if flip_flop:
-				angle_adjust = PI / -2
-				flip_flop = false
-			else:
-				flip_flop = true
 			var compare_point = p - 1
 			if p == 0:
 				compare_point = p + 1
 			##
 			var point_dir = point_pos.direction_to(covered_points[compare_point])
-			point_dir = point_dir.rotated(angle_adjust)
+			if flip_flop_dir:
+				point_dir = point_dir.rotated(PI / 2)
+				flip_flop_dir = false
+			else:
+				point_dir = point_dir.rotated(PI / -2)
+				flip_flop_dir = true
 			##
 			var point_wid = b.start_width
 			var point_len = 1.0
 			var baked_index_percent = float(p + 1) / float(end + 1)
 			if b.growth_coverage_end_to_base:
 				point_wid = lerp(b.end_width, b.start_width, baked_index_percent)
-				point_len = lerp(0.33, 1.0, baked_index_percent)
+				point_len = lerp(0.2, 0.8, baked_index_percent)
 			else:
 				point_wid = lerp(b.start_width, b.end_width, baked_index_percent)
-				point_len = lerp(1.0, 0.33, baked_index_percent)
+				point_len = lerp(0.8, 0.2, baked_index_percent)
 			##
 			new_growth_point.point_position = point_pos
 			new_growth_point.point_normal = point_dir
@@ -305,6 +306,7 @@ func map_out_growth_points(layer : BranchLayer):
 				mirrored_point.point_length = gp.point_length
 				mirrored_point.point_normal = mirrored_point.point_normal.rotated(PI)
 				growth_points.append(mirrored_point)
+
 		##
 		layer.growth_points = growth_points
 
