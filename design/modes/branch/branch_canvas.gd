@@ -39,6 +39,7 @@ class Branch:
 	var growth_coverage : float = 0.5
 	var growth_coverage_end_to_base : bool = true
 	var force_symmetry : bool = false
+	var relative_length : bool = true
 	var leaf_size : float = 0.0
 	var leaf_size_random : float = 0.0
 	
@@ -64,6 +65,7 @@ class Branch:
 		new.growth_coverage = growth_coverage
 		new.growth_coverage_end_to_base = growth_coverage_end_to_base
 		new.force_symmetry = force_symmetry
+		new.relative_length = relative_length
 		new.leaf_size = leaf_size
 		new.leaf_size_random = leaf_size_random
 		return new
@@ -89,6 +91,7 @@ class Branch:
 		growth_coverage = new.growth_coverage
 		growth_coverage_end_to_base = new.growth_coverage_end_to_base
 		force_symmetry = new.force_symmetry
+		relative_length = new.relative_length
 		leaf_size = new.leaf_size
 		leaf_size_random = new.leaf_size_random
 
@@ -97,6 +100,7 @@ class GrowthPoint:
 	var point_position : Vector2 = Vector2.ZERO
 	var point_normal : Vector2 = Vector2.RIGHT
 	var point_width : float = 0.0
+	var point_length : float = 1.0
 
 
 var branch_layers : Array
@@ -106,6 +110,7 @@ var branch_layers : Array
 func _ready():
 	branch_layers.clear()
 	make_trunk()
+	make_default_branch_layer()
 	draw_all_branches()
 
 
@@ -120,15 +125,16 @@ func make_trunk():
 #	trunk.jagginess = 1.0
 #	trunk.jagginess = 0.5
 	trunk.jagginess = 0.15
-	trunk.cluster_random = false
-	trunk.cluster_gap = 2
+	trunk.cluster_random = true
+	trunk.cluster_gap = 1
 	trunk.cluster_size = 0
 	make_layer(0, setup_branch_line(trunk))
 
 
 func make_default_branch_layer():
 	var branch : Branch = Branch.new()
-	
+	branch.length = 200.0
+	make_layer(1, setup_branch_line(branch))
 
 
 func make_layer(layer_num : int, master_branch : Branch):
@@ -168,11 +174,13 @@ func populate_layer(layer : BranchLayer, growth_points : Array):
 		layer.layer_node.add_child(new_branch_copy.line)
 		layer.branches.append(new_branch_copy)
 	else:
+		print("Growth Points Size: ", growth_points.size())
 		for growth_point in growth_points:
 			var new_branch_copy = layer.master_branch_copy.duplicate()
 			new_branch_copy.start_point = growth_point.point_position
 			new_branch_copy.start_normal = growth_point.point_normal
 			new_branch_copy.start_width = growth_point.point_width
+			new_branch_copy.length *= growth_point.point_length
 			var modified_branch = setup_branch_line(new_branch_copy)
 			layer.layer_node.add_child(modified_branch.line)
 			layer.branches.append(modified_branch)
@@ -248,6 +256,7 @@ func map_out_growth_points(layer : BranchLayer):
 					population_indeces.append(cluster_i)
 		##
 		var growth_points : Array = []
+		var flip_flop : bool = true
 		##
 		for p in population_indeces:
 			##
@@ -255,8 +264,11 @@ func map_out_growth_points(layer : BranchLayer):
 			##
 			var point_pos = covered_points[p]
 			var angle_adjust = PI / 2
-			if randf() > 0.5:
+			if flip_flop:
 				angle_adjust = PI / -2
+				flip_flop = false
+			else:
+				flip_flop = true
 			var compare_point = p - 1
 			if p == 0:
 				compare_point = p + 1
@@ -265,15 +277,19 @@ func map_out_growth_points(layer : BranchLayer):
 			point_dir = point_dir.rotated(angle_adjust)
 			##
 			var point_wid = b.start_width
+			var point_len = 1.0
 			var baked_index_percent = float(p + 1) / float(end + 1)
 			if b.growth_coverage_end_to_base:
 				point_wid = lerp(b.end_width, b.start_width, baked_index_percent)
+				point_len = lerp(0.33, 1.0, baked_index_percent)
 			else:
 				point_wid = lerp(b.start_width, b.end_width, baked_index_percent)
+				point_len = lerp(1.0, 0.33, baked_index_percent)
 			##
 			new_growth_point.point_position = point_pos
 			new_growth_point.point_normal = point_dir
 			new_growth_point.point_width = point_wid
+			new_growth_point.point_length = point_len
 			growth_points.append(new_growth_point)
 			##
 			var test_dot = dot.instantiate()
@@ -286,6 +302,7 @@ func map_out_growth_points(layer : BranchLayer):
 				mirrored_point.point_position = gp.point_position
 				mirrored_point.point_normal = Vector2(gp.point_normal)
 				mirrored_point.point_width = gp.point_width
+				mirrored_point.point_length = gp.point_length
 				mirrored_point.point_normal = mirrored_point.point_normal.rotated(PI)
 				growth_points.append(mirrored_point)
 		##
@@ -343,6 +360,15 @@ func setup_branch_line(branch : Branch):
 		Vector2.UP, 
 		branch.upward_angle)
 	var branch_points : PackedVector2Array = []
+	## Every branch line shouldn't be the same length, make optional.
+	## Relative Length Setting
+	##
+	## Requires growth point info?
+	##
+	## Apply here or on render?
+	##
+	## This is meant to be the master branch shape... Relative Length would
+	## be more like rendered scale...
 	var segment_length = branch.length / 3.0
 	for p in 3:
 		var reference = branch.start_point
