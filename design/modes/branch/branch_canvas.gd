@@ -102,6 +102,7 @@ class GrowthPoint:
 	var point_width : float = 0.0
 	var point_length : float = 1.0
 
+#@onready var glossary : ClassDB = ClassDB
 
 var branch_layers : Array
 #var branches : Array
@@ -338,7 +339,7 @@ func draw_all_branches():
 func branch_modified(layer : BranchLayer):
 	if layer.branches.size() > 0:
 		for branch in layer.branches:
-			branch.apply_new_settings(true)
+			branch.apply_new_settings(layer.master_branch_copy, true)
 			branch = setup_branch_line(branch)
 			map_out_growth_points(layer)
 	for branch_layer in branch_layers:
@@ -408,3 +409,20 @@ func set_branch_width_curve(branch : Branch):
 
 func _process(delta):
 	pass
+
+
+func _on_branch_control_modification_request(var_name, value):
+	print("Recieved Modification Request from branch_control")
+	print("variable_name: ", var_name, " | value: ", value)
+	if branch_layers.size() > 0:
+		var branch : Branch = branch_layers[0].master_branch_copy
+		var props : Array = branch.get_property_list()
+		var valid : bool = false
+		for dic in props:
+			var property_name = dic.get("name")
+			if property_name != null and property_name == var_name:
+				valid = true
+		if valid:
+			print("Valid Modification Request")
+			ClassDB.class_set_property(branch, var_name, value)
+			branch_modified(branch_layers[0])

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://design/ui/slider_element.gd" id="1_2ujyj"]
 
-[node name="slider_element" type="HBoxContainer"]
+[node name="slider_element" type="HBoxContainer" groups=["slider_element"]]
 script = ExtResource("1_2ujyj")
 
 [node name="label" type="Label" parent="."]
