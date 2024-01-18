@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://2u3xvhwjx3wi"]
+[gd_scene load_steps=7 format=3 uid="uid://2u3xvhwjx3wi"]
 
 [ext_resource type="Script" path="res://design/modes/branch/branch_designer.gd" id="1_7jalr"]
 [ext_resource type="Script" path="res://design/modes/branch/branch_canvas.gd" id="2_ryqc2"]
 [ext_resource type="PackedScene" uid="uid://cgk5sptc2x7ol" path="res://testing/red_dot.tscn" id="3_sg6gt"]
+[ext_resource type="PackedScene" uid="uid://bmvn83xhwm5n2" path="res://design/ui/slider_element.tscn" id="4_r2eg4"]
 
 [sub_resource type="Curve" id="Curve_t6r4y"]
 _data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
@@ -28,3 +29,24 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="scroller" type="ScrollContainer" parent="branch_control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.768
+anchor_right = 1.0
+anchor_bottom = 0.98
+offset_left = 17.0
+offset_top = -0.280029
+offset_right = -17.0
+offset_bottom = 0.199951
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="list" type="VBoxContainer" parent="branch_control/scroller"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="element1" parent="branch_control/scroller/list" instance=ExtResource("4_r2eg4")]
+layout_mode = 2

@@ -1,0 +1,24 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmvn83xhwm5n2"]
+
+[ext_resource type="Script" path="res://design/ui/slider_element.gd" id="1_2ujyj"]
+
+[node name="slider_element" type="HBoxContainer"]
+script = ExtResource("1_2ujyj")
+
+[node name="label" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Label"
+
+[node name="slider" type="HSlider" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.67
+
+[node name="value" type="Label" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "00000"
+horizontal_alignment = 2
+
+[connection signal="value_changed" from="slider" to="." method="_on_slider_value_changed"]
