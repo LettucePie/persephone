@@ -1,0 +1,7 @@
+
+### To Do
+
+## Leaf Section
+
+- Symmetrical Coloring
+- Circle Brush dimensions on stretched canvas.
