@@ -432,7 +432,7 @@ func _process(delta):
 	pass
 
 
-func _on_branch_control_modification_request(var_name, value, reconstructive):
+func _on_branch_control_modification_request(var_name, value):
 	print("Recieved Modification Request from branch_control")
 	print("variable_name: ", var_name, " | value: ", value)
 	if branch_layers.size() > 0:
@@ -446,4 +446,4 @@ func _on_branch_control_modification_request(var_name, value, reconstructive):
 		if valid:
 			print("Valid Modification Request")
 			ClassDB.class_set_property(branch, var_name, value)
-			branch_modified(branch_layers[0], reconstructive)
+			branch_modified(branch_layers[0], false)
