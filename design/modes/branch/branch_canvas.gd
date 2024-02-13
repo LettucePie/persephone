@@ -5,6 +5,7 @@ extends Node2D
 
 @export var default_curve : Curve
 @export var influence_curve : Curve
+const LAYER_MAX : int = 5
 
 class BranchLayer:
 	var layer : int = 0
@@ -187,6 +188,15 @@ func populate_layer(layer : BranchLayer, growth_points : Array):
 			layer.branches.append(modified_branch)
 
 
+func get_layer_by_number(number : int) -> BranchLayer:
+	var found = null
+	if branch_layers.size() > 0:
+		for bl in branch_layers:
+			if bl.layer == number:
+				found = bl
+	return found
+
+
 func bake_out_points(line : Line2D):
 	var curve_trick : Curve2D = Curve2D.new()
 	curve_trick.bake_interval = 10.0
@@ -336,21 +346,32 @@ func draw_all_branches():
 			
 
 
-func branch_modified(layer : BranchLayer):
+func branch_modified(layer : BranchLayer, reconstructive : bool):
+	print("BranchLayer Modified: ", layer.layer)
 	if layer.branches.size() > 0:
+		print("Modified Branch Layer has ", layer.branches.size(), " branches")
 		for branch in layer.branches:
 			branch.apply_new_settings(layer.master_branch_copy, true)
 			branch = setup_branch_line(branch)
-			map_out_growth_points(layer)
-	for branch_layer in branch_layers:
-		if branch_layer.layer > layer.layer:
-			print("Making relative adjustments to layer ", layer.layer)
-			var growth_points = clamp(
-				branch_layer.layer - 1, 
-				0, 
-				branch_layers.size())
-			populate_layer(branch_layer, growth_points)
-			map_out_growth_points(branch_layer)
+			if reconstructive:
+				map_out_growth_points(layer)
+	## Make Relative Adjustments
+	## Start by building a numeric list of each layer (in case deletion)
+	var next_layers : Array = []
+	var index = layer.layer
+	while index < LAYER_MAX:
+		index += 1
+		var next_layer : BranchLayer = get_layer_by_number(index)
+		if next_layer != null:
+			next_layers.append(next_layer)
+	## Iterate through Next_Layers
+	for i in next_layers.size():
+		var prev_layer : BranchLayer = layer
+		if i > 0:
+			prev_layer = next_layers[i - 1]
+		populate_layer(next_layers[i], prev_layer.growth_points)
+		if reconstructive:
+			map_out_growth_points(next_layers[i])
 
 
 func setup_branch_line(branch : Branch):
@@ -411,7 +432,7 @@ func _process(delta):
 	pass
 
 
-func _on_branch_control_modification_request(var_name, value):
+func _on_branch_control_modification_request(var_name, value, reconstructive):
 	print("Recieved Modification Request from branch_control")
 	print("variable_name: ", var_name, " | value: ", value)
 	if branch_layers.size() > 0:
@@ -425,4 +446,4 @@ func _on_branch_control_modification_request(var_name, value):
 		if valid:
 			print("Valid Modification Request")
 			ClassDB.class_set_property(branch, var_name, value)
-			branch_modified(branch_layers[0])
+			branch_modified(branch_layers[0], reconstructive)

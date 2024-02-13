@@ -2,7 +2,7 @@ extends HBoxContainer
 
 class_name SliderElement
 
-signal slider_value_changed(varName : String, value : float)
+signal slider_value_changed(varName : String, value : float, reconstructive : bool)
 
 @export var label : String = "Label"
 @export var var_name : String = "varName"
@@ -10,6 +10,7 @@ signal slider_value_changed(varName : String, value : float)
 @export var min_value : float = 0.0
 @export var max_value : float = 1.0
 @export var step : float = 0.05
+@export var reconstructive : bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
