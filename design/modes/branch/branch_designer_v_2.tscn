@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://ycnv1h6oaneh"]
+
+[ext_resource type="Script" path="res://design/modes/branch/branch_designer_v_2.gd" id="1_tbva1"]
+
+[node name="branch_designer_v2" type="Node"]
+script = ExtResource("1_tbva1")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
