@@ -18,9 +18,11 @@ func _ready():
 	trunk_start = screen_size
 	trunk_start.x *= 0.5
 	trunk_start.y *= 0.7
-	length_max = screen_size.length()
+	length_max = screen_size.length() / 2
 	create_default_layer()
-	create_branch(trunk_start, 0.2, 0.0)
+	var starting_branch = create_branch(trunk_start, 0.2, 0.0)
+	branch_layers[current_layer].append(starting_branch)
+	$Node2D.add_child(starting_branch)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -31,12 +33,33 @@ func _process(delta):
 
 func create_branch(start_point : Vector2, length : float, angle : float):
 	var new_branch = Line2D.new()
-	new_branch.add_point(start_point)
+	new_branch.set_points(create_branch_points(start_point, length, angle))
+	return new_branch
+
+
+func edit_branch(
+	branch : Line2D, 
+	new_start : Vector2, 
+	length : float, 
+	angle : float):
+	####
+	print("Edit Branch : ", branch)
+	var origin = branch.get_point_position(0)
+	if new_start != Vector2.ZERO:
+		origin = new_start
+	branch.clear_points()
+	branch.set_points(create_branch_points(origin, length, angle))
+
+
+## Builds an array to be used in Create Branch or Edit Branch functions
+func create_branch_points(start_point : Vector2, length : float, angle : float):
+	var new_points = []
+	new_points.append(start_point)
 	var next_point = start_point
 	var direction = Vector2.UP.rotated(angle)
 	next_point += direction * (length * length_max)
-	new_branch.add_point(next_point)
-	$Node2D.add_child(new_branch)
+	new_points.append(next_point)
+	return new_points
 
 
 func _on_layer_switch_pressed(next : bool):
@@ -85,6 +108,16 @@ func update_setting(value : float, label : String):
 
 func update_layer():
 	print("TODO")
+	var editing_layer = current_layer
+	var editing_branches = branch_layers[editing_layer]
+	print("editing branches : ", editing_branches)
+	for branch in editing_branches:
+		edit_branch(
+			branch, 
+			Vector2.ZERO, 
+			branch_layer_settings[current_layer]["length"],
+			deg_to_rad(branch_layer_settings[current_layer]["angle"]))
+	
 	## TODO
 	## Okay so, i need to get the growth points from the previous layer.
 	## I also need to work off of those by current_layer[population] percent.
