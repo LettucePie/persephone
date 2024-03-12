@@ -3,6 +3,12 @@ extends Node
 ## ONready UI Stuff
 @onready var property_list_ui = $Control/ScrollContainer/VBoxContainer
 
+## property flag tables
+const UPDATE_GROWTH_POINTS : Array = [
+	"population",
+	"length",
+	"growth"
+]
 
 var length_max : float = 1000
 var trunk_start : Vector2
@@ -10,10 +16,11 @@ var branch_layers : Array = []
 var branch_layer_settings : Array = []
 var branch_setting_dict : Dictionary = {
 	"population" = 0.0,
-	"length" = 0.0,
+	"length" = 0.01,
 	"angle" = 0.0,
 	"growth" = 0.0
 }
+var growth_point_layers : Array = []
 var current_layer : int = 0
 
 # Called when the node enters the scene tree for the first time.
@@ -78,15 +85,18 @@ func create_growth_points(branch : Line2D, growth : float, length : float):
 	## Segment index must be greater than 0.
 	## We start with line_points.size() since we will be climbing from the end \
 	## of the branch to the beginning.
-	var segment_index = line_points.size()
+	var segment_index = line_points.size() - 1
 	
 	## We're going to try to determine how many growth points can be placed \
 	## along a branch.
 	## point_gap_distance is the distance between each growth point, along \
 	## the whole branch from branch_point 0 to branch_point end.
 	## point_quantity will be the number we iterate on to locate these points.
-	var point_gap_distance = (length * length_max) * (1.01 - growth)
-	var point_quantity = (length * length_max) / point_gap_distance
+	
+	var point_gap_distance = ((length * length_max) / 2) * (1.01 - growth)
+	print("Point Gap Distance for growth : ", growth, " == ", point_gap_distance, " of Length: ", length * length_max)
+	var point_quantity = int(roundf((length * length_max) / point_gap_distance))
+	print("Point Gap Quantity == " , point_quantity, " because ", length * length_max, " / ", point_gap_distance, " == ", (length * length_max) / point_gap_distance)
 	
 	## Establish the first point_position to be the end.
 	## Then build the array, and add the end point.
@@ -159,6 +169,7 @@ func create_default_layer():
 	var settings : Dictionary = branch_setting_dict.duplicate(true)
 	branch_layer_settings.insert(current_layer, settings)
 	branch_layers.insert(current_layer, [])
+	growth_point_layers.insert(current_layer, [])
 
 
 func update_settings_display():
@@ -179,13 +190,14 @@ func update_setting(value : float, label : String):
 	print("Update: ", label, " to ", value)
 	branch_layer_settings[current_layer][label] = value
 	update_settings_display()
-	update_layer()
+	update_layer(UPDATE_GROWTH_POINTS.has(label))
 
 
-func update_layer():
+func update_layer(update_growth_points : bool):
 	print("TODO")
-	var editing_layer = current_layer
-	var editing_branches = branch_layers[editing_layer]
+	var editing_branches = branch_layers[current_layer]
+	if update_growth_points:
+		growth_point_layers[current_layer] = []
 	print("editing branches : ", editing_branches)
 	for branch in editing_branches:
 		edit_branch(
@@ -193,6 +205,14 @@ func update_layer():
 			Vector2.ZERO, 
 			branch_layer_settings[current_layer]["length"],
 			deg_to_rad(branch_layer_settings[current_layer]["angle"]))
+		if update_growth_points:
+			growth_point_layers[current_layer].append_array(
+				create_growth_points(
+					branch, 
+					branch_layer_settings[current_layer]["growth"],
+					branch_layer_settings[current_layer]["length"]
+				)
+			)
 	
 	## TODO
 	## Okay so, i need to get the growth points from the previous layer.
@@ -211,3 +231,4 @@ func update_layer():
 
 func _on_delete_layer_pressed():
 	pass # Replace with function body.
+
