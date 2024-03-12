@@ -15,58 +15,68 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control"]
-layout_mode = 1
-anchors_preset = -1
-anchor_top = 0.78
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = 0.199951
-grow_horizontal = 2
-grow_vertical = 0
-
-[node name="layer" type="HBoxContainer" parent="Control/VBoxContainer"]
+[node name="layer" type="HBoxContainer" parent="Control"]
 layout_mode = 2
+anchor_top = 0.780208
+anchor_right = 1.0
+anchor_bottom = 0.820833
 size_flags_vertical = 3
+metadata/_edit_use_anchors_ = true
 
-[node name="Label" type="Label" parent="Control/VBoxContainer/layer"]
+[node name="Label" type="Label" parent="Control/layer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
 text = "Branch Layer : "
 vertical_alignment = 1
 
-[node name="value" type="Label" parent="Control/VBoxContainer/layer"]
+[node name="value" type="Label" parent="Control/layer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
 text = "0"
 vertical_alignment = 1
 
-[node name="prev_layer" type="Button" parent="Control/VBoxContainer/layer"]
+[node name="prev_layer" type="Button" parent="Control/layer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
 text = " - "
 
-[node name="next_layer" type="Button" parent="Control/VBoxContainer/layer"]
+[node name="next_layer" type="Button" parent="Control/layer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
 text = " + "
 
-[node name="delete_layer" type="Button" parent="Control/VBoxContainer/layer"]
+[node name="delete_layer" type="Button" parent="Control/layer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
 text = "  Delete  "
 
-[node name="population" type="HBoxContainer" parent="Control/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.824
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -0.0400391
+grow_horizontal = 2
+grow_vertical = 0
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="population" type="HBoxContainer" parent="Control/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="label" type="Label" parent="Control/VBoxContainer/population"]
+[node name="label" type="Label" parent="Control/ScrollContainer/VBoxContainer/population"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -74,7 +84,7 @@ text = "Population"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="population_slider" type="HSlider" parent="Control/VBoxContainer/population"]
+[node name="population_slider" type="HSlider" parent="Control/ScrollContainer/VBoxContainer/population"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -82,7 +92,7 @@ size_flags_stretch_ratio = 2.11
 max_value = 1.0
 step = 0.01
 
-[node name="value" type="Label" parent="Control/VBoxContainer/population"]
+[node name="value" type="Label" parent="Control/ScrollContainer/VBoxContainer/population"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -90,12 +100,12 @@ text = "0.0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="length" type="HBoxContainer" parent="Control/VBoxContainer"]
+[node name="length" type="HBoxContainer" parent="Control/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="label" type="Label" parent="Control/VBoxContainer/length"]
+[node name="label" type="Label" parent="Control/ScrollContainer/VBoxContainer/length"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -103,7 +113,7 @@ text = "Length"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="length_slider" type="HSlider" parent="Control/VBoxContainer/length"]
+[node name="length_slider" type="HSlider" parent="Control/ScrollContainer/VBoxContainer/length"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -111,7 +121,7 @@ size_flags_stretch_ratio = 2.11
 max_value = 1.0
 step = 0.01
 
-[node name="value" type="Label" parent="Control/VBoxContainer/length"]
+[node name="value" type="Label" parent="Control/ScrollContainer/VBoxContainer/length"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -119,12 +129,12 @@ text = "0.0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="angle" type="HBoxContainer" parent="Control/VBoxContainer"]
+[node name="angle" type="HBoxContainer" parent="Control/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="label" type="Label" parent="Control/VBoxContainer/angle"]
+[node name="label" type="Label" parent="Control/ScrollContainer/VBoxContainer/angle"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -132,7 +142,7 @@ text = "Angle"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="angle_slider" type="HSlider" parent="Control/VBoxContainer/angle"]
+[node name="angle_slider" type="HSlider" parent="Control/ScrollContainer/VBoxContainer/angle"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -141,7 +151,7 @@ min_value = -180.0
 max_value = 180.0
 step = 0.5
 
-[node name="value" type="Label" parent="Control/VBoxContainer/angle"]
+[node name="value" type="Label" parent="Control/ScrollContainer/VBoxContainer/angle"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -149,12 +159,12 @@ text = "0.0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="growth" type="HBoxContainer" parent="Control/VBoxContainer"]
+[node name="growth" type="HBoxContainer" parent="Control/ScrollContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="label" type="Label" parent="Control/VBoxContainer/growth"]
+[node name="label" type="Label" parent="Control/ScrollContainer/VBoxContainer/growth"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -162,7 +172,7 @@ text = "Growth"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="growth_slider" type="HSlider" parent="Control/VBoxContainer/growth"]
+[node name="growth_slider" type="HSlider" parent="Control/ScrollContainer/VBoxContainer/growth"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -170,7 +180,7 @@ size_flags_stretch_ratio = 2.11
 max_value = 1.0
 step = 0.01
 
-[node name="value" type="Label" parent="Control/VBoxContainer/growth"]
+[node name="value" type="Label" parent="Control/ScrollContainer/VBoxContainer/growth"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 5
@@ -178,10 +188,10 @@ text = "0.0"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[connection signal="pressed" from="Control/VBoxContainer/layer/prev_layer" to="." method="_on_layer_switch_pressed" binds= [false]]
-[connection signal="pressed" from="Control/VBoxContainer/layer/next_layer" to="." method="_on_layer_switch_pressed" binds= [true]]
-[connection signal="pressed" from="Control/VBoxContainer/layer/delete_layer" to="." method="_on_delete_layer_pressed"]
-[connection signal="value_changed" from="Control/VBoxContainer/population/population_slider" to="." method="update_setting" binds= ["population"]]
-[connection signal="value_changed" from="Control/VBoxContainer/length/length_slider" to="." method="update_setting" binds= ["length"]]
-[connection signal="value_changed" from="Control/VBoxContainer/angle/angle_slider" to="." method="update_setting" binds= ["angle"]]
-[connection signal="value_changed" from="Control/VBoxContainer/growth/growth_slider" to="." method="update_setting" binds= ["growth"]]
+[connection signal="pressed" from="Control/layer/prev_layer" to="." method="_on_layer_switch_pressed" binds= [false]]
+[connection signal="pressed" from="Control/layer/next_layer" to="." method="_on_layer_switch_pressed" binds= [true]]
+[connection signal="pressed" from="Control/layer/delete_layer" to="." method="_on_delete_layer_pressed"]
+[connection signal="value_changed" from="Control/ScrollContainer/VBoxContainer/population/population_slider" to="." method="update_setting" binds= ["population"]]
+[connection signal="value_changed" from="Control/ScrollContainer/VBoxContainer/length/length_slider" to="." method="update_setting" binds= ["length"]]
+[connection signal="value_changed" from="Control/ScrollContainer/VBoxContainer/angle/angle_slider" to="." method="update_setting" binds= ["angle"]]
+[connection signal="value_changed" from="Control/ScrollContainer/VBoxContainer/growth/growth_slider" to="." method="update_setting" binds= ["growth"]]
