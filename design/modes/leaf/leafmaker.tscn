@@ -344,5 +344,5 @@ stretch_mode = 1
 [connection signal="pressed" from="ui/coloring/HBoxContainer/brush_size_24" to="ui/coloring" method="_on_brush_size_pressed" binds= [24]]
 [connection signal="pressed" from="ui/coloring/HBoxContainer/brush_size_48" to="ui/coloring" method="_on_brush_size_pressed" binds= [48]]
 [connection signal="value_changed" from="ui/coloring/brush_opac" to="ui/coloring" method="_on_brush_opac_value_changed"]
-[connection signal="color_changed" from="ui/coloring/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_color_changed" flags=18]
-[connection signal="popup_closed" from="ui/coloring/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_popup_closed" flags=18]
+[connection signal="color_changed" from="ui/coloring/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_color_changed"]
+[connection signal="popup_closed" from="ui/coloring/ColorPickerButton" to="ui/coloring" method="_on_color_picker_button_popup_closed"]
