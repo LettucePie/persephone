@@ -71,8 +71,9 @@ func setup_brush_image():
 func color_brush_tip(brush_tip : BrushTip, color : Color):
 	print("Color Brush Tip")
 	var dimension = brush_tip.img.get_size()
-	## Refresh Image data by pulling from Tex again
+	## Refresh Image data by pulling from Tex again, then reapply stretch
 	brush_tip.img = brush_tip.tex.get_image()
+	brush_tip.img.resize(dimension.x, dimension.y)
 	for x in dimension.x:
 		for y in dimension.y:
 			var pix_color = brush_tip.img.get_pixel(x, y)
