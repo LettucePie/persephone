@@ -185,8 +185,8 @@ func _on_brush_size_pressed(b_size : int):
 	for b in brush_tips:
 		if b.pix == b_size:
 			current_brush_tip = b
-			color_brush_tip(b, current_color)
 			stretch_invert_brush_tip(b)
+			color_brush_tip(b, current_color)
 	for button in brush_tip_buttons:
 		var name_id = button.name.trim_prefix("brush_size_").to_int()
 		if name_id == b_size:
