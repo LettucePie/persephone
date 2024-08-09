@@ -618,7 +618,6 @@ func _on_coloring_apply_brush_image():
 	emit_signal("update_canvas_tex", leaf_texture)
 
 
-
 func _on_ui_mode_changed(mode):
 	editor_mode = mode
 	if leaf_points.size() > 0:

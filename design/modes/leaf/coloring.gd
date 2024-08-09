@@ -57,7 +57,8 @@ func make_brush_tips():
 		new_tip.img = btex.get_image()
 		new_tip.pix = new_tip.img.get_width()
 		brush_tips.append(new_tip)
-	current_brush_tip = brush_tips[0]
+	current_brush_tip = brush_tips.front()
+	stretch_invert_brush_tip(current_brush_tip)
 
 
 func setup_brush_image():
@@ -71,6 +72,8 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 	var dimension = brush_tip.img.get_size()
 	## Refresh Image data by pulling from Tex again
 	brush_tip.img = brush_tip.tex.get_image()
+	## Apply Stretch inversion again
+	stretch_invert_brush_tip(brush_tip)
 	for x in dimension.x:
 		for y in dimension.y:
 			var pix_color = brush_tip.img.get_pixel(x, y)
@@ -80,6 +83,19 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 				pix_color.b = color.b
 				pix_color.a = lerp(0.0, color.a, (pix_color.a / 1.0))
 				brush_tip.img.set_pixel(x, y, pix_color)
+
+
+func stretch_invert_brush_tip(brush_tip : BrushTip):
+	print("Invert the Canvas Stretch and apply to brush tip.")
+	print("img width height: ", brush_tip.img.get_width(), " | ", brush_tip.img.get_height())
+	print("brush pix: ", brush_tip.pix)
+	print("canvas min max: ", canvas_min, " | ", canvas_max)
+	var ratio_x = (canvas_max.x - canvas_min.x) / (canvas_max.y - canvas_min.y)
+	var ratio_y = (canvas_max.y - canvas_min.y) / (canvas_max.x - canvas_min.x)
+	print("canvas stretch ratios: ", ratio_x, " | ", ratio_y)
+	var stretch_x = int(brush_tip.pix * ratio_y)
+	var stretch_y = int(brush_tip.pix * ratio_x)
+	brush_tip.img.resize(stretch_x, stretch_y)
 
 
 func display_image():
@@ -107,7 +123,7 @@ func color_input(event):
 		if event.button_index == 1:
 			brush_pressed = event.pressed
 			if event.pressed:
-				setup_brush_image()
+				#setup_brush_image()
 				prev_point = center_to_brush(
 					convert_to_image_space(
 						get_local_mouse_position()
@@ -137,7 +153,9 @@ func convert_to_image_space(canvas_point : Vector2):
 
 
 func center_to_brush(point : Vector2):
-	return point - (Vector2(current_brush_tip.pix, current_brush_tip.pix) * 0.5)
+	return point - (Vector2(
+		current_brush_tip.img.get_width(), current_brush_tip.img.get_height()) \
+	* 0.5)
 
 
 func color_at(point : Vector2):
@@ -150,8 +168,8 @@ func color_at(point : Vector2):
 			brush_img.blend_rect(
 				current_brush_tip.img, 
 				Rect2i(Vector2i.ZERO, Vector2i(
-					current_brush_tip.pix, 
-					current_brush_tip.pix)), 
+					current_brush_tip.img.get_width(), 
+					current_brush_tip.img.get_height())), 
 				prev_point.lerp(center_offset, percent)
 			)
 	if gapcount >= 200:
@@ -160,7 +178,9 @@ func color_at(point : Vector2):
 		prev_point = center_offset
 		brush_img.blend_rect(
 			current_brush_tip.img, 
-			Rect2i(Vector2i.ZERO, Vector2i(current_brush_tip.pix, current_brush_tip.pix)), 
+			Rect2i(Vector2i.ZERO, Vector2i(
+				current_brush_tip.img.get_width(), 
+				current_brush_tip.img.get_height())), 
 			center_offset)
 	display_image()
 
@@ -170,6 +190,7 @@ func _on_brush_size_pressed(b_size : int):
 		if b.pix == b_size:
 			current_brush_tip = b
 			color_brush_tip(b, current_color)
+			stretch_invert_brush_tip(b)
 	for button in brush_tip_buttons:
 		var name_id = button.name.trim_prefix("brush_size_").to_int()
 		if name_id == b_size:
@@ -190,6 +211,8 @@ func _on_color_picker_button_popup_closed():
 func _on_canvas_color_bounds(min : Vector2, max : Vector2):
 	canvas_min = min
 	canvas_max = max
+	if current_brush_tip != null:
+		stretch_invert_brush_tip(current_brush_tip)
 
 
 func _on_brush_opac_value_changed(value):
