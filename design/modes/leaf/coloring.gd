@@ -69,11 +69,10 @@ func setup_brush_image():
 
 
 func color_brush_tip(brush_tip : BrushTip, color : Color):
+	print("Color Brush Tip")
 	var dimension = brush_tip.img.get_size()
 	## Refresh Image data by pulling from Tex again
 	brush_tip.img = brush_tip.tex.get_image()
-	## Apply Stretch inversion again
-	stretch_invert_brush_tip(brush_tip)
 	for x in dimension.x:
 		for y in dimension.y:
 			var pix_color = brush_tip.img.get_pixel(x, y)
@@ -86,13 +85,9 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 
 
 func stretch_invert_brush_tip(brush_tip : BrushTip):
-	print("Invert the Canvas Stretch and apply to brush tip.")
-	print("img width height: ", brush_tip.img.get_width(), " | ", brush_tip.img.get_height())
-	print("brush pix: ", brush_tip.pix)
-	print("canvas min max: ", canvas_min, " | ", canvas_max)
+	print("Invert Stretch Brush Tip")
 	var ratio_x = (canvas_max.x - canvas_min.x) / (canvas_max.y - canvas_min.y)
 	var ratio_y = (canvas_max.y - canvas_min.y) / (canvas_max.x - canvas_min.x)
-	print("canvas stretch ratios: ", ratio_x, " | ", ratio_y)
 	var stretch_x = int(brush_tip.pix * ratio_y)
 	var stretch_y = int(brush_tip.pix * ratio_x)
 	brush_tip.img.resize(stretch_x, stretch_y)
@@ -206,6 +201,7 @@ func _on_color_picker_button_color_changed(color):
 
 func _on_color_picker_button_popup_closed():
 	color_brush_tip(current_brush_tip, current_color)
+	stretch_invert_brush_tip(current_brush_tip)
 
 
 func _on_canvas_color_bounds(min : Vector2, max : Vector2):
