@@ -202,7 +202,7 @@ func _on_color_picker_button_color_changed(color):
 
 func _on_color_picker_button_popup_closed():
 	color_brush_tip(current_brush_tip, current_color)
-	stretch_invert_brush_tip(current_brush_tip)
+	#stretch_invert_brush_tip(current_brush_tip)
 
 
 func _on_canvas_color_bounds(min : Vector2, max : Vector2):
