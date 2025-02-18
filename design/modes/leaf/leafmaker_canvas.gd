@@ -311,7 +311,6 @@ func remove_point(leaf_point : LeafPoint):
 		leaf_curve.remove_point(leaf_point.curve_index)
 		leaf_points.remove_at(leaf_point.curve_index)
 		leaf_point.visual_node.queue_free()
-		leaf_point.queue_free()
 		update_leaf_point_indeces(previous_index)
 		if round_points_enabled:
 			update_round_neighbors(leaf_points[previous_index])
