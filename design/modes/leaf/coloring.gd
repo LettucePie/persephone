@@ -87,11 +87,27 @@ func color_brush_tip(brush_tip : BrushTip, color : Color):
 
 func stretch_invert_brush_tip(brush_tip : BrushTip):
 	print("Invert Stretch Brush Tip")
+	print("::BEFORE INVERT::")
+	print("  ", brush_tip.img.get_size())
 	var ratio_x = (canvas_max.x - canvas_min.x) / (canvas_max.y - canvas_min.y)
 	var ratio_y = (canvas_max.y - canvas_min.y) / (canvas_max.x - canvas_min.x)
+	var wide : bool = true
+	var div = int(ratio_x / ratio_y)
+	if ratio_y > ratio_x:
+		wide = false
+		div = int(ratio_y / ratio_x)
+	print("  div: ", div)
+	if wide:
+		print("  actual ratio: ", div, ":1")
+	else:
+		print("  actual ratio: 1:", div)
 	var stretch_x = int(brush_tip.pix * ratio_y)
 	var stretch_y = int(brush_tip.pix * ratio_x)
+	print("  ratio_x: ", ratio_x, " | ratio_y: ", ratio_y)
+	print("  stretch_x: ", stretch_x, " | stretch_y: ", stretch_y)
 	brush_tip.img.resize(stretch_x, stretch_y)
+	print("::AFTER INVERT::")
+	print("  ", brush_tip.img.get_size())
 
 
 func display_image():
@@ -206,6 +222,8 @@ func _on_color_picker_button_popup_closed():
 
 
 func _on_canvas_color_bounds(min : Vector2, max : Vector2):
+	print("Canvas ColorBounds Set")
+	print("  canvas_min: ", canvas_min, " | canvas_max: ", canvas_max)
 	canvas_min = min
 	canvas_max = max
 	if current_brush_tip != null:
